@@ -1,101 +1,52 @@
 {
-    "name": "drupal/legacy-project",
-    "description": "Project template for Drupal projects with composer following drupal/drupal layout",
+    "name": "aurora/monorepo",
+    "description": "Aurora CMS monorepo — a modern, entity-first, AI-native CMS",
     "type": "project",
     "license": "GPL-2.0-or-later",
-    "homepage": "https://www.drupal.org/project/drupal",
-    "support": {
-        "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
-        "chat": "https://www.drupal.org/node/314178"
-    },
     "repositories": [
-        {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
-        }
+        { "type": "path", "url": "packages/cache" },
+        { "type": "path", "url": "packages/plugin" },
+        { "type": "path", "url": "packages/typed-data" },
+        { "type": "path", "url": "packages/config" },
+        { "type": "path", "url": "packages/entity" },
+        { "type": "path", "url": "packages/field" },
+        { "type": "path", "url": "packages/entity-storage" },
+        { "type": "path", "url": "packages/database-legacy" },
+        { "type": "path", "url": "packages/access" },
+        { "type": "path", "url": "packages/user" },
+        { "type": "path", "url": "packages/routing" },
+        { "type": "path", "url": "packages/queue" },
+        { "type": "path", "url": "packages/state" },
+        { "type": "path", "url": "packages/validation" },
+        { "type": "path", "url": "packages/node" },
+        { "type": "path", "url": "packages/taxonomy" },
+        { "type": "path", "url": "packages/media" },
+        { "type": "path", "url": "packages/path" },
+        { "type": "path", "url": "packages/menu" },
+        { "type": "path", "url": "packages/workflows" },
+        { "type": "path", "url": "packages/api" },
+        { "type": "path", "url": "packages/graphql" },
+        { "type": "path", "url": "packages/ai-schema" },
+        { "type": "path", "url": "packages/ai-agent" },
+        { "type": "path", "url": "packages/ai-vector" },
+        { "type": "path", "url": "packages/ai-pipeline" },
+        { "type": "path", "url": "packages/ssr" },
+        { "type": "path", "url": "packages/cli" },
+        { "type": "path", "url": "packages/core" },
+        { "type": "path", "url": "packages/cms" },
+        { "type": "path", "url": "packages/full" }
     ],
     "require": {
-        "composer/installers": "^2.3",
-        "drupal/core-composer-scaffold": "^11.2",
-        "drupal/core-recipe-unpack": "^11.2",
-        "drupal/core-project-message": "^11.2",
-        "drupal/core-recommended": "^11.2",
-        "drupal/core-vendor-hardening": "^11.2"
+        "php": ">=8.3",
+        "aurora/full": "^0.1"
     },
-    "conflict": {
-        "drupal/drupal": "*"
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.10"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
-        "allow-plugins": {
-            "composer/installers": true,
-            "drupal/core-composer-scaffold": true,
-            "drupal/core-recipe-unpack": true,
-            "drupal/core-project-message": true,
-            "drupal/core-vendor-hardening": true,
-            "phpstan/extension-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "php-http/discovery": true,
-            "php-tuf/composer-integration": true
-        },
         "sort-packages": true
-    },
-    "extra": {
-        "drupal-scaffold": {
-            "locations": {
-                "web-root": "./"
-            }
-        },
-        "installer-paths": {
-            "core": [
-                "type:drupal-core"
-            ],
-            "libraries/{$name}": [
-                "type:drupal-library"
-            ],
-            "modules/contrib/{$name}": [
-                "type:drupal-module"
-            ],
-            "profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "drush/Commands/contrib/{$name}": [
-                "type:drupal-drush"
-            ],
-            "modules/custom/{$name}": [
-                "type:drupal-custom-module"
-            ],
-            "profiles/custom/{$name}": [
-                "type:drupal-custom-profile"
-            ],
-            "themes/custom/{$name}": [
-                "type:drupal-custom-theme"
-            ]
-        },
-        "drupal-core-project-message": {
-            "include-keys": [
-                "homepage",
-                "support"
-            ],
-            "post-create-project-cmd-message": [
-                "<bg=blue;fg=white>                                                         </>",
-                "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
-                "<bg=blue;fg=white>  from the drupal/legacy-project template!               </>",
-                "<bg=blue;fg=white>                                                         </>",
-                "",
-                "<bg=yellow;fg=black>Next steps</>:",
-                "  * Install the site: https://www.drupal.org/docs/installing-drupal",
-                "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
-                "  * Get support: https://www.drupal.org/support",
-                "  * Get involved with the Drupal community:",
-                "      https://www.drupal.org/getting-involved",
-                "  * Remove the plugin that prints this message:",
-                "      composer remove drupal/core-project-message"
-            ]
-        }
     }
 }
