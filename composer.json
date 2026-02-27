@@ -40,6 +40,7 @@
         "php": ">=8.3",
         "aurora/cache": "@dev",
         "aurora/plugin": "@dev",
+        "aurora/config": "@dev",
         "aurora/typed-data": "@dev"
     },
     "require-dev": {
@@ -49,6 +50,7 @@
     "autoload-dev": {
         "psr-4": {
             "Aurora\\Cache\\Tests\\": "packages/cache/tests/",
+            "Aurora\\Config\\Tests\\": "packages/config/tests/",
             "Aurora\\Plugin\\Tests\\": "packages/plugin/tests/",
             "Aurora\\TypedData\\Tests\\": "packages/typed-data/tests/",
             "Aurora\\Tests\\": "tests/"
