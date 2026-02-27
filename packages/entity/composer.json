@@ -3,12 +3,18 @@
     "description": "Entity type system — types, interfaces, lifecycle, queries. No storage.",
     "type": "library",
     "license": "GPL-2.0-or-later",
+    "repositories": [
+        {"type": "path", "url": "../cache"},
+        {"type": "path", "url": "../plugin"},
+        {"type": "path", "url": "../typed-data"},
+        {"type": "path", "url": "../config"}
+    ],
     "require": {
         "php": ">=8.3",
-        "aurora/typed-data": "^0.1",
-        "aurora/plugin": "^0.1",
-        "aurora/cache": "^0.1",
-        "aurora/config": "^0.1",
+        "aurora/typed-data": "@dev",
+        "aurora/plugin": "@dev",
+        "aurora/cache": "@dev",
+        "aurora/config": "@dev",
         "symfony/event-dispatcher": "^7.3",
         "symfony/uid": "^7.3"
     },
@@ -25,5 +31,6 @@
             "Aurora\\Entity\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
