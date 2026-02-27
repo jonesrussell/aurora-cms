@@ -11,7 +11,7 @@ use Aurora\TypedData\TypedDataManagerInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-final class MapData implements ComplexDataInterface, \IteratorAggregate
+final class MapData implements ComplexDataInterface, \IteratorAggregate, \Countable
 {
     /** @var array<string, TypedDataInterface> */
     private array $properties = [];
