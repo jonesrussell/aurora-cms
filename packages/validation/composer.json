@@ -3,9 +3,17 @@
     "description": "Data validation constraints and validators for Aurora CMS",
     "type": "library",
     "license": "GPL-2.0-or-later",
+    "repositories": [
+        {"type": "path", "url": "../typed-data"},
+        {"type": "path", "url": "../entity"},
+        {"type": "path", "url": "../plugin"},
+        {"type": "path", "url": "../cache"},
+        {"type": "path", "url": "../config"}
+    ],
     "require": {
         "php": ">=8.3",
-        "aurora/typed-data": "^0.1",
+        "aurora/typed-data": "@dev",
+        "aurora/entity": "@dev",
         "symfony/validator": "^7.3"
     },
     "require-dev": {
@@ -21,5 +29,6 @@
             "Aurora\\Validation\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
