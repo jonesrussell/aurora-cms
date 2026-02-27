@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Aurora\Queue\Message;
+
+final readonly class EntityMessage
+{
+    public function __construct(
+        public string $entityTypeId,
+        public int|string $entityId,
+        public string $operation,
+        public array $data = [],
+    ) {}
+}
