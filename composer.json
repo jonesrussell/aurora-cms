@@ -47,8 +47,10 @@
         "aurora/field": "@dev",
         "aurora/plugin": "@dev",
         "aurora/queue": "@dev",
+        "aurora/routing": "@dev",
         "aurora/state": "@dev",
         "aurora/typed-data": "@dev",
+        "aurora/user": "@dev",
         "aurora/validation": "@dev"
     },
     "require-dev": {
@@ -68,6 +70,8 @@
             "Aurora\\Access\\Tests\\": "packages/access/tests/",
             "Aurora\\Queue\\Tests\\": "packages/queue/tests/",
             "Aurora\\State\\Tests\\": "packages/state/tests/",
+            "Aurora\\Routing\\Tests\\": "packages/routing/tests/",
+            "Aurora\\User\\Tests\\": "packages/user/tests/",
             "Aurora\\Validation\\Tests\\": "packages/validation/tests/",
             "Aurora\\Tests\\": "tests/"
         }

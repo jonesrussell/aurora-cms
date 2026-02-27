@@ -96,13 +96,13 @@ final class RouteBuilderTest extends TestCase
     }
 
     #[Test]
-    public function allowAllSetsAccessCallback(): void
+    public function allowAllSetsPublicOption(): void
     {
         $route = RouteBuilder::create('/public')
             ->allowAll()
             ->build();
 
-        $this->assertTrue($route->getOption('_access_callback'));
+        $this->assertTrue($route->getOption('_public'));
     }
 
     #[Test]

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81e8aaf2cf9e54b446faa3a71b57379d",
+    "content-hash": "f0861c26e18d1826eb6bb8a2b5a236e8",
     "packages": [
         {
             "name": "aurora/access",
@@ -326,6 +326,42 @@
             }
         },
         {
+            "name": "aurora/routing",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/routing",
+                "reference": "dc7b99810fd3909d189d0bf1373a97ca2725601a"
+            },
+            "require": {
+                "aurora/access": "@dev",
+                "aurora/entity": "@dev",
+                "php": ">=8.3",
+                "symfony/routing": "^7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Aurora\\Routing\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Aurora\\Routing\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "HTTP routing and controller resolution for Aurora CMS",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "aurora/state",
             "version": "dev-main",
             "dist": {
@@ -389,6 +425,41 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Type system with PHP-native facade for Aurora CMS",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "aurora/user",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/user",
+                "reference": "39b1bbad59afa46dd044181c53fdb8de0f2cfbd9"
+            },
+            "require": {
+                "aurora/access": "@dev",
+                "aurora/entity": "@dev",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Aurora\\User\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Aurora\\User\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "User entity, authentication, and session management for Aurora CMS",
             "transport-options": {
                 "relative": true
             }
@@ -1406,6 +1477,91 @@
                 }
             ],
             "time": "2024-09-09T11:45:10+00:00"
+        },
+        {
+            "name": "symfony/routing",
+            "version": "v7.4.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/routing.git",
+                "reference": "238d749c56b804b31a9bf3e26519d93b65a60938"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/238d749c56b804b31a9bf3e26519d93b65a60938",
+                "reference": "238d749c56b804b31a9bf3e26519d93b65a60938",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/config": "<6.4",
+                "symfony/dependency-injection": "<6.4",
+                "symfony/yaml": "<6.4"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3",
+                "symfony/config": "^6.4|^7.0|^8.0",
+                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+                "symfony/expression-language": "^6.4|^7.0|^8.0",
+                "symfony/http-foundation": "^6.4|^7.0|^8.0",
+                "symfony/yaml": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Routing\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Maps an HTTP request to a set of configuration variables",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "router",
+                "routing",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/routing/tree/v7.4.6"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-02-25T16:50:00+00:00"
         },
         {
             "name": "symfony/translation-contracts",
@@ -3484,8 +3640,10 @@
         "aurora/field": 20,
         "aurora/plugin": 20,
         "aurora/queue": 20,
+        "aurora/routing": 20,
         "aurora/state": 20,
         "aurora/typed-data": 20,
+        "aurora/user": 20,
         "aurora/validation": 20
     },
     "prefer-stable": true,

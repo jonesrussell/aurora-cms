@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Aurora\Routing\ParamConverter;
 
 use Aurora\Entity\EntityTypeManagerInterface;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Route;
 
 /**
@@ -51,12 +52,21 @@ final class EntityParamConverter
                 continue;
             }
 
-            $storage = $this->entityTypeManager->getStorage($entityTypeId);
-            $entity = $storage->load($parameters[$name]);
-
-            if ($entity !== null) {
-                $parameters[$name] = $entity;
+            $rawId = $parameters[$name];
+            if (!is_int($rawId) && !is_string($rawId)) {
+                continue;
             }
+
+            $storage = $this->entityTypeManager->getStorage($entityTypeId);
+            $entity = $storage->load($rawId);
+
+            if ($entity === null) {
+                throw new ResourceNotFoundException(
+                    sprintf('Entity "%s" with ID "%s" not found.', $entityTypeId, $rawId)
+                );
+            }
+
+            $parameters[$name] = $entity;
         }
 
         return $parameters;

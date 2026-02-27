@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Route;
  * Checks route-level access for an account.
  *
  * Routes can declare access requirements via options:
- *   - '_access_callback' => true — always allow access
+ *   - '_public' => true — always allow access (no authentication required)
  *   - '_permission' => 'administer site' — require a specific permission
  *   - '_role' => 'administrator' — require a specific role (or comma-separated list)
  *
@@ -33,9 +33,9 @@ final class AccessChecker
         $hasRequirement = false;
         $result = AccessResult::allowed();
 
-        // Check _access_callback option (blanket allow).
-        $accessCallback = $route->getOption('_access_callback');
-        if ($accessCallback === true) {
+        // Check _public option (blanket allow).
+        $public = $route->getOption('_public');
+        if ($public === true) {
             $hasRequirement = true;
             // Remains allowed — no change needed.
         }

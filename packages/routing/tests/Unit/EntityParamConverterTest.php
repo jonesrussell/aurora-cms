@@ -11,6 +11,7 @@ use Aurora\Routing\ParamConverter\EntityParamConverter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Route;
 
 #[CoversClass(EntityParamConverter::class)]
@@ -48,7 +49,7 @@ final class EntityParamConverterTest extends TestCase
     }
 
     #[Test]
-    public function convertKeepsOriginalValueWhenEntityNotFound(): void
+    public function convertThrowsWhenEntityNotFound(): void
     {
         $storage = $this->createMock(EntityStorageInterface::class);
         $storage->expects($this->once())
@@ -69,11 +70,10 @@ final class EntityParamConverterTest extends TestCase
             'node' => ['type' => 'entity:node'],
         ]);
 
-        $parameters = ['node' => '999'];
-        $result = $converter->convert($parameters, $route);
+        $this->expectException(ResourceNotFoundException::class);
+        $this->expectExceptionMessage('Entity "node" with ID "999" not found.');
 
-        // Original value kept since entity was not found.
-        $this->assertSame('999', $result['node']);
+        $converter->convert(['node' => '999'], $route);
     }
 
     #[Test]

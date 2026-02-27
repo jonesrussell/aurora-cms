@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6ec069325652d128670241363a26b95c
+class ComposerStaticInitf0861c26e18d1826eb6bb8a2b5a236e8
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -30,6 +30,7 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\Uid\\' => 22,
+            'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\Messenger\\' => 28,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\Clock\\' => 24,
@@ -51,11 +52,15 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
         array (
             'Aurora\\Validation\\Tests\\' => 24,
             'Aurora\\Validation\\' => 18,
+            'Aurora\\User\\Tests\\' => 18,
+            'Aurora\\User\\' => 12,
             'Aurora\\TypedData\\Tests\\' => 23,
             'Aurora\\TypedData\\' => 17,
             'Aurora\\Tests\\' => 13,
             'Aurora\\State\\Tests\\' => 19,
             'Aurora\\State\\' => 13,
+            'Aurora\\Routing\\Tests\\' => 21,
+            'Aurora\\Routing\\' => 15,
             'Aurora\\Queue\\Tests\\' => 19,
             'Aurora\\Queue\\' => 13,
             'Aurora\\Plugin\\Tests\\' => 20,
@@ -114,6 +119,10 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
         array (
             0 => __DIR__ . '/..' . '/symfony/uid',
         ),
+        'Symfony\\Component\\Routing\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/routing',
+        ),
         'Symfony\\Component\\Messenger\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/messenger',
@@ -162,6 +171,14 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
         array (
             0 => __DIR__ . '/..' . '/aurora/validation/src',
         ),
+        'Aurora\\User\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/packages/user/tests',
+        ),
+        'Aurora\\User\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aurora/user/src',
+        ),
         'Aurora\\TypedData\\Tests\\' => 
         array (
             0 => __DIR__ . '/../..' . '/packages/typed-data/tests',
@@ -181,6 +198,14 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
         'Aurora\\State\\' => 
         array (
             0 => __DIR__ . '/..' . '/aurora/state/src',
+        ),
+        'Aurora\\Routing\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/packages/routing/tests',
+        ),
+        'Aurora\\Routing\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aurora/routing/src',
         ),
         'Aurora\\Queue\\Tests\\' => 
         array (
@@ -1450,9 +1475,9 @@ class ComposerStaticInit6ec069325652d128670241363a26b95c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6ec069325652d128670241363a26b95c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6ec069325652d128670241363a26b95c::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6ec069325652d128670241363a26b95c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf0861c26e18d1826eb6bb8a2b5a236e8::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf0861c26e18d1826eb6bb8a2b5a236e8::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitf0861c26e18d1826eb6bb8a2b5a236e8::$classMap;
 
         }, null, ClassLoader::class);
     }

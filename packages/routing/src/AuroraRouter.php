@@ -89,6 +89,6 @@ final class AuroraRouter
      */
     public function getRouteCollection(): RouteCollection
     {
-        return $this->routes;
+        return clone $this->routes;
     }
 }

@@ -35,13 +35,13 @@ final class AccessCheckerTest extends TestCase
         $this->assertTrue($result->isNeutral());
     }
 
-    // --- _access_callback ---
+    // --- _public ---
 
     #[Test]
-    public function accessCallbackTrueReturnsAllowed(): void
+    public function publicTrueReturnsAllowed(): void
     {
         $route = new Route('/test');
-        $route->setOption('_access_callback', true);
+        $route->setOption('_public', true);
         $account = $this->createMock(AccountInterface::class);
 
         $result = $this->checker->check($route, $account);
@@ -205,10 +205,10 @@ final class AccessCheckerTest extends TestCase
     }
 
     #[Test]
-    public function accessCallbackWithPermissionBothPass(): void
+    public function publicWithPermissionBothPass(): void
     {
         $route = new Route('/admin');
-        $route->setOption('_access_callback', true);
+        $route->setOption('_public', true);
         $route->setOption('_permission', 'administer site');
 
         $account = $this->createMock(AccountInterface::class);
@@ -222,10 +222,10 @@ final class AccessCheckerTest extends TestCase
     }
 
     #[Test]
-    public function accessCallbackTrueWithPermissionDeniedReturnsForbidden(): void
+    public function publicTrueWithPermissionDeniedReturnsForbidden(): void
     {
         $route = new Route('/admin');
-        $route->setOption('_access_callback', true);
+        $route->setOption('_public', true);
         $route->setOption('_permission', 'administer site');
 
         $account = $this->createMock(AccountInterface::class);
@@ -235,7 +235,7 @@ final class AccessCheckerTest extends TestCase
 
         $result = $this->checker->check($route, $account);
 
-        // AND logic: _access_callback = allowed AND _permission = forbidden => forbidden
+        // AND logic: public = allowed AND _permission = forbidden => forbidden
         $this->assertTrue($result->isForbidden());
     }
 }

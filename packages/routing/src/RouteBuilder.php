@@ -100,11 +100,11 @@ final class RouteBuilder
     }
 
     /**
-     * Allow all users (set _access_callback = true).
+     * Allow all users (marks route as public).
      */
     public function allowAll(): self
     {
-        $this->options['_access_callback'] = true;
+        $this->options['_public'] = true;
         return $this;
     }
 
