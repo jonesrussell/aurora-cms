@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Aurora\AI\Schema;
+
+use Aurora\AI\Schema\Mcp\McpToolDefinition;
+use Aurora\AI\Schema\Mcp\McpToolGenerator;
+
+/**
+ * Central registry combining JSON Schema and MCP tool outputs.
+ *
+ * Provides a unified API for accessing entity schemas and tool definitions,
+ * making it easy for AI agents to discover the full CMS surface area.
+ */
+final class SchemaRegistry
+{
+    public function __construct(
+        private readonly EntityJsonSchemaGenerator $schemaGenerator,
+        private readonly McpToolGenerator $toolGenerator,
+    ) {}
+
+    /**
+     * Get JSON Schema for a single entity type.
+     *
+     * @return array<string, mixed> JSON Schema array
+     */
+    public function getSchema(string $entityTypeId): array
+    {
+        return $this->schemaGenerator->generate($entityTypeId);
+    }
+
+    /**
+     * Get all schemas keyed by entity type ID.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function getAllSchemas(): array
+    {
+        return $this->schemaGenerator->generateAll();
+    }
+
+    /**
+     * Get all MCP tool definitions.
+     *
+     * @return McpToolDefinition[]
+     */
+    public function getTools(): array
+    {
+        return $this->toolGenerator->generateAll();
+    }
+
+    /**
+     * Get a specific MCP tool by name.
+     */
+    public function getTool(string $name): ?McpToolDefinition
+    {
+        foreach ($this->toolGenerator->generateAll() as $tool) {
+            if ($tool->name === $name) {
+                return $tool;
+            }
+        }
+
+        return null;
+    }
+}
