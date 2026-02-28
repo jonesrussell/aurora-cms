@@ -34,7 +34,8 @@
         { "type": "path", "url": "packages/cli" },
         { "type": "path", "url": "packages/core" },
         { "type": "path", "url": "packages/cms" },
-        { "type": "path", "url": "packages/full" }
+        { "type": "path", "url": "packages/full" },
+        { "type": "path", "url": "packages/testing" }
     ],
     "require": {
         "php": ">=8.3",
@@ -68,6 +69,7 @@
         "symfony/console": "^7.0"
     },
     "require-dev": {
+        "aurora/testing": "@dev",
         "phpunit/phpunit": "^10.5",
         "phpstan/phpstan": "^1.10"
     },
@@ -100,6 +102,7 @@
             "Aurora\\AI\\Schema\\Tests\\": "packages/ai-schema/tests/",
             "Aurora\\AI\\Pipeline\\Tests\\": "packages/ai-pipeline/tests/",
             "Aurora\\AI\\Vector\\Tests\\": "packages/ai-vector/tests/",
+            "Aurora\\Testing\\Tests\\": "packages/testing/tests/",
             "Aurora\\Tests\\": "tests/"
         }
     },
