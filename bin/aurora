@@ -1,0 +1,142 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Aurora CMS CLI entry point.
+ *
+ * Usage:
+ *   bin/aurora install --site-name "My Site"
+ *   bin/aurora entity:list node
+ *   bin/aurora cache:clear
+ *   bin/aurora config:export
+ *   bin/aurora config:import
+ *   bin/aurora make:plugin my_plugin
+ *   bin/aurora make:entity-type my_type
+ *
+ * By default Aurora stores data in an SQLite database at ./aurora.sqlite
+ * and config YAML in ./config/sync. Override with environment variables:
+ *
+ *   AURORA_DB=path/to/db.sqlite
+ *   AURORA_CONFIG_DIR=path/to/config
+ */
+
+// Find autoloader.
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',       // monorepo
+    __DIR__ . '/../../../autoload.php',         // installed as dependency
+];
+
+$autoloader = null;
+foreach ($autoloadPaths as $path) {
+    if (file_exists($path)) {
+        $autoloader = require $path;
+        break;
+    }
+}
+
+if ($autoloader === null) {
+    fwrite(STDERR, "Could not find Composer autoloader. Run 'composer install' first.\n");
+    exit(1);
+}
+
+use Aurora\Cache\CacheFactory;
+use Aurora\CLI\AuroraApplication;
+use Aurora\CLI\Command\CacheClearCommand;
+use Aurora\CLI\Command\ConfigExportCommand;
+use Aurora\CLI\Command\ConfigImportCommand;
+use Aurora\CLI\Command\EntityCreateCommand;
+use Aurora\CLI\Command\EntityListCommand;
+use Aurora\CLI\Command\InstallCommand;
+use Aurora\CLI\Command\MakeEntityTypeCommand;
+use Aurora\CLI\Command\MakePluginCommand;
+use Aurora\CLI\Command\UserCreateCommand;
+use Aurora\CLI\Command\UserRoleCommand;
+use Aurora\Config\ConfigManager;
+use Aurora\Config\Storage\FileStorage;
+use Aurora\Database\PdoDatabase;
+use Aurora\Entity\EntityType;
+use Aurora\Entity\EntityTypeManager;
+use Aurora\EntityStorage\SqlEntityStorage;
+use Aurora\EntityStorage\SqlSchemaHandler;
+use Aurora\Node\Node;
+use Aurora\User\User;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
+// --- Configuration ---------------------------------------------------------
+
+$projectRoot = dirname(__DIR__);
+$dbPath = getenv('AURORA_DB') ?: $projectRoot . '/aurora.sqlite';
+$configDir = getenv('AURORA_CONFIG_DIR') ?: $projectRoot . '/config/sync';
+
+// --- Services --------------------------------------------------------------
+
+$dispatcher = new EventDispatcher();
+
+// Database.
+$database = PdoDatabase::createSqlite($dbPath);
+
+// Config: file-based active + sync storage.
+$activeDir = $projectRoot . '/config/active';
+if (!is_dir($activeDir)) {
+    @mkdir($activeDir, 0755, true);
+}
+if (!is_dir($configDir)) {
+    @mkdir($configDir, 0755, true);
+}
+$activeStorage = new FileStorage($activeDir);
+$syncStorage = new FileStorage($configDir);
+$configManager = new ConfigManager($activeStorage, $syncStorage, $dispatcher);
+
+// Cache.
+$cacheFactory = new CacheFactory();
+
+// Entity types.
+$entityTypes = [
+    new EntityType(
+        id: 'node',
+        label: 'Content',
+        class: Node::class,
+        keys: ['id' => 'nid', 'uuid' => 'uuid', 'label' => 'title', 'bundle' => 'type'],
+    ),
+    new EntityType(
+        id: 'user',
+        label: 'User',
+        class: User::class,
+        keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'name'],
+    ),
+];
+
+// Entity type manager with SQL storage factory.
+$entityTypeManager = new EntityTypeManager(
+    $dispatcher,
+    function (EntityType $definition) use ($database, $dispatcher): SqlEntityStorage {
+        $schemaHandler = new SqlSchemaHandler($definition, $database);
+        $schemaHandler->ensureTable();
+        return new SqlEntityStorage($definition, $database, $dispatcher);
+    },
+);
+
+foreach ($entityTypes as $entityType) {
+    $entityTypeManager->registerEntityType($entityType);
+}
+
+// --- Application -----------------------------------------------------------
+
+$app = new AuroraApplication();
+
+$app->registerCommands([
+    new InstallCommand($entityTypeManager, $configManager),
+    new CacheClearCommand($cacheFactory),
+    new ConfigExportCommand($configManager),
+    new ConfigImportCommand($configManager),
+    new EntityCreateCommand($entityTypeManager),
+    new EntityListCommand($entityTypeManager),
+    new UserCreateCommand($entityTypeManager),
+    new UserRoleCommand($entityTypeManager),
+    new MakePluginCommand(),
+    new MakeEntityTypeCommand(),
+]);
+
+$app->run();

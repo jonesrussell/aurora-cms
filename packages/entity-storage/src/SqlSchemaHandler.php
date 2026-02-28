@@ -117,6 +117,13 @@ final class SqlSchemaHandler
             'default' => 'en',
         ];
 
+        // Data blob for extra/dynamic fields (JSON-encoded).
+        $fields['_data'] = [
+            'type' => 'text',
+            'not null' => true,
+            'default' => '{}',
+        ];
+
         return [
             'fields' => $fields,
             'primary key' => [$idKey],

@@ -16,6 +16,7 @@ final class PdoDatabase implements DatabaseInterface
         private readonly \PDO $pdo,
     ) {
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
     }
 
     public static function createSqlite(string $path = ':memory:'): self

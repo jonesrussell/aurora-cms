@@ -34,6 +34,9 @@ final class SqlEntityStorage implements EntityStorageInterface
     /** @var array<string, string> */
     private readonly array $entityKeys;
 
+    /** @var array<string, bool> Column existence cache (column name => exists in table). */
+    private array $columnCache = [];
+
     public function __construct(
         private readonly EntityTypeInterface $entityType,
         private readonly DatabaseInterface $database,
@@ -44,20 +47,14 @@ final class SqlEntityStorage implements EntityStorageInterface
         $this->idKey = $keys['id'] ?? 'id';
         $this->uuidKey = $keys['uuid'] ?? 'uuid';
         $this->entityKeys = $keys;
+
     }
 
     public function create(array $values = []): EntityInterface
     {
         $class = $this->entityType->getClass();
 
-        /** @var EntityInterface $entity */
-        $entity = new $class(
-            values: $values,
-            entityTypeId: $this->entityType->id(),
-            entityKeys: $this->entityKeys,
-        );
-
-        return $entity;
+        return $this->instantiateEntity($class, $values);
     }
 
     public function load(int|string $id): ?EntityInterface
@@ -113,6 +110,9 @@ final class SqlEntityStorage implements EntityStorageInterface
         $isNew = $entity->isNew();
         $values = $entity->toArray();
 
+        // Split values into schema columns and extra data.
+        $dbValues = $this->splitForStorage($values);
+
         // Dispatch PRE_SAVE event.
         $this->eventDispatcher->dispatch(
             new EntityEvent($entity),
@@ -122,7 +122,7 @@ final class SqlEntityStorage implements EntityStorageInterface
         if ($isNew) {
             // Remove id key if null (auto-increment will handle it).
             $insertValues = [];
-            foreach ($values as $key => $value) {
+            foreach ($dbValues as $key => $value) {
                 if ($key === $this->idKey && $value === null) {
                     continue;
                 }
@@ -148,7 +148,7 @@ final class SqlEntityStorage implements EntityStorageInterface
         } else {
             // Build update fields excluding the ID.
             $updateFields = [];
-            foreach ($values as $key => $value) {
+            foreach ($dbValues as $key => $value) {
                 if ($key === $this->idKey) {
                     continue;
                 }
@@ -237,12 +237,15 @@ final class SqlEntityStorage implements EntityStorageInterface
             $row[$this->idKey] = (int) $row[$this->idKey];
         }
 
+        // Merge extra data from the _data JSON column back into values.
+        if (isset($row['_data'])) {
+            $extra = json_decode((string) $row['_data'], associative: true) ?: [];
+            unset($row['_data']);
+            $row = array_merge($row, $extra);
+        }
+
         /** @var EntityInterface $entity */
-        $entity = new $class(
-            values: $row,
-            entityTypeId: $this->entityType->id(),
-            entityKeys: $this->entityKeys,
-        );
+        $entity = $this->instantiateEntity($class, $row);
 
         // Loaded entities are not new.
         if (method_exists($entity, 'enforceIsNew')) {
@@ -250,5 +253,84 @@ final class SqlEntityStorage implements EntityStorageInterface
         }
 
         return $entity;
+    }
+
+    /**
+     * Instantiate an entity, adapting to its constructor signature.
+     *
+     * Entity subclasses like User and Node define their own constructors
+     * that only accept $values and hardcode entityTypeId/entityKeys.
+     * This method detects the constructor shape and passes only what
+     * the class accepts.
+     *
+     * @param class-string $class
+     * @param array<string, mixed> $values
+     */
+    private function instantiateEntity(string $class, array $values): EntityInterface
+    {
+        $ref = new \ReflectionClass($class);
+        $constructor = $ref->getConstructor();
+        $hasEntityTypeId = false;
+
+        if ($constructor !== null) {
+            foreach ($constructor->getParameters() as $param) {
+                if ($param->getName() === 'entityTypeId') {
+                    $hasEntityTypeId = true;
+                    break;
+                }
+            }
+        }
+
+        if ($hasEntityTypeId) {
+            return new $class(
+                values: $values,
+                entityTypeId: $this->entityType->id(),
+                entityKeys: $this->entityKeys,
+            );
+        }
+
+        return new $class(values: $values);
+    }
+
+    /**
+     * Split entity values into schema columns + JSON _data blob.
+     *
+     * Values whose keys match actual table columns are stored directly.
+     * All other values are JSON-encoded into the _data column.
+     *
+     * @param array<string, mixed> $values
+     * @return array<string, mixed>
+     */
+    private function splitForStorage(array $values): array
+    {
+        $schema = $this->database->schema();
+        $dbValues = [];
+        $extraData = [];
+
+        foreach ($values as $key => $value) {
+            if ($key === '_data') {
+                continue;
+            }
+            if ($this->columnExists($key, $schema)) {
+                $dbValues[$key] = $value;
+            } else {
+                $extraData[$key] = $value;
+            }
+        }
+
+        $dbValues['_data'] = json_encode($extraData, \JSON_THROW_ON_ERROR);
+
+        return $dbValues;
+    }
+
+    /**
+     * Check if a column exists in the entity table (with caching).
+     */
+    private function columnExists(string $column, \Aurora\Database\SchemaInterface $schema): bool
+    {
+        if (!isset($this->columnCache[$column])) {
+            $this->columnCache[$column] = $schema->fieldExists($this->tableName, $column);
+        }
+        return $this->columnCache[$column];
     }
 }
