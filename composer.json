@@ -40,6 +40,7 @@
         { "type": "path", "url": "packages/full" },
         { "type": "path", "url": "packages/i18n" }
         { "type": "path", "url": "packages/testing" }
+        { "type": "path", "url": "packages/foundation" }
     ],
     "require": {
         "php": ">=8.3",
