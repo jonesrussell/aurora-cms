@@ -72,6 +72,7 @@ final class PipelineExecutor
                 );
             }
 
+            $context->set('_step_configuration', $stepConfig->configuration);
             $result = $plugin->process($currentInput, $context);
             $stepResults[] = $result;
 

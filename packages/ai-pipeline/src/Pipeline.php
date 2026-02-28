@@ -50,6 +50,8 @@ final class Pipeline extends ConfigEntityBase
             }
         }
 
+        $this->syncStepsToValues();
+
         parent::__construct(
             values: $values,
             entityTypeId: 'pipeline',
@@ -129,7 +131,7 @@ final class Pipeline extends ConfigEntityBase
                 'weight' => $step->weight,
                 'configuration' => $step->configuration,
             ],
-            $this->steps,
+            $this->getSteps(),
         );
 
         return $config;

@@ -43,7 +43,8 @@ final class AgentAuditLogTest extends TestCase
         );
 
         self::assertSame([], $log->data);
-        self::assertSame(0, $log->timestamp);
+        self::assertGreaterThan(0, $log->timestamp);
+        self::assertEqualsWithDelta(\time(), $log->timestamp, 2);
     }
 
     public function testToolCallAction(): void

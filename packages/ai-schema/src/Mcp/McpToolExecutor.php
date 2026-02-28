@@ -132,12 +132,14 @@ final class McpToolExecutor
             return $this->errorResult("Entity {$entityTypeId} with ID {$arguments['id']} not found.");
         }
 
-        // Apply attribute updates via FieldableInterface::set() if available,
-        // otherwise we cannot update the entity's fields.
-        if ($entity instanceof FieldableInterface) {
-            foreach ($arguments['attributes'] as $field => $value) {
-                $entity->set($field, $value);
-            }
+        if (!$entity instanceof FieldableInterface) {
+            return $this->errorResult(
+                "Entity type {$entityTypeId} does not support field updates.",
+            );
+        }
+
+        foreach ($arguments['attributes'] as $field => $value) {
+            $entity->set($field, $value);
         }
 
         $storage->save($entity);

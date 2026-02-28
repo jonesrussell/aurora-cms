@@ -81,11 +81,19 @@ final class InMemoryVectorStore implements VectorStoreInterface
      */
     public static function cosineSimilarity(array $a, array $b): float
     {
+        if (\count($a) !== \count($b)) {
+            throw new \InvalidArgumentException(\sprintf(
+                'Vector dimension mismatch: %d vs %d.',
+                \count($a),
+                \count($b),
+            ));
+        }
+
         $dotProduct = 0.0;
         $magnitudeA = 0.0;
         $magnitudeB = 0.0;
 
-        $count = min(count($a), count($b));
+        $count = \count($a);
 
         for ($i = 0; $i < $count; $i++) {
             $dotProduct += $a[$i] * $b[$i];

@@ -13,13 +13,18 @@ namespace Aurora\AI\Agent;
 final readonly class AgentAuditLog
 {
     /**
+     * Unix timestamp of the log entry.
+     */
+    public int $timestamp;
+
+    /**
      * @param string $agentId Plugin ID of the agent
      * @param int $accountId User ID the agent acted as
      * @param string $action Action type: 'execute', 'dry_run', or 'tool_call'
      * @param bool $success Whether the action succeeded
      * @param string $message Human-readable description
      * @param array<string, mixed> $data Structured log data
-     * @param int $timestamp Unix timestamp of the log entry
+     * @param int $timestamp Unix timestamp (defaults to current time)
      */
     public function __construct(
         public string $agentId,
@@ -28,6 +33,8 @@ final readonly class AgentAuditLog
         public bool $success,
         public string $message,
         public array $data = [],
-        public int $timestamp = 0,
-    ) {}
+        int $timestamp = 0,
+    ) {
+        $this->timestamp = $timestamp !== 0 ? $timestamp : \time();
+    }
 }

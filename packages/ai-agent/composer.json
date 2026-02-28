@@ -6,7 +6,6 @@
     "repositories": [
         {"type": "path", "url": "../ai-schema"},
         {"type": "path", "url": "../access"},
-        {"type": "path", "url": "../entity"},
         {"type": "path", "url": "../plugin"},
         {"type": "path", "url": "../cache"},
         {"type": "path", "url": "../typed-data"},
@@ -15,7 +14,6 @@
     "require": {
         "php": ">=8.3",
         "aurora/ai-schema": "@dev",
-        "aurora/entity": "@dev",
         "aurora/access": "@dev"
     },
     "require-dev": {

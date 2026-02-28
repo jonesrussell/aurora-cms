@@ -15,6 +15,11 @@ use Aurora\AI\Schema\Mcp\McpToolGenerator;
  */
 final class SchemaRegistry
 {
+    /**
+     * @var McpToolDefinition[]|null
+     */
+    private ?array $toolCache = null;
+
     public function __construct(
         private readonly EntityJsonSchemaGenerator $schemaGenerator,
         private readonly McpToolGenerator $toolGenerator,
@@ -47,7 +52,7 @@ final class SchemaRegistry
      */
     public function getTools(): array
     {
-        return $this->toolGenerator->generateAll();
+        return $this->toolCache ??= $this->toolGenerator->generateAll();
     }
 
     /**
@@ -55,7 +60,7 @@ final class SchemaRegistry
      */
     public function getTool(string $name): ?McpToolDefinition
     {
-        foreach ($this->toolGenerator->generateAll() as $tool) {
+        foreach ($this->getTools() as $tool) {
             if ($tool->name === $name) {
                 return $tool;
             }
