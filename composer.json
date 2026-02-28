@@ -37,6 +37,8 @@
         { "type": "path", "url": "packages/mcp" },
         { "type": "path", "url": "packages/foundation" },
         { "type": "path", "url": "packages/full" }
+        { "type": "path", "url": "packages/full" },
+        { "type": "path", "url": "packages/i18n" }
     ],
     "require": {
         "php": ">=8.3",
@@ -55,6 +57,7 @@
         "aurora/field": "@dev",
         "aurora/foundation": "@dev",
         "aurora/mcp": "@dev",
+        "aurora/i18n": "@dev",
         "aurora/media": "@dev",
         "aurora/menu": "@dev",
         "aurora/node": "@dev",
@@ -74,7 +77,6 @@
     "require-dev": {
         "phpunit/phpunit": "^10.5",
         "phpstan/phpstan": "^1.10"
-    },
     "autoload-dev": {
         "psr-4": {
             "Aurora\\Cache\\Tests\\": "packages/cache/tests/",
@@ -85,6 +87,7 @@
             "Aurora\\Entity\\Tests\\": "packages/entity/tests/",
             "Aurora\\Field\\Tests\\": "packages/field/tests/",
             "Aurora\\Foundation\\Tests\\": "packages/foundation/tests/",
+            "Aurora\\I18n\\Tests\\": "packages/i18n/tests/",
             "Aurora\\Database\\Tests\\": "packages/database-legacy/tests/",
             "Aurora\\EntityStorage\\Tests\\": "packages/entity-storage/tests/",
             "Aurora\\Access\\Tests\\": "packages/access/tests/",
@@ -106,10 +109,8 @@
             "Aurora\\AI\\Schema\\Tests\\": "packages/ai-schema/tests/",
             "Aurora\\AI\\Pipeline\\Tests\\": "packages/ai-pipeline/tests/",
             "Aurora\\AI\\Vector\\Tests\\": "packages/ai-vector/tests/",
-            "Aurora\\Foundation\\Tests\\": "packages/foundation/tests/",
             "Aurora\\Tests\\": "tests/"
         }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
