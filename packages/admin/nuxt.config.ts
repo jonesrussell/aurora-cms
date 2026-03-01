@@ -6,14 +6,14 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: 'http://localhost:8080/api',
+        target: 'http://localhost:8081/api',
         changeOrigin: true,
       },
     },
   },
 
   routeRules: {
-    '/api/**': { proxy: 'http://localhost:8080/api/**' },
+    '/api/**': { proxy: 'http://localhost:8081/api/**' },
   },
 
   app: {

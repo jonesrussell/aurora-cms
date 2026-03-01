@@ -130,8 +130,7 @@ final class JsonApiController
             );
         }
 
-        $storage = $this->entityTypeManager->getStorage($entityTypeId);
-        $entity = $storage->load($id);
+        $entity = $this->loadByIdOrUuid($entityTypeId, $id);
 
         if ($entity === null) {
             return $this->errorDocument(
@@ -228,14 +227,15 @@ final class JsonApiController
             );
         }
 
-        $storage = $this->entityTypeManager->getStorage($entityTypeId);
-        $entity = $storage->load($id);
+        $entity = $this->loadByIdOrUuid($entityTypeId, $id);
 
         if ($entity === null) {
             return $this->errorDocument(
                 JsonApiError::notFound("Entity of type '{$entityTypeId}' with ID '{$id}' not found."),
             );
         }
+
+        $storage = $this->entityTypeManager->getStorage($entityTypeId);
 
         // Validate request data structure.
         if (!isset($data['data']) || !isset($data['data']['type'])) {
@@ -306,14 +306,15 @@ final class JsonApiController
             );
         }
 
-        $storage = $this->entityTypeManager->getStorage($entityTypeId);
-        $entity = $storage->load($id);
+        $entity = $this->loadByIdOrUuid($entityTypeId, $id);
 
         if ($entity === null) {
             return $this->errorDocument(
                 JsonApiError::notFound("Entity of type '{$entityTypeId}' with ID '{$id}' not found."),
             );
         }
+
+        $storage = $this->entityTypeManager->getStorage($entityTypeId);
 
         // Check delete access.
         if ($this->accessHandler !== null && $this->account !== null) {
@@ -328,6 +329,33 @@ final class JsonApiController
         $storage->delete([$entity]);
 
         return JsonApiDocument::empty(meta: ['deleted' => true], statusCode: 204);
+    }
+
+    /**
+     * Load an entity by primary key or UUID.
+     *
+     * The JSON:API serializer exposes UUID as the resource ID, so incoming
+     * requests may contain either the numeric primary key or a UUID string.
+     */
+    private function loadByIdOrUuid(string $entityTypeId, int|string $id): ?\Aurora\Entity\EntityInterface
+    {
+        $storage = $this->entityTypeManager->getStorage($entityTypeId);
+        $definition = $this->entityTypeManager->getDefinition($entityTypeId);
+        $keys = $definition->getKeys();
+
+        // If the entity type has a uuid key and the ID looks like a UUID, query by uuid.
+        if (isset($keys['uuid']) && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $id)) {
+            $query = $storage->getQuery();
+            $query->accessCheck(false);
+            $query->condition($keys['uuid'], (string) $id);
+            $ids = $query->execute();
+            if ($ids === []) {
+                return null;
+            }
+            return $storage->load(reset($ids));
+        }
+
+        return $storage->load($id);
     }
 
     /**

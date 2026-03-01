@@ -59,7 +59,7 @@ async function onSubmit() {
     <div v-else-if="schemaError" class="error">{{ schemaError }}</div>
     <div v-else-if="loadError" class="error">{{ loadError }}</div>
     <form v-else @submit.prevent="onSubmit">
-      <SchemaSchemaField
+      <SchemaField
         v-for="[fieldName, fieldSchema] in editableFields"
         :key="fieldName"
         :name="fieldName"

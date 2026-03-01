@@ -16,6 +16,6 @@ const entityType = computed(() => route.params.entityType as string)
       </NuxtLink>
     </div>
 
-    <SchemaSchemaList :entity-type="entityType" />
+    <SchemaList :entity-type="entityType" />
   </div>
 </template>

@@ -118,6 +118,12 @@
             "Aurora\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:8081 -t public & npm run dev --prefix packages/admin && kill $!"
+        ]
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {

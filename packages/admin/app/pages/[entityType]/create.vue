@@ -33,7 +33,7 @@ function onError(message: string) {
     <div v-if="successMessage" class="success">{{ successMessage }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
-    <SchemaSchemaForm
+    <SchemaForm
       :entity-type="entityType"
       @saved="onSaved"
       @error="onError"
