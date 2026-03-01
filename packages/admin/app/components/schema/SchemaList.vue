@@ -18,8 +18,9 @@ const offset = ref(0)
 const limit = ref(25)
 const sortField = ref<string | null>(null)
 const sortAsc = ref(true)
+const listError = ref<string | null>(null)
 
-// Visible columns: non-hidden, non-readOnly fields (take first 6).
+// Visible columns: non-hidden fields, sorted by weight (take first 6).
 const columns = computed(() => {
   return sortedProperties(false)
     .filter(([, prop]) => prop['x-widget'] !== 'hidden')
@@ -28,6 +29,7 @@ const columns = computed(() => {
 
 async function fetchEntities() {
   loading.value = true
+  listError.value = null
   try {
     const query: Record<string, any> = {
       page: { offset: offset.value, limit: limit.value },
@@ -38,6 +40,9 @@ async function fetchEntities() {
     const result = await list(props.entityType, query)
     entities.value = result.data
     total.value = result.meta?.total ?? result.data.length
+  } catch (e: any) {
+    console.error('[Aurora] Failed to fetch entities:', e)
+    listError.value = e.data?.errors?.[0]?.detail ?? e.message ?? t('error_loading_entities')
   } finally {
     loading.value = false
   }
@@ -69,8 +74,13 @@ function prevPage() {
 
 async function deleteEntity(entity: JsonApiResource) {
   if (!confirm(t('confirm_delete'))) return
-  await remove(props.entityType, entity.id)
-  await fetchEntities()
+  try {
+    await remove(props.entityType, entity.id)
+    await fetchEntities()
+  } catch (e: any) {
+    console.error('[Aurora] Failed to delete entity:', e)
+    listError.value = e.data?.errors?.[0]?.detail ?? e.message ?? t('error_deleting')
+  }
 }
 
 onMounted(async () => {
@@ -82,6 +92,7 @@ onMounted(async () => {
 <template>
   <div class="schema-list">
     <div v-if="schemaLoading || loading" class="loading">{{ t('loading') }}</div>
+    <div v-else-if="listError" class="error">{{ listError }}</div>
     <template v-else>
       <table class="entity-table">
         <thead>
