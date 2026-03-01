@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command\Telescope;
+namespace Waaseyaa\CLI\Command\Telescope;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

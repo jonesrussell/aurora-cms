@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\CLI\Command\ConfigImportCommand;
-use Aurora\Config\ConfigImportResult;
-use Aurora\Config\ConfigManagerInterface;
+use Waaseyaa\CLI\Command\ConfigImportCommand;
+use Waaseyaa\Config\ConfigImportResult;
+use Waaseyaa\Config\ConfigManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

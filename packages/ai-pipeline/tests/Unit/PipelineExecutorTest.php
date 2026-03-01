@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline\Tests\Unit;
+namespace Waaseyaa\AI\Pipeline\Tests\Unit;
 
-use Aurora\AI\Pipeline\Pipeline;
-use Aurora\AI\Pipeline\PipelineContext;
-use Aurora\AI\Pipeline\PipelineExecutor;
-use Aurora\AI\Pipeline\PipelineStepInterface;
-use Aurora\AI\Pipeline\StepResult;
+use Waaseyaa\AI\Pipeline\Pipeline;
+use Waaseyaa\AI\Pipeline\PipelineContext;
+use Waaseyaa\AI\Pipeline\PipelineExecutor;
+use Waaseyaa\AI\Pipeline\PipelineStepInterface;
+use Waaseyaa\AI\Pipeline\StepResult;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\AI\Pipeline\PipelineExecutor
+ * @covers \Waaseyaa\AI\Pipeline\PipelineExecutor
  */
 final class PipelineExecutorTest extends TestCase
 {

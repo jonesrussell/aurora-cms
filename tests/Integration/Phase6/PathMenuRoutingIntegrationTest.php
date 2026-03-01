@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase6;
+namespace Waaseyaa\Tests\Integration\Phase6;
 
-use Aurora\Menu\Menu;
-use Aurora\Menu\MenuLink;
-use Aurora\Menu\MenuTreeBuilder;
-use Aurora\Path\InMemoryPathAliasManager;
-use Aurora\Path\PathAlias;
-use Aurora\Path\PathProcessor;
-use Aurora\Routing\AuroraRouter;
-use Aurora\Routing\RouteBuilder;
+use Waaseyaa\Menu\Menu;
+use Waaseyaa\Menu\MenuLink;
+use Waaseyaa\Menu\MenuTreeBuilder;
+use Waaseyaa\Path\InMemoryPathAliasManager;
+use Waaseyaa\Path\PathAlias;
+use Waaseyaa\Path\PathProcessor;
+use Waaseyaa\Routing\AuroraRouter;
+use Waaseyaa\Routing\RouteBuilder;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu;
+namespace Waaseyaa\Menu;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Represents a menu configuration entity.

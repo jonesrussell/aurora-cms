@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu;
+namespace Waaseyaa\Menu;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Represents a menu link content entity.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue;
+namespace Waaseyaa\Queue;
 
 use Symfony\Component\Messenger\MessageBusInterface;
 

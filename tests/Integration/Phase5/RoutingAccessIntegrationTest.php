@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase5;
+namespace Waaseyaa\Tests\Integration\Phase5;
 
-use Aurora\Access\AccessResult;
-use Aurora\Routing\AccessChecker;
-use Aurora\Routing\AuroraRouter;
-use Aurora\Routing\RouteBuilder;
-use Aurora\Routing\RouteMatch;
-use Aurora\User\AnonymousUser;
-use Aurora\User\User;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Routing\AccessChecker;
+use Waaseyaa\Routing\AuroraRouter;
+use Waaseyaa\Routing\RouteBuilder;
+use Waaseyaa\Routing\RouteMatch;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\User;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 

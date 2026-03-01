@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Path\Tests\Unit;
+namespace Waaseyaa\Path\Tests\Unit;
 
-use Aurora\Path\InMemoryPathAliasManager;
-use Aurora\Path\PathAlias;
+use Waaseyaa\Path\InMemoryPathAliasManager;
+use Waaseyaa\Path\PathAlias;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

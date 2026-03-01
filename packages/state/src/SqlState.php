@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\State;
+namespace Waaseyaa\State;
 
-use Aurora\Database\DatabaseInterface;
+use Waaseyaa\Database\DatabaseInterface;
 
 final class SqlState implements StateInterface
 {

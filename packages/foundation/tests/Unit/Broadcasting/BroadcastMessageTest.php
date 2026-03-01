@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Broadcasting;
+namespace Waaseyaa\Foundation\Tests\Unit\Broadcasting;
 
-use Aurora\Foundation\Broadcasting\BroadcastMessage;
+use Waaseyaa\Foundation\Broadcasting\BroadcastMessage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

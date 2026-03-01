@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData;
+namespace Waaseyaa\TypedData;
 
 interface ComplexDataInterface extends TypedDataInterface, \Traversable
 {

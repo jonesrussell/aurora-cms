@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command;
+namespace Waaseyaa\CLI\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -34,7 +34,7 @@ declare(strict_types=1);
 
 namespace App\Plugin;
 
-use Aurora\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
 
 #[AuroraPlugin(id: '{$pluginId}', label: '{$className}')]
 class {$className}

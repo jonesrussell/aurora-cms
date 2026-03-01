@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector\Tests\Unit;
+namespace Waaseyaa\AI\Vector\Tests\Unit;
 
-use Aurora\AI\Vector\DistanceMetric;
+use Waaseyaa\AI\Vector\DistanceMetric;
 use PHPUnit\Framework\TestCase;
 
 final class DistanceMetricTest extends TestCase

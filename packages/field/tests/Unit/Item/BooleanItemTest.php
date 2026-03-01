@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit\Item;
+namespace Waaseyaa\Field\Tests\Unit\Item;
 
-use Aurora\Field\Item\BooleanItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Item\BooleanItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\Item\BooleanItem
+ * @covers \Waaseyaa\Field\Item\BooleanItem
  */
 class BooleanItemTest extends TestCase
 {

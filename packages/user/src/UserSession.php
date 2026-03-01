@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User;
+namespace Waaseyaa\User;
 
-use Aurora\Access\AccountInterface;
+use Waaseyaa\Access\AccountInterface;
 
 /**
  * Wraps an AccountInterface as the "current user" for the request.

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Tests\Unit\Discovery;
+namespace Waaseyaa\Plugin\Tests\Unit\Discovery;
 
-use Aurora\Plugin\Attribute\AuroraPlugin;
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\Discovery\AttributeDiscovery;
-use Aurora\Plugin\Tests\Fixtures\AnotherPlugin;
-use Aurora\Plugin\Tests\Fixtures\TestPlugin;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
+use Waaseyaa\Plugin\Tests\Fixtures\AnotherPlugin;
+use Waaseyaa\Plugin\Tests\Fixtures\TestPlugin;
 use PHPUnit\Framework\TestCase;
 
 final class AttributeDiscoveryTest extends TestCase

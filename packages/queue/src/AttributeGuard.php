@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue;
+namespace Waaseyaa\Queue;
 
-use Aurora\Queue\Attribute\RateLimited;
-use Aurora\Queue\Attribute\UniqueJob;
+use Waaseyaa\Queue\Attribute\RateLimited;
+use Waaseyaa\Queue\Attribute\UniqueJob;
 
 /**
  * Enforces #[UniqueJob] and #[RateLimited] attributes on job messages.

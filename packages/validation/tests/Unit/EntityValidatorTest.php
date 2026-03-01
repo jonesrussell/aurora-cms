@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit;
+namespace Waaseyaa\Validation\Tests\Unit;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\FieldableInterface;
-use Aurora\Validation\Constraint\AllowedValues;
-use Aurora\Validation\Constraint\NotEmpty;
-use Aurora\Validation\EntityValidator;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\FieldableInterface;
+use Waaseyaa\Validation\Constraint\AllowedValues;
+use Waaseyaa\Validation\Constraint\NotEmpty;
+use Waaseyaa\Validation\EntityValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;

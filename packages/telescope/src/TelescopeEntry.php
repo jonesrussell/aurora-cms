@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope;
+namespace Waaseyaa\Telescope;
 
 /**
  * Value object representing a single recorded telescope entry.

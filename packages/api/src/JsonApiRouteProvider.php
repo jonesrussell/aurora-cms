@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api;
+namespace Waaseyaa\Api;
 
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Routing\AuroraRouter;
-use Aurora\Routing\RouteBuilder;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Routing\AuroraRouter;
+use Waaseyaa\Routing\RouteBuilder;
 
 /**
  * Automatically registers JSON:API routes for all known entity types.
@@ -49,7 +49,7 @@ final class JsonApiRouteProvider
         $router->addRoute(
             "api.{$entityTypeId}.index",
             RouteBuilder::create($collectionPath)
-                ->controller("Aurora\\Api\\JsonApiController::index")
+                ->controller("Waaseyaa\\Api\\JsonApiController::index")
                 ->methods('GET')
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
@@ -59,7 +59,7 @@ final class JsonApiRouteProvider
         $router->addRoute(
             "api.{$entityTypeId}.show",
             RouteBuilder::create($resourcePath)
-                ->controller("Aurora\\Api\\JsonApiController::show")
+                ->controller("Waaseyaa\\Api\\JsonApiController::show")
                 ->methods('GET')
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
@@ -69,7 +69,7 @@ final class JsonApiRouteProvider
         $router->addRoute(
             "api.{$entityTypeId}.store",
             RouteBuilder::create($collectionPath)
-                ->controller("Aurora\\Api\\JsonApiController::store")
+                ->controller("Waaseyaa\\Api\\JsonApiController::store")
                 ->methods('POST')
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
@@ -79,7 +79,7 @@ final class JsonApiRouteProvider
         $router->addRoute(
             "api.{$entityTypeId}.update",
             RouteBuilder::create($resourcePath)
-                ->controller("Aurora\\Api\\JsonApiController::update")
+                ->controller("Waaseyaa\\Api\\JsonApiController::update")
                 ->methods('PATCH')
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
@@ -89,7 +89,7 @@ final class JsonApiRouteProvider
         $router->addRoute(
             "api.{$entityTypeId}.destroy",
             RouteBuilder::create($resourcePath)
-                ->controller("Aurora\\Api\\JsonApiController::destroy")
+                ->controller("Waaseyaa\\Api\\JsonApiController::destroy")
                 ->methods('DELETE')
                 ->default('_entity_type', $entityTypeId)
                 ->build(),

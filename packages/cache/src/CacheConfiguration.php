@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache;
+namespace Waaseyaa\Cache;
 
 /**
  * Maps cache bin names to backend class names or factory callables.

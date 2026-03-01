@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent;
+namespace Waaseyaa\AI\Agent;
 
 /**
  * Audit log entry for agent executions.

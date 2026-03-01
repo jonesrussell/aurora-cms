@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Testing\Tests\Unit;
+namespace Waaseyaa\Testing\Tests\Unit;
 
-use Aurora\Testing\Factory\EntityFactory;
+use Waaseyaa\Testing\Factory\EntityFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

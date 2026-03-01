@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Event;
+namespace Waaseyaa\Foundation\Tests\Unit\Event;
 
-use Aurora\Foundation\Event\DomainEvent;
+use Waaseyaa\Foundation\Event\DomainEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

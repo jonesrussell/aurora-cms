@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Tests\Unit;
+namespace Waaseyaa\Database\Tests\Unit;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Database\PdoTransaction;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Database\PdoTransaction;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

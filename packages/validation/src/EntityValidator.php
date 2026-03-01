@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation;
+namespace Waaseyaa\Validation;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\FieldableInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\FieldableInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;

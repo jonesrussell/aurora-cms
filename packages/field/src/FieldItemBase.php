@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field;
+namespace Waaseyaa\Field;
 
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\PluginBase;
-use Aurora\TypedData\DataDefinitionInterface;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\PluginBase;
+use Waaseyaa\TypedData\DataDefinitionInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 

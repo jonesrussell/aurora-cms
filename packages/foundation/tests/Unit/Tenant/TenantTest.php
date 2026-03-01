@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Tenant;
+namespace Waaseyaa\Foundation\Tests\Unit\Tenant;
 
-use Aurora\Foundation\Tenant\NullTenantResolver;
-use Aurora\Foundation\Tenant\TenantContext;
-use Aurora\Foundation\Tenant\TenantMiddleware;
-use Aurora\Foundation\Tenant\TenantResolverInterface;
+use Waaseyaa\Foundation\Tenant\NullTenantResolver;
+use Waaseyaa\Foundation\Tenant\TenantContext;
+use Waaseyaa\Foundation\Tenant\TenantMiddleware;
+use Waaseyaa\Foundation\Tenant\TenantResolverInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit\Item;
+namespace Waaseyaa\Field\Tests\Unit\Item;
 
-use Aurora\Field\Item\EntityReferenceItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Item\EntityReferenceItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\Item\EntityReferenceItem
+ * @covers \Waaseyaa\Field\Item\EntityReferenceItem
  */
 class EntityReferenceItemTest extends TestCase
 {

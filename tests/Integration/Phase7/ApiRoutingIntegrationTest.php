@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase7;
+namespace Waaseyaa\Tests\Integration\Phase7;
 
-use Aurora\Api\JsonApiController;
-use Aurora\Api\JsonApiRouteProvider;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\Routing\AuroraRouter;
+use Waaseyaa\Api\JsonApiController;
+use Waaseyaa\Api\JsonApiRouteProvider;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\Routing\AuroraRouter;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

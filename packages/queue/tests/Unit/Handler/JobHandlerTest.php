@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit\Handler;
+namespace Waaseyaa\Queue\Tests\Unit\Handler;
 
-use Aurora\Queue\Handler\HandlerInterface;
-use Aurora\Queue\Handler\JobHandler;
-use Aurora\Queue\Job;
+use Waaseyaa\Queue\Handler\HandlerInterface;
+use Waaseyaa\Queue\Handler\JobHandler;
+use Waaseyaa\Queue\Job;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

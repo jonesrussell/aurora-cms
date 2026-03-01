@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Recorder;
+namespace Waaseyaa\Telescope\Recorder;
 
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
 
 /**
  * Records HTTP requests with method, URI, status code, duration, controller, and middleware.

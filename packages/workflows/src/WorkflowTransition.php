@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Workflows;
+namespace Waaseyaa\Workflows;
 
 /**
  * Value object representing a transition between workflow states.

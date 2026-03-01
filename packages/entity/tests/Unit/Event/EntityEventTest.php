@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit\Event;
+namespace Waaseyaa\Entity\Tests\Unit\Event;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\Event\EntityEvent;
-use Aurora\Entity\Event\EntityEvents;
-use Aurora\Entity\Tests\Unit\TestEntity;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
+use Waaseyaa\Entity\Tests\Unit\TestEntity;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * @covers \Aurora\Entity\Event\EntityEvent
- * @covers \Aurora\Entity\Event\EntityEvents
+ * @covers \Waaseyaa\Entity\Event\EntityEvent
+ * @covers \Waaseyaa\Entity\Event\EntityEvents
  */
 class EntityEventTest extends TestCase
 {

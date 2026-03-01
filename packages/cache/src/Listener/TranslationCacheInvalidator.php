@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Listener;
+namespace Waaseyaa\Cache\Listener;
 
-use Aurora\Cache\CacheTagsInvalidatorInterface;
+use Waaseyaa\Cache\CacheTagsInvalidatorInterface;
 
 /**
  * Invalidates translation-related caches.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api;
+namespace Waaseyaa\Api;
 
-use Aurora\Entity\TranslatableInterface;
+use Waaseyaa\Entity\TranslatableInterface;
 
 /**
  * Extension of TranslatableInterface that supports creating new translations.

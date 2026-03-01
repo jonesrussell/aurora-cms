@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit\Listener;
+namespace Waaseyaa\Cache\Tests\Unit\Listener;
 
-use Aurora\Cache\CacheTagsInvalidatorInterface;
-use Aurora\Cache\Listener\ConfigCacheInvalidator;
-use Aurora\Config\Event\ConfigEvent;
+use Waaseyaa\Cache\CacheTagsInvalidatorInterface;
+use Waaseyaa\Cache\Listener\ConfigCacheInvalidator;
+use Waaseyaa\Config\Event\ConfigEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

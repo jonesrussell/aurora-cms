@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Constraint;
+namespace Waaseyaa\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 

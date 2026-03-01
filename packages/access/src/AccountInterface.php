@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access;
+namespace Waaseyaa\Access;
 
 /**
  * Represents a user account for access checking purposes.

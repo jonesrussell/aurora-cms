@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User;
+namespace Waaseyaa\User;
 
 /**
  * Value object representing a user role.

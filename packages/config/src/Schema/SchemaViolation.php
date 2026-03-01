@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Schema;
+namespace Waaseyaa\Config\Schema;
 
 /**
  * Represents a single config schema validation violation.

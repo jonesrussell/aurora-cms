@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase11;
+namespace Waaseyaa\Tests\Integration\Phase11;
 
-use Aurora\Access\AccountInterface;
-use Aurora\AI\Schema\EntityJsonSchemaGenerator;
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\AI\Schema\Mcp\McpToolGenerator;
-use Aurora\AI\Schema\SchemaRegistry;
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityQueryInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
-use Aurora\Mcp\Auth\BearerTokenAuth;
-use Aurora\Mcp\Bridge\ToolExecutorInterface;
-use Aurora\Mcp\Bridge\ToolRegistryInterface;
-use Aurora\Mcp\McpEndpoint;
-use Aurora\Mcp\McpRouteProvider;
-use Aurora\Mcp\McpServerCard;
-use Aurora\Routing\AuroraRouter;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\AI\Schema\EntityJsonSchemaGenerator;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\AI\Schema\Mcp\McpToolGenerator;
+use Waaseyaa\AI\Schema\SchemaRegistry;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Mcp\Auth\BearerTokenAuth;
+use Waaseyaa\Mcp\Bridge\ToolExecutorInterface;
+use Waaseyaa\Mcp\Bridge\ToolRegistryInterface;
+use Waaseyaa\Mcp\McpEndpoint;
+use Waaseyaa\Mcp\McpRouteProvider;
+use Waaseyaa\Mcp\McpServerCard;
+use Waaseyaa\Routing\AuroraRouter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

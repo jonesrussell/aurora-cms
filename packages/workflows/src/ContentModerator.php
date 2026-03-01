@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Workflows;
+namespace Waaseyaa\Workflows;
 
 /**
  * Service for managing content moderation state transitions.

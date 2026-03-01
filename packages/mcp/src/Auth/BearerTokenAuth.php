@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Auth;
+namespace Waaseyaa\Mcp\Auth;
 
-use Aurora\Access\AccountInterface;
+use Waaseyaa\Access\AccountInterface;
 
 final readonly class BearerTokenAuth implements McpAuthInterface
 {

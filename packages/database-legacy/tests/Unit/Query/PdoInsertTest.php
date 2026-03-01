@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Tests\Unit\Query;
+namespace Waaseyaa\Database\Tests\Unit\Query;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Database\Query\PdoInsert;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Database\Query\PdoInsert;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

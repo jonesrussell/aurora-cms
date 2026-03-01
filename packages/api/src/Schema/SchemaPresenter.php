@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Schema;
+namespace Waaseyaa\Api\Schema;
 
-use Aurora\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
 
 /**
  * Converts EntityType definitions (and optional FieldDefinitions) to JSON Schema

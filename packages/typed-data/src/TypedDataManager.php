@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData;
+namespace Waaseyaa\TypedData;
 
-use Aurora\TypedData\Type\BooleanData;
-use Aurora\TypedData\Type\FloatData;
-use Aurora\TypedData\Type\IntegerData;
-use Aurora\TypedData\Type\ListData;
-use Aurora\TypedData\Type\MapData;
-use Aurora\TypedData\Type\StringData;
+use Waaseyaa\TypedData\Type\BooleanData;
+use Waaseyaa\TypedData\Type\FloatData;
+use Waaseyaa\TypedData\Type\IntegerData;
+use Waaseyaa\TypedData\Type\ListData;
+use Waaseyaa\TypedData\Type\MapData;
+use Waaseyaa\TypedData\Type\StringData;
 
 final class TypedDataManager implements TypedDataManagerInterface
 {

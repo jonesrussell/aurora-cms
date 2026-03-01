@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\ServiceProvider;
+namespace Waaseyaa\Foundation\Tests\Unit\ServiceProvider;
 
-use Aurora\Foundation\ServiceProvider\ContainerCompiler;
-use Aurora\Foundation\ServiceProvider\ServiceProvider;
+use Waaseyaa\Foundation\ServiceProvider\ContainerCompiler;
+use Waaseyaa\Foundation\ServiceProvider\ServiceProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

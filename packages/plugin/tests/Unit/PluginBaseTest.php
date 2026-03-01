@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Tests\Unit;
+namespace Waaseyaa\Plugin\Tests\Unit;
 
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\Tests\Fixtures\TestPlugin;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\Tests\Fixtures\TestPlugin;
 use PHPUnit\Framework\TestCase;
 
 final class PluginBaseTest extends TestCase

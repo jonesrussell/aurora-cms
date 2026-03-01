@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue;
+namespace Waaseyaa\Queue;
 
-use Aurora\Queue\Handler\HandlerInterface;
-use Aurora\Queue\Handler\JobHandler;
+use Waaseyaa\Queue\Handler\HandlerInterface;
+use Waaseyaa\Queue\Handler\JobHandler;
 
 final class SyncQueue implements QueueInterface
 {

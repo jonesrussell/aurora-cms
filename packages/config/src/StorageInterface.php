@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
 interface StorageInterface
 {

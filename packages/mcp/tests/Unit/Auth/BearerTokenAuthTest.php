@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Tests\Unit\Auth;
+namespace Waaseyaa\Mcp\Tests\Unit\Auth;
 
-use Aurora\Access\AccountInterface;
-use Aurora\Mcp\Auth\BearerTokenAuth;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Mcp\Auth\BearerTokenAuth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

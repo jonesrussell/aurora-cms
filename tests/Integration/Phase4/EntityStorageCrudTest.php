@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase4;
+namespace Waaseyaa\Tests\Integration\Phase4;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\EntityConstants;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\Event\EntityEvent;
-use Aurora\Entity\Event\EntityEvents;
-use Aurora\Entity\Storage\EntityQueryInterface;
-use Aurora\EntityStorage\SqlEntityQuery;
-use Aurora\EntityStorage\SqlEntityStorage;
-use Aurora\EntityStorage\SqlSchemaHandler;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Entity\EntityConstants;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\EntityStorage\SqlEntityQuery;
+use Waaseyaa\EntityStorage\SqlEntityStorage;
+use Waaseyaa\EntityStorage\SqlSchemaHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 

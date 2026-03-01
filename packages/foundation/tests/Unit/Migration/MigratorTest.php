@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Migration;
+namespace Waaseyaa\Foundation\Tests\Unit\Migration;
 
-use Aurora\Foundation\Migration\Migration;
-use Aurora\Foundation\Migration\MigrationRepository;
-use Aurora\Foundation\Migration\MigrationResult;
-use Aurora\Foundation\Migration\Migrator;
-use Aurora\Foundation\Migration\SchemaBuilder;
-use Aurora\Foundation\Migration\TableBuilder;
+use Waaseyaa\Foundation\Migration\Migration;
+use Waaseyaa\Foundation\Migration\MigrationRepository;
+use Waaseyaa\Foundation\Migration\MigrationResult;
+use Waaseyaa\Foundation\Migration\Migrator;
+use Waaseyaa\Foundation\Migration\SchemaBuilder;
+use Waaseyaa\Foundation\Migration\TableBuilder;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

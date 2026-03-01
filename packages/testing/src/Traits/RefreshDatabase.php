@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Testing\Traits;
+namespace Waaseyaa\Testing\Traits;
 
 /**
  * Trait that manages database state between tests.

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api;
+namespace Waaseyaa\Api;
 
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Api\Query\PaginationLinks;
-use Aurora\Api\Query\QueryApplier;
-use Aurora\Api\Query\QueryParser;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\FieldableInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Api\Query\PaginationLinks;
+use Waaseyaa\Api\Query\QueryApplier;
+use Waaseyaa\Api\Query\QueryParser;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\FieldableInterface;
 
 /**
  * Handles JSON:API CRUD operations.
@@ -337,7 +337,7 @@ final class JsonApiController
      * The JSON:API serializer exposes UUID as the resource ID, so incoming
      * requests may contain either the numeric primary key or a UUID string.
      */
-    private function loadByIdOrUuid(string $entityTypeId, int|string $id): ?\Aurora\Entity\EntityInterface
+    private function loadByIdOrUuid(string $entityTypeId, int|string $id): ?\Waaseyaa\Entity\EntityInterface
     {
         $storage = $this->entityTypeManager->getStorage($entityTypeId);
         $definition = $this->entityTypeManager->getDefinition($entityTypeId);

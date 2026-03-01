@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Tests\Unit\Gate;
+namespace Waaseyaa\Access\Tests\Unit\Gate;
 
-use Aurora\Access\Gate\AccessDeniedException;
-use Aurora\Access\Gate\Gate;
-use Aurora\Access\Gate\GateInterface;
-use Aurora\Access\Gate\PolicyAttribute;
+use Waaseyaa\Access\Gate\AccessDeniedException;
+use Waaseyaa\Access\Gate\Gate;
+use Waaseyaa\Access\Gate\GateInterface;
+use Waaseyaa\Access\Gate\PolicyAttribute;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

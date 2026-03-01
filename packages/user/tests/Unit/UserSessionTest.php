@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User\Tests\Unit;
+namespace Waaseyaa\User\Tests\Unit;
 
-use Aurora\Access\AccountInterface;
-use Aurora\User\AnonymousUser;
-use Aurora\User\User;
-use Aurora\User\UserSession;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\User;
+use Waaseyaa\User\UserSession;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

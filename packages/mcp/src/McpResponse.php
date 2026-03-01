@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp;
+namespace Waaseyaa\Mcp;
 
 final readonly class McpResponse
 {

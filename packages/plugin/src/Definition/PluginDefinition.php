@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Definition;
+namespace Waaseyaa\Plugin\Definition;
 
 final readonly class PluginDefinition
 {

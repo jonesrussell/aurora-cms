@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing;
+namespace Waaseyaa\Routing;
 
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\Gate\GateInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\Gate\GateInterface;
 use Symfony\Component\Routing\Route;
 
 /**

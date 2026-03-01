@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Mcp;
+namespace Waaseyaa\AI\Schema\Mcp;
 
 /**
  * Value object representing an MCP (Model Context Protocol) tool definition.

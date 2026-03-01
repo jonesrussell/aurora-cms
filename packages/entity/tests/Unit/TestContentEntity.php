@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit;
+namespace Waaseyaa\Entity\Tests\Unit;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Concrete content entity subclass for testing ContentEntityBase.

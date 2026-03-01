@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit\Backend;
+namespace Waaseyaa\Cache\Tests\Unit\Backend;
 
-use Aurora\Cache\Backend\NullBackend;
-use Aurora\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\Backend\NullBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
 use PHPUnit\Framework\TestCase;
 
 final class NullBackendTest extends TestCase

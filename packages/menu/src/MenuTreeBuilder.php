@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu;
+namespace Waaseyaa\Menu;
 
 /**
  * Builds a hierarchical tree from a flat list of menu links.

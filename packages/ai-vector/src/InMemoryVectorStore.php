@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector;
+namespace Waaseyaa\AI\Vector;
 
 /**
  * In-memory vector store implementation for testing and development.

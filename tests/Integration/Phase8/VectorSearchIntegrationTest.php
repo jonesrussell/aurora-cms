@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase8;
+namespace Waaseyaa\Tests\Integration\Phase8;
 
-use Aurora\AI\Vector\EntityEmbedder;
-use Aurora\AI\Vector\InMemoryVectorStore;
-use Aurora\AI\Vector\Testing\FakeEmbeddingProvider;
-use Aurora\Node\Node;
-use Aurora\Taxonomy\Term;
+use Waaseyaa\AI\Vector\EntityEmbedder;
+use Waaseyaa\AI\Vector\InMemoryVectorStore;
+use Waaseyaa\AI\Vector\Testing\FakeEmbeddingProvider;
+use Waaseyaa\Node\Node;
+use Waaseyaa\Taxonomy\Term;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

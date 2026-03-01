@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit;
+namespace Waaseyaa\Queue\Tests\Unit;
 
-use Aurora\Queue\Attribute\RateLimited;
-use Aurora\Queue\Attribute\UniqueJob;
-use Aurora\Queue\AttributeGuard;
-use Aurora\Queue\Handler\HandlerInterface;
-use Aurora\Queue\Job;
-use Aurora\Queue\Message\EntityMessage;
-use Aurora\Queue\Message\GenericMessage;
-use Aurora\Queue\QueueInterface;
-use Aurora\Queue\SyncQueue;
+use Waaseyaa\Queue\Attribute\RateLimited;
+use Waaseyaa\Queue\Attribute\UniqueJob;
+use Waaseyaa\Queue\AttributeGuard;
+use Waaseyaa\Queue\Handler\HandlerInterface;
+use Waaseyaa\Queue\Job;
+use Waaseyaa\Queue\Message\EntityMessage;
+use Waaseyaa\Queue\Message\GenericMessage;
+use Waaseyaa\Queue\QueueInterface;
+use Waaseyaa\Queue\SyncQueue;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Path;
+namespace Waaseyaa\Path;
 
 /**
  * In-memory implementation of the path alias manager.

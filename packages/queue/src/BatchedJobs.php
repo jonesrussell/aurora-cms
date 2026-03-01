@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue;
+namespace Waaseyaa\Queue;
 
 /**
  * Groups multiple jobs as a batch with completion callbacks.

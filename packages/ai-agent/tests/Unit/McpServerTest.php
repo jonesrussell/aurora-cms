@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent\Tests\Unit;
+namespace Waaseyaa\AI\Agent\Tests\Unit;
 
-use Aurora\AI\Agent\McpServer;
-use Aurora\AI\Schema\EntityJsonSchemaGenerator;
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\AI\Schema\Mcp\McpToolGenerator;
-use Aurora\AI\Schema\SchemaRegistry;
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\AI\Agent\McpServer;
+use Waaseyaa\AI\Schema\EntityJsonSchemaGenerator;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\AI\Schema\Mcp\McpToolGenerator;
+use Waaseyaa\AI\Schema\SchemaRegistry;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -98,7 +98,7 @@ final class McpServerTest extends TestCase
             ->method('hasDefinition')
             ->willReturnCallback(fn (string $id) => $id === 'node');
 
-        $entity = $this->createMock(\Aurora\Entity\EntityInterface::class);
+        $entity = $this->createMock(\Waaseyaa\Entity\EntityInterface::class);
         $entity->method('id')->willReturn('1');
         $entity->method('toArray')->willReturn(['title' => 'Test']);
 

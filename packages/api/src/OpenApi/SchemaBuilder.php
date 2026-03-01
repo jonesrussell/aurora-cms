@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\OpenApi;
+namespace Waaseyaa\Api\OpenApi;
 
-use Aurora\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
 
 /**
  * Builds JSON Schema fragments for entity types.

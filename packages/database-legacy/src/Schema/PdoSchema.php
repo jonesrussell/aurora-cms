@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Schema;
+namespace Waaseyaa\Database\Schema;
 
-use Aurora\Database\SchemaInterface;
+use Waaseyaa\Database\SchemaInterface;
 
 final class PdoSchema implements SchemaInterface
 {

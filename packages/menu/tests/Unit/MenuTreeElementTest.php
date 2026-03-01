@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu\Tests\Unit;
+namespace Waaseyaa\Menu\Tests\Unit;
 
-use Aurora\Menu\MenuLink;
-use Aurora\Menu\MenuTreeElement;
+use Waaseyaa\Menu\MenuLink;
+use Waaseyaa\Menu\MenuTreeElement;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Menu\MenuTreeElement
+ * @covers \Waaseyaa\Menu\MenuTreeElement
  */
 final class MenuTreeElementTest extends TestCase
 {

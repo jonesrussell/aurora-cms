@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Unit\Driver;
+namespace Waaseyaa\EntityStorage\Tests\Unit\Driver;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Entity\EntityType;
-use Aurora\EntityStorage\Connection\SingleConnectionResolver;
-use Aurora\EntityStorage\Driver\EntityStorageDriverInterface;
-use Aurora\EntityStorage\Driver\SqlStorageDriver;
-use Aurora\EntityStorage\SqlSchemaHandler;
-use Aurora\EntityStorage\Tests\Fixtures\TestStorageEntity;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\EntityStorage\Connection\SingleConnectionResolver;
+use Waaseyaa\EntityStorage\Driver\EntityStorageDriverInterface;
+use Waaseyaa\EntityStorage\Driver\SqlStorageDriver;
+use Waaseyaa\EntityStorage\SqlSchemaHandler;
+use Waaseyaa\EntityStorage\Tests\Fixtures\TestStorageEntity;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

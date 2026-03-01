@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit;
+namespace Waaseyaa\Config\Tests\Unit;
 
-use Aurora\Config\ConfigImportResult;
-use Aurora\Config\ConfigManager;
-use Aurora\Config\ConfigManagerInterface;
-use Aurora\Config\Event\ConfigEvent;
-use Aurora\Config\Event\ConfigEvents;
-use Aurora\Config\Storage\MemoryStorage;
+use Waaseyaa\Config\ConfigImportResult;
+use Waaseyaa\Config\ConfigManager;
+use Waaseyaa\Config\ConfigManagerInterface;
+use Waaseyaa\Config\Event\ConfigEvent;
+use Waaseyaa\Config\Event\ConfigEvents;
+use Waaseyaa\Config\Storage\MemoryStorage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;

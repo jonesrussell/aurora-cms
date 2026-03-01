@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Node\Tests\Unit;
+namespace Waaseyaa\Node\Tests\Unit;
 
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Node\Node;
-use Aurora\Node\NodeAccessPolicy;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Node\Node;
+use Waaseyaa\Node\NodeAccessPolicy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

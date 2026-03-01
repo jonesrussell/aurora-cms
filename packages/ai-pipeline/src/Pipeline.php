@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline;
+namespace Waaseyaa\AI\Pipeline;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Config entity representing a processing pipeline.

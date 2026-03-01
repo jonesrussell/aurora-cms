@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase9;
+namespace Waaseyaa\Tests\Integration\Phase9;
 
-use Aurora\SSR\Attribute\Component;
-use Aurora\SSR\ComponentRegistry;
+use Waaseyaa\SSR\Attribute\Component;
+use Waaseyaa\SSR\ComponentRegistry;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Factory;
+namespace Waaseyaa\Plugin\Factory;
 
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\PluginInspectionInterface;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\PluginInspectionInterface;
 
 final class ContainerFactory implements PluginFactoryInterface
 {

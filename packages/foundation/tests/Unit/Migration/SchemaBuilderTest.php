@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Migration;
+namespace Waaseyaa\Foundation\Tests\Unit\Migration;
 
-use Aurora\Foundation\Migration\Migration;
-use Aurora\Foundation\Migration\SchemaBuilder;
-use Aurora\Foundation\Migration\TableBuilder;
+use Waaseyaa\Foundation\Migration\Migration;
+use Waaseyaa\Foundation\Migration\SchemaBuilder;
+use Waaseyaa\Foundation\Migration\TableBuilder;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\ServiceProvider;
+namespace Waaseyaa\Foundation\ServiceProvider;
 
 interface ServiceProviderInterface
 {

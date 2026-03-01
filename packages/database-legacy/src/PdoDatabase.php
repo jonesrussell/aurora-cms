@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database;
+namespace Waaseyaa\Database;
 
-use Aurora\Database\Query\PdoDelete;
-use Aurora\Database\Query\PdoInsert;
-use Aurora\Database\Query\PdoSelect;
-use Aurora\Database\Query\PdoUpdate;
-use Aurora\Database\Schema\PdoSchema;
+use Waaseyaa\Database\Query\PdoDelete;
+use Waaseyaa\Database\Query\PdoInsert;
+use Waaseyaa\Database\Query\PdoSelect;
+use Waaseyaa\Database\Query\PdoUpdate;
+use Waaseyaa\Database\Schema\PdoSchema;
 
 final class PdoDatabase implements DatabaseInterface
 {

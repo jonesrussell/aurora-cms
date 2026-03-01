@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Tests\Unit;
+namespace Waaseyaa\Telescope\Tests\Unit;
 
-use Aurora\Telescope\Recorder\CacheRecorder;
-use Aurora\Telescope\Recorder\EventRecorder;
-use Aurora\Telescope\Recorder\QueryRecorder;
-use Aurora\Telescope\Recorder\RequestRecorder;
-use Aurora\Telescope\Storage\SqliteTelescopeStore;
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
-use Aurora\Telescope\TelescopeServiceProvider;
+use Waaseyaa\Telescope\Recorder\CacheRecorder;
+use Waaseyaa\Telescope\Recorder\EventRecorder;
+use Waaseyaa\Telescope\Recorder\QueryRecorder;
+use Waaseyaa\Telescope\Recorder\RequestRecorder;
+use Waaseyaa\Telescope\Storage\SqliteTelescopeStore;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\TelescopeServiceProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

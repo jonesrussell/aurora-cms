@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Message;
+namespace Waaseyaa\Queue\Message;
 
 final readonly class ConfigMessage
 {

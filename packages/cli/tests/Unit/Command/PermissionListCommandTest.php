@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\Access\PermissionHandlerInterface;
-use Aurora\CLI\Command\PermissionListCommand;
+use Waaseyaa\Access\PermissionHandlerInterface;
+use Waaseyaa\CLI\Command\PermissionListCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

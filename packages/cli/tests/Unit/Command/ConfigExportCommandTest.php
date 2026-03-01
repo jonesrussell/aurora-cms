@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\CLI\Command\ConfigExportCommand;
-use Aurora\Config\ConfigManagerInterface;
-use Aurora\Config\StorageInterface;
+use Waaseyaa\CLI\Command\ConfigExportCommand;
+use Waaseyaa\Config\ConfigManagerInterface;
+use Waaseyaa\Config\StorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

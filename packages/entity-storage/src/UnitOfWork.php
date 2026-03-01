@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage;
+namespace Waaseyaa\EntityStorage;
 
-use Aurora\Database\DatabaseInterface;
+use Waaseyaa\Database\DatabaseInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent;
+namespace Waaseyaa\AI\Agent;
 
 /**
  * Interface for AI agents that can execute actions within the CMS.

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData\Tests\Unit\Type;
+namespace Waaseyaa\TypedData\Tests\Unit\Type;
 
-use Aurora\TypedData\DataDefinition;
-use Aurora\TypedData\PrimitiveInterface;
-use Aurora\TypedData\Type\FloatData;
-use Aurora\TypedData\TypedDataInterface;
+use Waaseyaa\TypedData\DataDefinition;
+use Waaseyaa\TypedData\PrimitiveInterface;
+use Waaseyaa\TypedData\Type\FloatData;
+use Waaseyaa\TypedData\TypedDataInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\LessThan;

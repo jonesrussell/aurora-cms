@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline\Tests\Unit;
+namespace Waaseyaa\AI\Pipeline\Tests\Unit;
 
-use Aurora\AI\Pipeline\PipelineContext;
+use Waaseyaa\AI\Pipeline\PipelineContext;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\AI\Pipeline\PipelineContext
+ * @covers \Waaseyaa\AI\Pipeline\PipelineContext
  */
 final class PipelineContextTest extends TestCase
 {

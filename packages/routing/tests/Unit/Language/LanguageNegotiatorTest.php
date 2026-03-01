@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Tests\Unit\Language;
+namespace Waaseyaa\Routing\Tests\Unit\Language;
 
-use Aurora\I18n\Language;
-use Aurora\I18n\LanguageContext;
-use Aurora\I18n\LanguageManager;
-use Aurora\Routing\Language\AcceptHeaderNegotiator;
-use Aurora\Routing\Language\LanguageNegotiator;
-use Aurora\Routing\Language\LanguageNegotiatorInterface;
-use Aurora\Routing\Language\UrlPrefixNegotiator;
+use Waaseyaa\I18n\Language;
+use Waaseyaa\I18n\LanguageContext;
+use Waaseyaa\I18n\LanguageManager;
+use Waaseyaa\Routing\Language\AcceptHeaderNegotiator;
+use Waaseyaa\Routing\Language\LanguageNegotiator;
+use Waaseyaa\Routing\Language\LanguageNegotiatorInterface;
+use Waaseyaa\Routing\Language\UrlPrefixNegotiator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

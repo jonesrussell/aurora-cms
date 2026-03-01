@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit;
+namespace Waaseyaa\Entity\Tests\Unit;
 
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Entity\EntityType
+ * @covers \Waaseyaa\Entity\EntityType
  */
 class EntityTypeTest extends TestCase
 {
@@ -18,7 +18,7 @@ class EntityTypeTest extends TestCase
         $type = new EntityType(
             id: 'test',
             label: 'Test',
-            class: 'Aurora\\Entity\\Tests\\Unit\\TestEntity',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
         );
 
         $this->assertInstanceOf(EntityTypeInterface::class, $type);
@@ -29,12 +29,12 @@ class EntityTypeTest extends TestCase
         $type = new EntityType(
             id: 'node',
             label: 'Content',
-            class: 'Aurora\\Entity\\Tests\\Unit\\TestEntity',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
         );
 
         $this->assertSame('node', $type->id());
         $this->assertSame('Content', $type->getLabel());
-        $this->assertSame('Aurora\\Entity\\Tests\\Unit\\TestEntity', $type->getClass());
+        $this->assertSame('Waaseyaa\\Entity\\Tests\\Unit\\TestEntity', $type->getClass());
     }
 
     public function testDefaults(): void
@@ -42,7 +42,7 @@ class EntityTypeTest extends TestCase
         $type = new EntityType(
             id: 'test',
             label: 'Test',
-            class: 'Aurora\\Entity\\Tests\\Unit\\TestEntity',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
         );
 
         $this->assertSame('', $type->getStorageClass());
@@ -61,7 +61,7 @@ class EntityTypeTest extends TestCase
         $type = new EntityType(
             id: 'node',
             label: 'Content',
-            class: 'Aurora\\Entity\\Tests\\Unit\\TestEntity',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
             storageClass: 'Some\\Storage\\Class',
             keys: $keys,
             revisionable: true,
@@ -72,7 +72,7 @@ class EntityTypeTest extends TestCase
 
         $this->assertSame('node', $type->id());
         $this->assertSame('Content', $type->getLabel());
-        $this->assertSame('Aurora\\Entity\\Tests\\Unit\\TestEntity', $type->getClass());
+        $this->assertSame('Waaseyaa\\Entity\\Tests\\Unit\\TestEntity', $type->getClass());
         $this->assertSame('Some\\Storage\\Class', $type->getStorageClass());
         $this->assertSame($keys, $type->getKeys());
         $this->assertTrue($type->isRevisionable());
@@ -86,7 +86,7 @@ class EntityTypeTest extends TestCase
         $type = new EntityType(
             id: 'test',
             label: 'Test',
-            class: 'Aurora\\Entity\\Tests\\Unit\\TestEntity',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
         );
 
         $reflection = new \ReflectionClass($type);

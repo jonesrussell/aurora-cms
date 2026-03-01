@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit;
+namespace Waaseyaa\Api\Tests\Unit;
 
-use Aurora\Api\JsonApiRouteProvider;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\Routing\AuroraRouter;
+use Waaseyaa\Api\JsonApiRouteProvider;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\Routing\AuroraRouter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -208,7 +208,7 @@ final class JsonApiRouteProviderTest extends TestCase
         $route = $this->router->getRouteCollection()->get('api.article.index');
 
         $this->assertSame(
-            'Aurora\\Api\\JsonApiController::index',
+            'Waaseyaa\\Api\\JsonApiController::index',
             $route->getDefault('_controller'),
         );
     }

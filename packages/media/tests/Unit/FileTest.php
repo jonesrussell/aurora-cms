@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media\Tests\Unit;
+namespace Waaseyaa\Media\Tests\Unit;
 
-use Aurora\Media\File;
+use Waaseyaa\Media\File;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Media\File
+ * @covers \Waaseyaa\Media\File
  */
 final class FileTest extends TestCase
 {

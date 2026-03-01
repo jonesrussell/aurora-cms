@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase3;
+namespace Waaseyaa\Tests\Integration\Phase3;
 
-use Aurora\Cache\Backend\MemoryBackend;
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheFactory;
-use Aurora\Cache\CacheTagsInvalidator;
-use Aurora\Plugin\Attribute\AuroraPlugin;
-use Aurora\Plugin\DefaultPluginManager;
-use Aurora\Plugin\Discovery\AttributeDiscovery;
-use Aurora\Plugin\Discovery\PluginDiscoveryInterface;
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Tests\Integration\Phase3\Fixtures\GreeterPlugin;
+use Waaseyaa\Cache\Backend\MemoryBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheFactory;
+use Waaseyaa\Cache\CacheTagsInvalidator;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\DefaultPluginManager;
+use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
+use Waaseyaa\Plugin\Discovery\PluginDiscoveryInterface;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Tests\Integration\Phase3\Fixtures\GreeterPlugin;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -187,7 +187,7 @@ final class PluginCacheIntegrationTest extends TestCase
                 ];
             });
 
-        $nullCache = new \Aurora\Cache\Backend\NullBackend();
+        $nullCache = new \Waaseyaa\Cache\Backend\NullBackend();
         $manager = new DefaultPluginManager($discovery, $nullCache);
 
         $manager->getDefinitions();

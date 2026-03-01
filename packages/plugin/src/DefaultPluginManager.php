@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin;
+namespace Waaseyaa\Plugin;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Plugin\Discovery\PluginDiscoveryInterface;
-use Aurora\Plugin\Factory\ContainerFactory;
-use Aurora\Plugin\Factory\PluginFactoryInterface;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Plugin\Discovery\PluginDiscoveryInterface;
+use Waaseyaa\Plugin\Factory\ContainerFactory;
+use Waaseyaa\Plugin\Factory\PluginFactoryInterface;
 
 class DefaultPluginManager implements PluginManagerInterface
 {

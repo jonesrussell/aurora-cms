@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Tests\Unit;
+namespace Waaseyaa\Routing\Tests\Unit;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
-use Aurora\Routing\ParamConverter\EntityParamConverter;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Routing\ParamConverter\EntityParamConverter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Query;
+namespace Waaseyaa\Api\Query;
 
 /**
  * Parses JSON:API query parameters into a structured ParsedQuery.

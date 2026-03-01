@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Fixtures;
+namespace Waaseyaa\EntityStorage\Tests\Fixtures;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Test entity class for storage tests.

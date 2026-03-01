@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage;
+namespace Waaseyaa\EntityStorage;
 
-use Aurora\Database\DatabaseInterface;
-use Aurora\Entity\EntityTypeInterface;
+use Waaseyaa\Database\DatabaseInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
 
 /**
  * Handles entity table schema creation and management.

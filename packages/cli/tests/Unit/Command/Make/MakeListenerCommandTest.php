@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command\Make;
+namespace Waaseyaa\CLI\Tests\Unit\Command\Make;
 
-use Aurora\CLI\Command\Make\MakeListenerCommand;
+use Waaseyaa\CLI\Command\Make\MakeListenerCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -34,11 +34,11 @@ final class MakeListenerCommandTest extends TestCase
         $tester = $this->createTester();
         $tester->execute([
             'name' => 'NotifyOnPublish',
-            '--event' => 'Aurora\\Entity\\Event\\EntityEvent',
+            '--event' => 'Waaseyaa\\Entity\\Event\\EntityEvent',
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString('use Aurora\\Entity\\Event\\EntityEvent;', $output);
+        $this->assertStringContainsString('use Waaseyaa\\Entity\\Event\\EntityEvent;', $output);
         $this->assertStringContainsString('public function __invoke(EntityEvent $event): void', $output);
     }
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit;
+namespace Waaseyaa\Entity\Tests\Unit;
 
-use Aurora\Entity\EntityBase;
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityBase;
+use Waaseyaa\Entity\EntityInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Entity\EntityBase
+ * @covers \Waaseyaa\Entity\EntityBase
  */
 class EntityBaseTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy;
+namespace Waaseyaa\Taxonomy;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Represents a taxonomy vocabulary (e.g. "tags", "categories").

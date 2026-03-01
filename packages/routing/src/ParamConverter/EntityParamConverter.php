@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\ParamConverter;
+namespace Waaseyaa\Routing\ParamConverter;
 
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Route;
 

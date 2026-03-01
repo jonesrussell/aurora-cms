@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Handler;
+namespace Waaseyaa\Queue\Handler;
 
-use Aurora\Queue\Job;
+use Waaseyaa\Queue\Job;
 
 /**
  * Bridges HandlerInterface to Job::handle().

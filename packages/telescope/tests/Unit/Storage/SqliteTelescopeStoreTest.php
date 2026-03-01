@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Tests\Unit\Storage;
+namespace Waaseyaa\Telescope\Tests\Unit\Storage;
 
-use Aurora\Telescope\Storage\SqliteTelescopeStore;
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
-use Aurora\Telescope\TelescopeEntry;
+use Waaseyaa\Telescope\Storage\SqliteTelescopeStore;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\TelescopeEntry;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

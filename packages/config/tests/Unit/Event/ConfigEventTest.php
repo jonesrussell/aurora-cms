@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit\Event;
+namespace Waaseyaa\Config\Tests\Unit\Event;
 
-use Aurora\Config\Event\ConfigEvent;
-use Aurora\Config\Event\ConfigEvents;
+use Waaseyaa\Config\Event\ConfigEvent;
+use Waaseyaa\Config\Event\ConfigEvents;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\Event;

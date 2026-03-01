@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit;
+namespace Waaseyaa\Field\Tests\Unit;
 
-use Aurora\Field\FieldTypeManager;
-use Aurora\Field\FieldTypeManagerInterface;
-use Aurora\Field\Item\BooleanItem;
-use Aurora\Field\Item\EntityReferenceItem;
-use Aurora\Field\Item\FloatItem;
-use Aurora\Field\Item\IntegerItem;
-use Aurora\Field\Item\StringItem;
-use Aurora\Field\Item\TextItem;
-use Aurora\Plugin\PluginManagerInterface;
+use Waaseyaa\Field\FieldTypeManager;
+use Waaseyaa\Field\FieldTypeManagerInterface;
+use Waaseyaa\Field\Item\BooleanItem;
+use Waaseyaa\Field\Item\EntityReferenceItem;
+use Waaseyaa\Field\Item\FloatItem;
+use Waaseyaa\Field\Item\IntegerItem;
+use Waaseyaa\Field\Item\StringItem;
+use Waaseyaa\Field\Item\TextItem;
+use Waaseyaa\Plugin\PluginManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\FieldTypeManager
+ * @covers \Waaseyaa\Field\FieldTypeManager
  */
 class FieldTypeManagerTest extends TestCase
 {

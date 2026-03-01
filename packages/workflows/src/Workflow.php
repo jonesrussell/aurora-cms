@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Workflows;
+namespace Waaseyaa\Workflows;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Configuration entity representing an editorial workflow.

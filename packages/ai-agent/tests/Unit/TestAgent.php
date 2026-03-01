@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent\Tests\Unit;
+namespace Waaseyaa\AI\Agent\Tests\Unit;
 
-use Aurora\AI\Agent\AgentAction;
-use Aurora\AI\Agent\AgentContext;
-use Aurora\AI\Agent\AgentInterface;
-use Aurora\AI\Agent\AgentResult;
+use Waaseyaa\AI\Agent\AgentAction;
+use Waaseyaa\AI\Agent\AgentContext;
+use Waaseyaa\AI\Agent\AgentInterface;
+use Waaseyaa\AI\Agent\AgentResult;
 
 /**
  * Simple test agent for unit testing purposes.

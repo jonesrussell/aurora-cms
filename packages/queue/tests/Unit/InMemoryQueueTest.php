@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit;
+namespace Waaseyaa\Queue\Tests\Unit;
 
-use Aurora\Queue\InMemoryQueue;
-use Aurora\Queue\Message\EntityMessage;
-use Aurora\Queue\Message\GenericMessage;
-use Aurora\Queue\QueueInterface;
+use Waaseyaa\Queue\InMemoryQueue;
+use Waaseyaa\Queue\Message\EntityMessage;
+use Waaseyaa\Queue\Message\GenericMessage;
+use Waaseyaa\Queue\QueueInterface;
 use PHPUnit\Framework\TestCase;
 
 final class InMemoryQueueTest extends TestCase

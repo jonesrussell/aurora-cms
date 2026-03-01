@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media;
+namespace Waaseyaa\Media;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Defines the media content entity.

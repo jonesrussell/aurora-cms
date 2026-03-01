@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Event;
+namespace Waaseyaa\Foundation\Tests\Unit\Event;
 
-use Aurora\Foundation\Event\BroadcasterInterface;
-use Aurora\Foundation\Event\DomainEvent;
-use Aurora\Foundation\Event\EventBus;
-use Aurora\Foundation\Event\EventStoreInterface;
+use Waaseyaa\Foundation\Event\BroadcasterInterface;
+use Waaseyaa\Foundation\Event\DomainEvent;
+use Waaseyaa\Foundation\Event\EventBus;
+use Waaseyaa\Foundation\Event\EventStoreInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

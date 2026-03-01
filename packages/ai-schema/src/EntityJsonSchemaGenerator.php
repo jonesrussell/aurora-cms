@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema;
+namespace Waaseyaa\AI\Schema;
 
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 
 /**
  * Generates JSON Schema (draft 2020-12) for entity types.

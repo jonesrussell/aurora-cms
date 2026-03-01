@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Language;
+namespace Waaseyaa\Routing\Language;
 
-use Aurora\I18n\LanguageContext;
-use Aurora\I18n\LanguageManagerInterface;
+use Waaseyaa\I18n\LanguageContext;
+use Waaseyaa\I18n\LanguageManagerInterface;
 
 /**
  * Composite language negotiator that runs strategies in priority order.

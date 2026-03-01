@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit;
+namespace Waaseyaa\Field\Tests\Unit;
 
-use Aurora\Field\FieldDefinition;
-use Aurora\Field\FieldItemBase;
-use Aurora\Field\FieldItemInterface;
-use Aurora\Field\FieldTypeInterface;
-use Aurora\Field\Item\StringItem;
-use Aurora\Field\Item\TextItem;
-use Aurora\Field\PropertyValue;
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\TypedData\ComplexDataInterface;
+use Waaseyaa\Field\FieldDefinition;
+use Waaseyaa\Field\FieldItemBase;
+use Waaseyaa\Field\FieldItemInterface;
+use Waaseyaa\Field\FieldTypeInterface;
+use Waaseyaa\Field\Item\StringItem;
+use Waaseyaa\Field\Item\TextItem;
+use Waaseyaa\Field\PropertyValue;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\TypedData\ComplexDataInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\FieldItemBase
+ * @covers \Waaseyaa\Field\FieldItemBase
  */
 class FieldItemBaseTest extends TestCase
 {

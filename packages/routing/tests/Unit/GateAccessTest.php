@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Tests\Unit;
+namespace Waaseyaa\Routing\Tests\Unit;
 
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\Gate\GateInterface;
-use Aurora\Routing\AccessChecker;
-use Aurora\Routing\Attribute\GateAttribute;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\Gate\GateInterface;
+use Waaseyaa\Routing\AccessChecker;
+use Waaseyaa\Routing\Attribute\GateAttribute;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Discovery;
+namespace Waaseyaa\Plugin\Discovery;
 
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 
 interface PluginDiscoveryInterface
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope;
+namespace Waaseyaa\Telescope;
 
-use Aurora\Telescope\Recorder\CacheRecorder;
-use Aurora\Telescope\Recorder\EventRecorder;
-use Aurora\Telescope\Recorder\QueryRecorder;
-use Aurora\Telescope\Recorder\RequestRecorder;
-use Aurora\Telescope\Storage\SqliteTelescopeStore;
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\Recorder\CacheRecorder;
+use Waaseyaa\Telescope\Recorder\EventRecorder;
+use Waaseyaa\Telescope\Recorder\QueryRecorder;
+use Waaseyaa\Telescope\Recorder\RequestRecorder;
+use Waaseyaa\Telescope\Storage\SqliteTelescopeStore;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
 
 /**
  * Service provider that registers all telescope recorders.

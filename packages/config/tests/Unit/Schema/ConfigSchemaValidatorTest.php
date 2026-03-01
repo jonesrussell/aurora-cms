@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit\Schema;
+namespace Waaseyaa\Config\Tests\Unit\Schema;
 
-use Aurora\Config\Schema\ConfigSchemaValidator;
-use Aurora\Config\Schema\SchemaViolation;
+use Waaseyaa\Config\Schema\ConfigSchemaValidator;
+use Waaseyaa\Config\Schema\SchemaViolation;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Tests\Unit;
+namespace Waaseyaa\Access\Tests\Unit;
 
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccessStatus;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccessStatus;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Entity\EntityInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Access\EntityAccessHandler
+ * @covers \Waaseyaa\Access\EntityAccessHandler
  */
 class EntityAccessHandlerTest extends TestCase
 {

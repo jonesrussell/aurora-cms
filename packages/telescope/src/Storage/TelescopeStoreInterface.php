@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Storage;
+namespace Waaseyaa\Telescope\Storage;
 
-use Aurora\Telescope\TelescopeEntry;
+use Waaseyaa\Telescope\TelescopeEntry;
 
 /**
  * Interface for telescope entry storage backends.

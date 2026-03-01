@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline\Tests\Unit;
+namespace Waaseyaa\AI\Pipeline\Tests\Unit;
 
-use Aurora\AI\Pipeline\Pipeline;
-use Aurora\AI\Pipeline\PipelineDispatcher;
-use Aurora\AI\Pipeline\PipelineQueueMessage;
-use Aurora\Queue\InMemoryQueue;
+use Waaseyaa\AI\Pipeline\Pipeline;
+use Waaseyaa\AI\Pipeline\PipelineDispatcher;
+use Waaseyaa\AI\Pipeline\PipelineQueueMessage;
+use Waaseyaa\Queue\InMemoryQueue;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\AI\Pipeline\PipelineDispatcher
+ * @covers \Waaseyaa\AI\Pipeline\PipelineDispatcher
  */
 final class PipelineDispatcherTest extends TestCase
 {

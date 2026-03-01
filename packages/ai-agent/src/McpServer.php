@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent;
+namespace Waaseyaa\AI\Agent;
 
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\AI\Schema\SchemaRegistry;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\AI\Schema\SchemaRegistry;
 
 /**
  * Lightweight MCP server adapter that exposes tools from SchemaRegistry.

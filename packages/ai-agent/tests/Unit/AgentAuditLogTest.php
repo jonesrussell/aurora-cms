@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent\Tests\Unit;
+namespace Waaseyaa\AI\Agent\Tests\Unit;
 
-use Aurora\AI\Agent\AgentAuditLog;
+use Waaseyaa\AI\Agent\AgentAuditLog;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

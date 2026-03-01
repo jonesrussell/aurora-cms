@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit\Message;
+namespace Waaseyaa\Queue\Tests\Unit\Message;
 
-use Aurora\Queue\Message\GenericMessage;
+use Waaseyaa\Queue\Message\GenericMessage;
 use PHPUnit\Framework\TestCase;
 
 final class GenericMessageTest extends TestCase

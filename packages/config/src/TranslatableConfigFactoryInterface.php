@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
 /**
  * Extended config factory interface with translation support.

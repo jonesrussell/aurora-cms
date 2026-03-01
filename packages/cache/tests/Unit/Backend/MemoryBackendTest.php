@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit\Backend;
+namespace Waaseyaa\Cache\Tests\Unit\Backend;
 
-use Aurora\Cache\Backend\MemoryBackend;
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheItem;
-use Aurora\Cache\TagAwareCacheInterface;
+use Waaseyaa\Cache\Backend\MemoryBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 use PHPUnit\Framework\TestCase;
 
 final class MemoryBackendTest extends TestCase

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Tests\Unit;
+namespace Waaseyaa\Mcp\Tests\Unit;
 
-use Aurora\Access\AccountInterface;
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
-use Aurora\Mcp\Auth\McpAuthInterface;
-use Aurora\Mcp\Bridge\ToolExecutorInterface;
-use Aurora\Mcp\Bridge\ToolRegistryInterface;
-use Aurora\Mcp\McpEndpoint;
-use Aurora\Mcp\McpResponse;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\Mcp\Auth\McpAuthInterface;
+use Waaseyaa\Mcp\Bridge\ToolExecutorInterface;
+use Waaseyaa\Mcp\Bridge\ToolRegistryInterface;
+use Waaseyaa\Mcp\McpEndpoint;
+use Waaseyaa\Mcp\McpResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

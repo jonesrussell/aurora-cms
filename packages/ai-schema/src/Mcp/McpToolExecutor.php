@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Mcp;
+namespace Waaseyaa\AI\Schema\Mcp;
 
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\FieldableInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\FieldableInterface;
 
 /**
  * Executes MCP tool calls against the Aurora entity system.

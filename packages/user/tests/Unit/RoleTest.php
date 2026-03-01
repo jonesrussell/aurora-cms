@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User\Tests\Unit;
+namespace Waaseyaa\User\Tests\Unit;
 
-use Aurora\User\Role;
+use Waaseyaa\User\Role;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

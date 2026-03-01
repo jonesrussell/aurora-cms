@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field;
+namespace Waaseyaa\Field;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit;
+namespace Waaseyaa\Cache\Tests\Unit;
 
-use Aurora\Cache\Backend\DatabaseBackend;
-use Aurora\Cache\Backend\MemoryBackend;
-use Aurora\Cache\Backend\NullBackend;
-use Aurora\Cache\CacheConfiguration;
-use Aurora\Cache\CacheFactory;
-use Aurora\Cache\CacheFactoryInterface;
+use Waaseyaa\Cache\Backend\DatabaseBackend;
+use Waaseyaa\Cache\Backend\MemoryBackend;
+use Waaseyaa\Cache\Backend\NullBackend;
+use Waaseyaa\Cache\CacheConfiguration;
+use Waaseyaa\Cache\CacheFactory;
+use Waaseyaa\Cache\CacheFactoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

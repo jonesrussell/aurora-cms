@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp;
+namespace Waaseyaa\Mcp;
 
-use Aurora\Mcp\Auth\McpAuthInterface;
-use Aurora\Mcp\Bridge\ToolExecutorInterface;
-use Aurora\Mcp\Bridge\ToolRegistryInterface;
+use Waaseyaa\Mcp\Auth\McpAuthInterface;
+use Waaseyaa\Mcp\Bridge\ToolExecutorInterface;
+use Waaseyaa\Mcp\Bridge\ToolRegistryInterface;
 
 final readonly class McpEndpoint
 {

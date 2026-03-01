@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Migration;
+namespace Waaseyaa\Foundation\Migration;
 
 abstract class Migration
 {

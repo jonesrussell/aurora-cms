@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Event;
+namespace Waaseyaa\Entity\Event;
 
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class EntityEvent extends Event

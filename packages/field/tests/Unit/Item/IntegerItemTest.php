@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit\Item;
+namespace Waaseyaa\Field\Tests\Unit\Item;
 
-use Aurora\Field\Item\IntegerItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Item\IntegerItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\Item\IntegerItem
+ * @covers \Waaseyaa\Field\Item\IntegerItem
  */
 class IntegerItemTest extends TestCase
 {

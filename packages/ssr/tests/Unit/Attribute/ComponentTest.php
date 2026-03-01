@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\SSR\Tests\Unit\Attribute;
+namespace Waaseyaa\SSR\Tests\Unit\Attribute;
 
-use Aurora\SSR\Attribute\Component;
+use Waaseyaa\SSR\Attribute\Component;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Unit\Connection;
+namespace Waaseyaa\EntityStorage\Tests\Unit\Connection;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\EntityStorage\Connection\ConnectionResolverInterface;
-use Aurora\EntityStorage\Connection\SingleConnectionResolver;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\EntityStorage\Connection\ConnectionResolverInterface;
+use Waaseyaa\EntityStorage\Connection\SingleConnectionResolver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

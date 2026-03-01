@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Gate;
+namespace Waaseyaa\Access\Gate;
 
 /**
  * Resolves policies by convention and delegates ability checks.

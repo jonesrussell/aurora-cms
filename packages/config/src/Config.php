@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
-use Aurora\Config\Exception\ImmutableConfigException;
+use Waaseyaa\Config\Exception\ImmutableConfigException;
 
 final class Config implements ConfigInterface
 {

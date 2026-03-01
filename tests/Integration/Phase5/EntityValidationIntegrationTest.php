@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase5;
+namespace Waaseyaa\Tests\Integration\Phase5;
 
-use Aurora\User\User;
-use Aurora\Validation\Constraint\AllowedValues;
-use Aurora\Validation\Constraint\NotEmpty;
-use Aurora\Validation\Constraint\SafeMarkup;
-use Aurora\Validation\ConstraintFactory;
-use Aurora\Validation\EntityValidator;
+use Waaseyaa\User\User;
+use Waaseyaa\Validation\Constraint\AllowedValues;
+use Waaseyaa\Validation\Constraint\NotEmpty;
+use Waaseyaa\Validation\Constraint\SafeMarkup;
+use Waaseyaa\Validation\ConstraintFactory;
+use Waaseyaa\Validation\EntityValidator;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Tests\Unit;
+namespace Waaseyaa\Database\Tests\Unit;
 
-use Aurora\Database\DeleteInterface;
-use Aurora\Database\InsertInterface;
-use Aurora\Database\PdoDatabase;
-use Aurora\Database\SchemaInterface;
-use Aurora\Database\SelectInterface;
-use Aurora\Database\TransactionInterface;
-use Aurora\Database\UpdateInterface;
+use Waaseyaa\Database\DeleteInterface;
+use Waaseyaa\Database\InsertInterface;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Database\SchemaInterface;
+use Waaseyaa\Database\SelectInterface;
+use Waaseyaa\Database\TransactionInterface;
+use Waaseyaa\Database\UpdateInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

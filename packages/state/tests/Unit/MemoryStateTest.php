@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\State\Tests\Unit;
+namespace Waaseyaa\State\Tests\Unit;
 
-use Aurora\State\MemoryState;
-use Aurora\State\StateInterface;
+use Waaseyaa\State\MemoryState;
+use Waaseyaa\State\StateInterface;
 use PHPUnit\Framework\TestCase;
 
 final class MemoryStateTest extends TestCase

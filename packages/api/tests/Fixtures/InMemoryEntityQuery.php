@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Fixtures;
+namespace Waaseyaa\Api\Tests\Fixtures;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
 
 /**
  * In-memory entity query for testing.

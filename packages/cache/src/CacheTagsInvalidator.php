@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache;
+namespace Waaseyaa\Cache;
 
 final class CacheTagsInvalidator implements CacheTagsInvalidatorInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media;
+namespace Waaseyaa\Media;
 
 /**
  * Value object representing a managed file.

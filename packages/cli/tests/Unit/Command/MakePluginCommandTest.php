@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\CLI\Command\MakePluginCommand;
+use Waaseyaa\CLI\Command\MakePluginCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class MakePluginCommandTest extends TestCase
         $this->assertStringContainsString('#[AuroraPlugin(', $output);
         $this->assertStringContainsString("id: 'my_formatter'", $output);
         $this->assertStringContainsString('class MyFormatter', $output);
-        $this->assertStringContainsString('use Aurora\\Plugin\\Attribute\\AuroraPlugin;', $output);
+        $this->assertStringContainsString('use Waaseyaa\\Plugin\\Attribute\\AuroraPlugin;', $output);
         $this->assertStringContainsString('declare(strict_types=1);', $output);
     }
 }

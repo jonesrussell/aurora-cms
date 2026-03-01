@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit\Item;
+namespace Waaseyaa\Field\Tests\Unit\Item;
 
-use Aurora\Field\Item\StringItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Item\StringItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\Item\StringItem
+ * @covers \Waaseyaa\Field\Item\StringItem
  */
 class StringItemTest extends TestCase
 {

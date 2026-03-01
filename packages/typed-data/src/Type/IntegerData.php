@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData\Type;
+namespace Waaseyaa\TypedData\Type;
 
-use Aurora\TypedData\DataDefinitionInterface;
-use Aurora\TypedData\PrimitiveInterface;
+use Waaseyaa\TypedData\DataDefinitionInterface;
+use Waaseyaa\TypedData\PrimitiveInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;

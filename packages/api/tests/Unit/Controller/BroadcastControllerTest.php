@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Controller;
+namespace Waaseyaa\Api\Tests\Unit\Controller;
 
-use Aurora\Api\Controller\BroadcastController;
-use Aurora\Foundation\Broadcasting\BroadcastMessage;
-use Aurora\Foundation\Broadcasting\SseBroadcaster;
+use Waaseyaa\Api\Controller\BroadcastController;
+use Waaseyaa\Foundation\Broadcasting\BroadcastMessage;
+use Waaseyaa\Foundation\Broadcasting\SseBroadcaster;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit;
+namespace Waaseyaa\Cache\Tests\Unit;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheItem;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
 use PHPUnit\Framework\TestCase;
 
 final class CacheItemTest extends TestCase

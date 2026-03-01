@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Attribute;
+namespace Waaseyaa\Entity\Attribute;
 
-use Aurora\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
 
 /**
  * PHP attribute for declaring entity types.

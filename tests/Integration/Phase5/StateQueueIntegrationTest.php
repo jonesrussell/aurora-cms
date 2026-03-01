@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase5;
+namespace Waaseyaa\Tests\Integration\Phase5;
 
-use Aurora\Queue\Handler\HandlerInterface;
-use Aurora\Queue\InMemoryQueue;
-use Aurora\Queue\Message\EntityMessage;
-use Aurora\Queue\Message\GenericMessage;
-use Aurora\Queue\SyncQueue;
-use Aurora\State\MemoryState;
-use Aurora\State\StateInterface;
+use Waaseyaa\Queue\Handler\HandlerInterface;
+use Waaseyaa\Queue\InMemoryQueue;
+use Waaseyaa\Queue\Message\EntityMessage;
+use Waaseyaa\Queue\Message\GenericMessage;
+use Waaseyaa\Queue\SyncQueue;
+use Waaseyaa\State\MemoryState;
+use Waaseyaa\State\StateInterface;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 

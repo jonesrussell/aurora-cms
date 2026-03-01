@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase8;
+namespace Waaseyaa\Tests\Integration\Phase8;
 
-use Aurora\AI\Pipeline\Pipeline;
-use Aurora\AI\Pipeline\PipelineContext;
-use Aurora\AI\Pipeline\PipelineDispatcher;
-use Aurora\AI\Pipeline\PipelineExecutor;
-use Aurora\AI\Pipeline\PipelineQueueMessage;
-use Aurora\AI\Pipeline\PipelineStepConfig;
-use Aurora\AI\Pipeline\PipelineStepInterface;
-use Aurora\AI\Pipeline\StepResult;
-use Aurora\Queue\InMemoryQueue;
+use Waaseyaa\AI\Pipeline\Pipeline;
+use Waaseyaa\AI\Pipeline\PipelineContext;
+use Waaseyaa\AI\Pipeline\PipelineDispatcher;
+use Waaseyaa\AI\Pipeline\PipelineExecutor;
+use Waaseyaa\AI\Pipeline\PipelineQueueMessage;
+use Waaseyaa\AI\Pipeline\PipelineStepConfig;
+use Waaseyaa\AI\Pipeline\PipelineStepInterface;
+use Waaseyaa\AI\Pipeline\StepResult;
+use Waaseyaa\Queue\InMemoryQueue;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

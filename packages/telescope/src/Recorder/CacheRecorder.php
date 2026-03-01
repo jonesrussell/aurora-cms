@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Recorder;
+namespace Waaseyaa\Telescope\Recorder;
 
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
 
 /**
  * Records cache operations (hit, miss, set, forget) with key, value, and duration.

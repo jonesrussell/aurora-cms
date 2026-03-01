@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\OpenApi;
+namespace Waaseyaa\Api\OpenApi;
 
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 
 /**
  * Generates a complete OpenAPI 3.1 specification from EntityTypeManager definitions.

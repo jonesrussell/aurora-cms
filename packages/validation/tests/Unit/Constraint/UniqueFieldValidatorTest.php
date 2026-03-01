@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit\Constraint;
+namespace Waaseyaa\Validation\Tests\Unit\Constraint;
 
-use Aurora\Validation\Constraint\UniqueField;
-use Aurora\Validation\Constraint\UniqueFieldValidator;
+use Waaseyaa\Validation\Constraint\UniqueField;
+use Waaseyaa\Validation\Constraint\UniqueFieldValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

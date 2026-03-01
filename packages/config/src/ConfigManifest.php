@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
 /**
  * Tracks config versions and checksums for safe deployments.

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Controller;
+namespace Waaseyaa\Api\Tests\Unit\Controller;
 
-use Aurora\Api\Controller\TranslationController;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\ReadOnlyTranslatableTestEntity;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Api\Tests\Fixtures\TranslatableTestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
+use Waaseyaa\Api\Controller\TranslationController;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\ReadOnlyTranslatableTestEntity;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Api\Tests\Fixtures\TranslatableTestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ final class TranslationControllerTest extends TestCase
 
         $this->entityTypeManager = new EntityTypeManager(
             new EventDispatcher(),
-            function (\Aurora\Entity\EntityTypeInterface $definition) {
+            function (\Waaseyaa\Entity\EntityTypeInterface $definition) {
                 return match ($definition->id()) {
                     'readonly' => $this->readonlyStorage,
                     default    => $this->storage,

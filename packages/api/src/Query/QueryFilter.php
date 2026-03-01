@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Query;
+namespace Waaseyaa\Api\Query;
 
 /**
  * Value object representing a single query filter condition.

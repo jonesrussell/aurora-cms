@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent\Tests\Unit;
+namespace Waaseyaa\AI\Agent\Tests\Unit;
 
-use Aurora\Access\AccountInterface;
-use Aurora\AI\Agent\AgentContext;
-use Aurora\AI\Agent\AgentExecutor;
-use Aurora\AI\Agent\AgentResult;
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\AI\Agent\AgentContext;
+use Waaseyaa\AI\Agent\AgentExecutor;
+use Waaseyaa\AI\Agent\AgentResult;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -162,7 +162,7 @@ final class AgentExecutorTest extends TestCase
 
     public function testToolExecution(): void
     {
-        $entity = $this->createMock(\Aurora\Entity\EntityInterface::class);
+        $entity = $this->createMock(\Waaseyaa\Entity\EntityInterface::class);
         $entity->method('id')->willReturn('123');
         $entity->method('toArray')->willReturn(['title' => 'Test']);
 

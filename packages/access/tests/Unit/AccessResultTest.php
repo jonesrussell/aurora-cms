@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Tests\Unit;
+namespace Waaseyaa\Access\Tests\Unit;
 
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccessStatus;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccessStatus;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Access\AccessResult
- * @covers \Aurora\Access\AccessStatus
+ * @covers \Waaseyaa\Access\AccessResult
+ * @covers \Waaseyaa\Access\AccessStatus
  */
 class AccessResultTest extends TestCase
 {

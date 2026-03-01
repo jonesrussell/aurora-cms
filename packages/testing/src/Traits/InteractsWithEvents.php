@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Testing\Traits;
+namespace Waaseyaa\Testing\Traits;
 
 /**
  * Trait providing event interaction helpers for tests.

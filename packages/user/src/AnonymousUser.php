@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User;
+namespace Waaseyaa\User;
 
-use Aurora\Access\AccountInterface;
+use Waaseyaa\Access\AccountInterface;
 
 /**
  * Represents a non-authenticated (anonymous) visitor.

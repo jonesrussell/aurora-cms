@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Attribute;
+namespace Waaseyaa\Queue\Attribute;
 
 /**
  * Marks a job as unique to prevent duplicate dispatch.

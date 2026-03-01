@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media;
+namespace Waaseyaa\Media;
 
 /**
  * In-memory implementation of the file repository.

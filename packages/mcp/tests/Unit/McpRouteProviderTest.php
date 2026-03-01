@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Tests\Unit;
+namespace Waaseyaa\Mcp\Tests\Unit;
 
-use Aurora\Mcp\McpRouteProvider;
-use Aurora\Routing\AuroraRouter;
+use Waaseyaa\Mcp\McpRouteProvider;
+use Waaseyaa\Routing\AuroraRouter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Broadcasting;
+namespace Waaseyaa\Foundation\Broadcasting;
 
 /**
  * In-memory broadcaster that delivers messages via Server-Sent Events (SSE).

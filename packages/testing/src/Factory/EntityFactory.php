@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Testing\Factory;
+namespace Waaseyaa\Testing\Factory;
 
 /**
  * Test data generator for entity values.

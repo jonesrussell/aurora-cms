@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Tests\Unit\Mcp;
+namespace Waaseyaa\AI\Schema\Tests\Unit\Mcp;
 
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

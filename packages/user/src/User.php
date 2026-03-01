@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User;
+namespace Waaseyaa\User;
 
-use Aurora\Access\AccountInterface;
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * The User content entity.

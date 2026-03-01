@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Recorder;
+namespace Waaseyaa\Telescope\Recorder;
 
-use Aurora\Telescope\Storage\TelescopeStoreInterface;
+use Waaseyaa\Telescope\Storage\TelescopeStoreInterface;
 
 /**
  * Records database queries with SQL, bindings, duration, and connection name.

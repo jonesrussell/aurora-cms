@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Migration;
+namespace Waaseyaa\Foundation\Migration;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;

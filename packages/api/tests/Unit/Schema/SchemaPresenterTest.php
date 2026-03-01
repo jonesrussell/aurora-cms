@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Schema;
+namespace Waaseyaa\Api\Tests\Unit\Schema;
 
-use Aurora\Api\Schema\SchemaPresenter;
-use Aurora\Entity\EntityType;
+use Waaseyaa\Api\Schema\SchemaPresenter;
+use Waaseyaa\Entity\EntityType;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -325,7 +325,7 @@ final class SchemaPresenterTest extends TestCase
         return new EntityType(
             id: 'article',
             label: 'Article',
-            class: \Aurora\Api\Tests\Fixtures\TestEntity::class,
+            class: \Waaseyaa\Api\Tests\Fixtures\TestEntity::class,
             keys: $keys,
             translatable: $translatable,
             revisionable: $revisionable,

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase6;
+namespace Waaseyaa\Tests\Integration\Phase6;
 
-use Aurora\Media\File;
-use Aurora\Media\InMemoryFileRepository;
-use Aurora\Media\Media;
-use Aurora\Media\MediaType;
-use Aurora\Validation\Constraint\NotEmpty;
-use Aurora\Validation\EntityValidator;
+use Waaseyaa\Media\File;
+use Waaseyaa\Media\InMemoryFileRepository;
+use Waaseyaa\Media\Media;
+use Waaseyaa\Media\MediaType;
+use Waaseyaa\Validation\Constraint\NotEmpty;
+use Waaseyaa\Validation\EntityValidator;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

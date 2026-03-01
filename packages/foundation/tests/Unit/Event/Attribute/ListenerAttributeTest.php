@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Event\Attribute;
+namespace Waaseyaa\Foundation\Tests\Unit\Event\Attribute;
 
-use Aurora\Foundation\Event\Attribute\Async;
-use Aurora\Foundation\Event\Attribute\Broadcast;
-use Aurora\Foundation\Event\Attribute\Listener;
+use Waaseyaa\Foundation\Event\Attribute\Async;
+use Waaseyaa\Foundation\Event\Attribute\Broadcast;
+use Waaseyaa\Foundation\Event\Attribute\Listener;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

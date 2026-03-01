@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\CLI\Command\UserCreateCommand;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\CLI\Command\UserCreateCommand;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit;
+namespace Waaseyaa\Config\Tests\Unit;
 
-use Aurora\Config\Config;
-use Aurora\Config\ConfigFactory;
-use Aurora\Config\ConfigFactoryInterface;
-use Aurora\Config\Event\ConfigEvent;
-use Aurora\Config\Event\ConfigEvents;
-use Aurora\Config\EventAwareStorage;
-use Aurora\Config\Exception\ImmutableConfigException;
-use Aurora\Config\Storage\MemoryStorage;
+use Waaseyaa\Config\Config;
+use Waaseyaa\Config\ConfigFactory;
+use Waaseyaa\Config\ConfigFactoryInterface;
+use Waaseyaa\Config\Event\ConfigEvent;
+use Waaseyaa\Config\Event\ConfigEvents;
+use Waaseyaa\Config\EventAwareStorage;
+use Waaseyaa\Config\Exception\ImmutableConfigException;
+use Waaseyaa\Config\Storage\MemoryStorage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;

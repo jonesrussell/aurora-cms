@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Tests\Unit;
+namespace Waaseyaa\Mcp\Tests\Unit;
 
-use Aurora\Mcp\McpServerCard;
+use Waaseyaa\Mcp\McpServerCard;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

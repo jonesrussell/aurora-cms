@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity;
+namespace Waaseyaa\Entity;
 
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Asset;
+namespace Waaseyaa\Foundation\Asset;
 
 /**
  * Resolves source asset paths to versioned/hashed production URLs.

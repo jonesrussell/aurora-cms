@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector\Tests\Unit;
+namespace Waaseyaa\AI\Vector\Tests\Unit;
 
-use Aurora\AI\Vector\EntityEmbedder;
-use Aurora\AI\Vector\InMemoryVectorStore;
-use Aurora\AI\Vector\SimilarityResult;
-use Aurora\AI\Vector\Testing\FakeEmbeddingProvider;
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\AI\Vector\EntityEmbedder;
+use Waaseyaa\AI\Vector\InMemoryVectorStore;
+use Waaseyaa\AI\Vector\SimilarityResult;
+use Waaseyaa\AI\Vector\Testing\FakeEmbeddingProvider;
+use Waaseyaa\Entity\EntityInterface;
 use PHPUnit\Framework\TestCase;
 
 final class EntityEmbedderTest extends TestCase

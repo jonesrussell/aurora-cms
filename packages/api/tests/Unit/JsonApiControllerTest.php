@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit;
+namespace Waaseyaa\Api\Tests\Unit;
 
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Api\JsonApiController;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Api\JsonApiController;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -466,7 +466,7 @@ final class JsonApiControllerTest extends TestCase
                 return true;
             }
 
-            public function access(\Aurora\Entity\EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
+            public function access(\Waaseyaa\Entity\EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
             {
                 return AccessResult::forbidden('Access denied for testing.');
             }
@@ -496,7 +496,7 @@ final class JsonApiControllerTest extends TestCase
                 return true;
             }
 
-            public function access(\Aurora\Entity\EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
+            public function access(\Waaseyaa\Entity\EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
             {
                 return AccessResult::allowed();
             }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue;
+namespace Waaseyaa\Queue;
 
 /**
  * Runs a sequence of jobs in order, stopping on the first failure.

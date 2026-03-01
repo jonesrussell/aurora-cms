@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api;
+namespace Waaseyaa\Api;
 
 /**
  * Value object representing a JSON:API document.

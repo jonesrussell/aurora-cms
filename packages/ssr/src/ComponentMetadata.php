@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\SSR;
+namespace Waaseyaa\SSR;
 
 final readonly class ComponentMetadata
 {

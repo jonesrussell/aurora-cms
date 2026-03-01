@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit\Constraint;
+namespace Waaseyaa\Validation\Tests\Unit\Constraint;
 
-use Aurora\Validation\Constraint\NotEmpty;
-use Aurora\Validation\Constraint\NotEmptyValidator;
+use Waaseyaa\Validation\Constraint\NotEmpty;
+use Waaseyaa\Validation\Constraint\NotEmptyValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Path;
+namespace Waaseyaa\Path;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Represents a URL path alias entity.

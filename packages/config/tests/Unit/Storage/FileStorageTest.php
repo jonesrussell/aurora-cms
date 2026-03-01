@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit\Storage;
+namespace Waaseyaa\Config\Tests\Unit\Storage;
 
-use Aurora\Config\Storage\FileStorage;
-use Aurora\Config\StorageInterface;
+use Waaseyaa\Config\Storage\FileStorage;
+use Waaseyaa\Config\StorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

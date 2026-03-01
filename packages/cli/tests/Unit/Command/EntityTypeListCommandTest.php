@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\CLI\Command\EntityTypeListCommand;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\CLI\Command\EntityTypeListCommand;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ final class EntityTypeListCommandTest extends TestCase
         $nodeType = new EntityType(
             id: 'node',
             label: 'Content',
-            class: 'Aurora\\Node\\Node',
+            class: 'Waaseyaa\\Node\\Node',
             revisionable: true,
             translatable: true,
         );
@@ -31,7 +31,7 @@ final class EntityTypeListCommandTest extends TestCase
         $userType = new EntityType(
             id: 'user',
             label: 'User',
-            class: 'Aurora\\User\\User',
+            class: 'Waaseyaa\\User\\User',
             revisionable: false,
             translatable: false,
         );

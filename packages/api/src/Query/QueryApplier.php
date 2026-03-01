@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Query;
+namespace Waaseyaa\Api\Query;
 
-use Aurora\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
 
 /**
  * Applies a ParsedQuery to an EntityQueryInterface instance.

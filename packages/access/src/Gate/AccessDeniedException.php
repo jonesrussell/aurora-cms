@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Gate;
+namespace Waaseyaa\Access\Gate;
 
 /**
  * Thrown when authorization fails in the Gate.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Query;
+namespace Waaseyaa\Api\Query;
 
 /**
  * Generates JSON:API pagination link URLs.

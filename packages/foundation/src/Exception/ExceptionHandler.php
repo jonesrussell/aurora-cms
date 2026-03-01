@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Exception;
+namespace Waaseyaa\Foundation\Exception;
 
 final class ExceptionHandler
 {

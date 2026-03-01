@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Schema;
+namespace Waaseyaa\Config\Schema;
 
 /**
  * Validates config data against JSON-Schema-like definitions.

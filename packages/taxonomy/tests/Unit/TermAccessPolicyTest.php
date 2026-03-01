@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy\Tests\Unit;
+namespace Waaseyaa\Taxonomy\Tests\Unit;
 
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Entity\EntityInterface;
-use Aurora\Taxonomy\TermAccessPolicy;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Taxonomy\TermAccessPolicy;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Taxonomy\TermAccessPolicy
+ * @covers \Waaseyaa\Taxonomy\TermAccessPolicy
  */
 class TermAccessPolicyTest extends TestCase
 {

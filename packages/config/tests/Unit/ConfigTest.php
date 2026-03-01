@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit;
+namespace Waaseyaa\Config\Tests\Unit;
 
-use Aurora\Config\Config;
-use Aurora\Config\Exception\ImmutableConfigException;
-use Aurora\Config\Storage\MemoryStorage;
-use Aurora\Config\StorageInterface;
+use Waaseyaa\Config\Config;
+use Waaseyaa\Config\Exception\ImmutableConfigException;
+use Waaseyaa\Config\Storage\MemoryStorage;
+use Waaseyaa\Config\StorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

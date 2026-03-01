@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Node;
+namespace Waaseyaa\Node;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Represents a content type configuration (e.g. "article", "page").

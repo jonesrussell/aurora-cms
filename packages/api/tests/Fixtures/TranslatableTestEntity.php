@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Fixtures;
+namespace Waaseyaa\Api\Tests\Fixtures;
 
-use Aurora\Api\MutableTranslatableInterface;
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Api\MutableTranslatableInterface;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Test entity that supports translations.

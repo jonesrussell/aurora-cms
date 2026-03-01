@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy;
+namespace Waaseyaa\Taxonomy;
 
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Entity\EntityInterface;
 
 /**
  * Access policy for taxonomy terms.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Asset;
+namespace Waaseyaa\Foundation\Asset;
 
 /**
  * Asset manager that reads Vite manifest.json files to resolve asset URLs.

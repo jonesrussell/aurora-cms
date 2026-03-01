@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData\Tests\Unit;
+namespace Waaseyaa\TypedData\Tests\Unit;
 
-use Aurora\TypedData\DataDefinition;
-use Aurora\TypedData\DataDefinitionInterface;
+use Waaseyaa\TypedData\DataDefinition;
+use Waaseyaa\TypedData\DataDefinitionInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;

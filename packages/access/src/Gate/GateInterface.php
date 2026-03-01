@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Gate;
+namespace Waaseyaa\Access\Gate;
 
 /**
  * Determines whether a user is authorized to perform a given ability on a subject.

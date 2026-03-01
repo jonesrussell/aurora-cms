@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Ownership;
+namespace Waaseyaa\Config\Ownership;
 
 final readonly class PackageOwnership
 {

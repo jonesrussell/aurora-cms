@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tenant;
+namespace Waaseyaa\Foundation\Tenant;
 
 final class TenantMiddleware
 {

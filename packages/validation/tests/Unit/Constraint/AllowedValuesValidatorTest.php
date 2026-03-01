@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit\Constraint;
+namespace Waaseyaa\Validation\Tests\Unit\Constraint;
 
-use Aurora\Validation\Constraint\AllowedValues;
-use Aurora\Validation\Constraint\AllowedValuesValidator;
+use Waaseyaa\Validation\Constraint\AllowedValues;
+use Waaseyaa\Validation\Constraint\AllowedValuesValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

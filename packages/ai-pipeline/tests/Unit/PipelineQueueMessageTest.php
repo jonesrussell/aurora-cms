@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline\Tests\Unit;
+namespace Waaseyaa\AI\Pipeline\Tests\Unit;
 
-use Aurora\AI\Pipeline\PipelineQueueMessage;
+use Waaseyaa\AI\Pipeline\PipelineQueueMessage;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\AI\Pipeline\PipelineQueueMessage
+ * @covers \Waaseyaa\AI\Pipeline\PipelineQueueMessage
  */
 final class PipelineQueueMessageTest extends TestCase
 {

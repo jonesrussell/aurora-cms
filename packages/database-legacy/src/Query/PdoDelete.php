@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Query;
+namespace Waaseyaa\Database\Query;
 
-use Aurora\Database\DeleteInterface;
+use Waaseyaa\Database\DeleteInterface;
 
 final class PdoDelete implements DeleteInterface
 {

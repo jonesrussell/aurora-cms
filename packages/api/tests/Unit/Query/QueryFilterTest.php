@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Query;
+namespace Waaseyaa\Api\Tests\Unit\Query;
 
-use Aurora\Api\Query\QueryFilter;
+use Waaseyaa\Api\Query\QueryFilter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

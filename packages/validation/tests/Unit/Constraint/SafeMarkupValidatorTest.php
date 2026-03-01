@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit\Constraint;
+namespace Waaseyaa\Validation\Tests\Unit\Constraint;
 
-use Aurora\Validation\Constraint\SafeMarkup;
-use Aurora\Validation\Constraint\SafeMarkupValidator;
+use Waaseyaa\Validation\Constraint\SafeMarkup;
+use Waaseyaa\Validation\Constraint\SafeMarkupValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

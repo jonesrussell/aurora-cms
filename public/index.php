@@ -166,7 +166,7 @@ try {
 } catch (\Symfony\Component\Routing\Exception\MethodNotAllowedException) {
     sendJson(405, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '405', 'title' => 'Method Not Allowed', 'detail' => "Method {$method} is not allowed for this route."]]]);
 } catch (\Throwable $e) {
-    error_log(sprintf('[Aurora] Routing error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+    error_log(sprintf('[Waaseyaa] Routing error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
     sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'A routing error occurred.']]]);
 }
 
@@ -240,13 +240,13 @@ try {
         })(),
 
         default => (function () use ($controller): never {
-            error_log(sprintf('[Aurora] Unknown controller: %s', $controller));
+            error_log(sprintf('[Waaseyaa] Unknown controller: %s', $controller));
             sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Unknown route handler.']]]);
         })(),
     };
 
 } catch (\Throwable $e) {
-    error_log(sprintf('[Aurora] Unhandled exception: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+    error_log(sprintf('[Waaseyaa] Unhandled exception: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
     sendJson(500, [
         'jsonapi' => ['version' => '1.1'],
         'errors' => [[

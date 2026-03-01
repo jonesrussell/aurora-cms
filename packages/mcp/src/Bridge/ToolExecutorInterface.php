@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Bridge;
+namespace Waaseyaa\Mcp\Bridge;
 
 /**
  * Interface for executing MCP tool calls.

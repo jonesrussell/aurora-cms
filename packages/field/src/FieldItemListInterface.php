@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field;
+namespace Waaseyaa\Field;
 
-use Aurora\TypedData\ListInterface;
+use Waaseyaa\TypedData\ListInterface;
 
 interface FieldItemListInterface extends ListInterface
 {

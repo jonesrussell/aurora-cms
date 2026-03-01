@@ -3,7 +3,7 @@
         'name' => 'aurora/monorepo',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ee673b9d64eb54918fb2cadfc8cc650cad538f71',
+        'reference' => '32d704aa56c030d897c8801a65afb13a535acf48',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -175,7 +175,7 @@
         'aurora/monorepo' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ee673b9d64eb54918fb2cadfc8cc650cad538f71',
+            'reference' => '32d704aa56c030d897c8801a65afb13a535acf48',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command\Make;
+namespace Waaseyaa\CLI\Tests\Unit\Command\Make;
 
-use Aurora\CLI\Command\Make\MakeJobCommand;
+use Waaseyaa\CLI\Command\Make\MakeJobCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ final class MakeJobCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $output = $tester->getDisplay();
         $this->assertStringContainsString('class ProcessUpload extends Job', $output);
-        $this->assertStringContainsString('use Aurora\\Queue\\Job\\Job;', $output);
+        $this->assertStringContainsString('use Waaseyaa\\Queue\\Job\\Job;', $output);
         $this->assertStringContainsString('public function handle(): void', $output);
         $this->assertStringContainsString('declare(strict_types=1);', $output);
     }

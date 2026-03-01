@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit\Backend;
+namespace Waaseyaa\Cache\Tests\Unit\Backend;
 
-use Aurora\Cache\Backend\DatabaseBackend;
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheItem;
-use Aurora\Cache\TagAwareCacheInterface;
+use Waaseyaa\Cache\Backend\DatabaseBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

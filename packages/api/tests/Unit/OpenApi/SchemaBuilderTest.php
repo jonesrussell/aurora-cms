@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\OpenApi;
+namespace Waaseyaa\Api\Tests\Unit\OpenApi;
 
-use Aurora\Api\OpenApi\SchemaBuilder;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
+use Waaseyaa\Api\OpenApi\SchemaBuilder;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

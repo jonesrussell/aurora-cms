@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command\Telescope;
+namespace Waaseyaa\CLI\Tests\Unit\Command\Telescope;
 
-use Aurora\CLI\Command\Telescope\TelescopeClearCommand;
+use Waaseyaa\CLI\Command\Telescope\TelescopeClearCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

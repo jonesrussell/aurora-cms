@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin;
+namespace Waaseyaa\Plugin;
 
 interface PluginInspectionInterface
 {

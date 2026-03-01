@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit\Constraint;
+namespace Waaseyaa\Validation\Tests\Unit\Constraint;
 
-use Aurora\Validation\Constraint\EntityExists;
-use Aurora\Validation\Constraint\EntityExistsValidator;
+use Waaseyaa\Validation\Constraint\EntityExists;
+use Waaseyaa\Validation\Constraint\EntityExistsValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;

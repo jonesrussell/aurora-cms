@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit\Message;
+namespace Waaseyaa\Queue\Tests\Unit\Message;
 
-use Aurora\Queue\Message\ConfigMessage;
+use Waaseyaa\Queue\Message\ConfigMessage;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigMessageTest extends TestCase

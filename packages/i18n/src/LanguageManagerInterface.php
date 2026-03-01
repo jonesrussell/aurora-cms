@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\I18n;
+namespace Waaseyaa\I18n;
 
 /**
  * Manages the set of available languages in the system.

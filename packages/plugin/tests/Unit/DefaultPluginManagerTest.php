@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Tests\Unit;
+namespace Waaseyaa\Plugin\Tests\Unit;
 
-use Aurora\Cache\Backend\MemoryBackend;
-use Aurora\Plugin\Attribute\AuroraPlugin;
-use Aurora\Plugin\DefaultPluginManager;
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\Discovery\AttributeDiscovery;
-use Aurora\Plugin\Discovery\PluginDiscoveryInterface;
-use Aurora\Plugin\Tests\Fixtures\AnotherPlugin;
-use Aurora\Plugin\Tests\Fixtures\TestPlugin;
+use Waaseyaa\Cache\Backend\MemoryBackend;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\DefaultPluginManager;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
+use Waaseyaa\Plugin\Discovery\PluginDiscoveryInterface;
+use Waaseyaa\Plugin\Tests\Fixtures\AnotherPlugin;
+use Waaseyaa\Plugin\Tests\Fixtures\TestPlugin;
 use PHPUnit\Framework\TestCase;
 
 final class DefaultPluginManagerTest extends TestCase

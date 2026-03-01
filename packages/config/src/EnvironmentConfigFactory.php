@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
 /**
  * Config factory decorator that provides environment-based config overrides.

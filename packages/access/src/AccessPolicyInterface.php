@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access;
+namespace Waaseyaa\Access;
 
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityInterface;
 
 /**
  * Checks access for a specific operation on an entity.

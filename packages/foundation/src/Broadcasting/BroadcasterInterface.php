@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Broadcasting;
+namespace Waaseyaa\Foundation\Broadcasting;
 
 /**
  * Broadcasts messages to subscribed channels.

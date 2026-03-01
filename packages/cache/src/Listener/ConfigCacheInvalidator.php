@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Listener;
+namespace Waaseyaa\Cache\Listener;
 
-use Aurora\Cache\CacheTagsInvalidatorInterface;
-use Aurora\Config\Event\ConfigEvent;
+use Waaseyaa\Cache\CacheTagsInvalidatorInterface;
+use Waaseyaa\Config\Event\ConfigEvent;
 
 /**
  * Listens for config save/delete events and invalidates related cache tags.

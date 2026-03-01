@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Backend;
+namespace Waaseyaa\Cache\Backend;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheItem;
-use Aurora\Cache\TagAwareCacheInterface;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 
 final class MemoryBackend implements TagAwareCacheInterface
 {

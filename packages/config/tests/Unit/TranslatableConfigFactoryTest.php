@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Tests\Unit;
+namespace Waaseyaa\Config\Tests\Unit;
 
-use Aurora\Config\ConfigFactory;
-use Aurora\Config\ConfigFactoryInterface;
-use Aurora\Config\Storage\MemoryStorage;
-use Aurora\Config\TranslatableConfigFactory;
+use Waaseyaa\Config\ConfigFactory;
+use Waaseyaa\Config\ConfigFactoryInterface;
+use Waaseyaa\Config\Storage\MemoryStorage;
+use Waaseyaa\Config\TranslatableConfigFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit;
+namespace Waaseyaa\Entity\Tests\Unit;
 
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\ContentEntityInterface;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\FieldableInterface;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\FieldableInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Entity\ContentEntityBase
+ * @covers \Waaseyaa\Entity\ContentEntityBase
  */
 class ContentEntityBaseTest extends TestCase
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit;
+namespace Waaseyaa\Field\Tests\Unit;
 
-use Aurora\Field\FieldDefinition;
-use Aurora\Field\FieldDefinitionInterface;
-use Aurora\TypedData\DataDefinitionInterface;
+use Waaseyaa\Field\FieldDefinition;
+use Waaseyaa\Field\FieldDefinitionInterface;
+use Waaseyaa\TypedData\DataDefinitionInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\FieldDefinition
+ * @covers \Waaseyaa\Field\FieldDefinition
  */
 class FieldDefinitionTest extends TestCase
 {

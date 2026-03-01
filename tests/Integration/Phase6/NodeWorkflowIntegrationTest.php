@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase6;
+namespace Waaseyaa\Tests\Integration\Phase6;
 
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Entity\EntityInterface;
-use Aurora\Node\Node;
-use Aurora\Node\NodeAccessPolicy;
-use Aurora\Node\NodeType;
-use Aurora\User\AnonymousUser;
-use Aurora\User\User;
-use Aurora\Workflows\ContentModerationState;
-use Aurora\Workflows\ContentModerator;
-use Aurora\Workflows\Workflow;
-use Aurora\Workflows\WorkflowState;
-use Aurora\Workflows\WorkflowTransition;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Node\Node;
+use Waaseyaa\Node\NodeAccessPolicy;
+use Waaseyaa\Node\NodeType;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\User;
+use Waaseyaa\Workflows\ContentModerationState;
+use Waaseyaa\Workflows\ContentModerator;
+use Waaseyaa\Workflows\Workflow;
+use Waaseyaa\Workflows\WorkflowState;
+use Waaseyaa\Workflows\WorkflowTransition;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

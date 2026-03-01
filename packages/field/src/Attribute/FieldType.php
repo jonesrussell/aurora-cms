@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Attribute;
+namespace Waaseyaa\Field\Attribute;
 
-use Aurora\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class FieldType extends AuroraPlugin

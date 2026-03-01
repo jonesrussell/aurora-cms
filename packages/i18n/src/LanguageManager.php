@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\I18n;
+namespace Waaseyaa\I18n;
 
 /**
  * Default implementation of LanguageManagerInterface.

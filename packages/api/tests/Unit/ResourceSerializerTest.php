@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit;
+namespace Waaseyaa\Api\Tests\Unit;
 
-use Aurora\Api\JsonApiResource;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
+use Waaseyaa\Api\JsonApiResource;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

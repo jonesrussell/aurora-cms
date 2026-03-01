@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline;
+namespace Waaseyaa\AI\Pipeline;
 
 /**
  * Value object for step configuration within a pipeline.

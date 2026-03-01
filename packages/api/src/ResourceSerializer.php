@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api;
+namespace Waaseyaa\Api;
 
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 
 /**
  * Converts EntityInterface objects to JsonApiResource value objects.

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu\Tests\Unit;
+namespace Waaseyaa\Menu\Tests\Unit;
 
-use Aurora\Menu\Menu;
+use Waaseyaa\Menu\Menu;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Menu\Menu
+ * @covers \Waaseyaa\Menu\Menu
  */
 final class MenuTest extends TestCase
 {

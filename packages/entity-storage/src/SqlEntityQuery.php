@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage;
+namespace Waaseyaa\EntityStorage;
 
-use Aurora\Database\DatabaseInterface;
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Database\DatabaseInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
 
 /**
  * SQL-based entity query implementation.

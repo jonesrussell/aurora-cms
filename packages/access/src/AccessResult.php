@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access;
+namespace Waaseyaa\Access;
 
 /**
  * Value object representing an access check result.

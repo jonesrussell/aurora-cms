@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Tests\Unit;
+namespace Waaseyaa\Access\Tests\Unit;
 
-use Aurora\Access\PermissionHandler;
-use Aurora\Access\PermissionHandlerInterface;
+use Waaseyaa\Access\PermissionHandler;
+use Waaseyaa\Access\PermissionHandlerInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Access\PermissionHandler
+ * @covers \Waaseyaa\Access\PermissionHandler
  */
 class PermissionHandlerTest extends TestCase
 {

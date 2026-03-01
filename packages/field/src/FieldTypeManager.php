@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field;
+namespace Waaseyaa\Field;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Field\Attribute\FieldType;
-use Aurora\Plugin\DefaultPluginManager;
-use Aurora\Plugin\Discovery\AttributeDiscovery;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Field\Attribute\FieldType;
+use Waaseyaa\Plugin\DefaultPluginManager;
+use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
 
 class FieldTypeManager extends DefaultPluginManager implements FieldTypeManagerInterface
 {

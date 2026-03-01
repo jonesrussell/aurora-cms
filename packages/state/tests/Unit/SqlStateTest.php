@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\State\Tests\Unit;
+namespace Waaseyaa\State\Tests\Unit;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\State\SqlState;
-use Aurora\State\StateInterface;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\State\SqlState;
+use Waaseyaa\State\StateInterface;
 use PHPUnit\Framework\TestCase;
 
 final class SqlStateTest extends TestCase

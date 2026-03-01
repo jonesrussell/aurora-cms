@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector\Testing;
+namespace Waaseyaa\AI\Vector\Testing;
 
-use Aurora\AI\Vector\EmbeddingInterface;
+use Waaseyaa\AI\Vector\EmbeddingInterface;
 
 /**
  * Deterministic embedding provider for testing.

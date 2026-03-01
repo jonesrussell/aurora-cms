@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Repository;
+namespace Waaseyaa\Entity\Repository;
 
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityInterface;
 
 /**
  * High-level repository API for entity persistence.

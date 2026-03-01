@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema;
+namespace Waaseyaa\AI\Schema;
 
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
-use Aurora\AI\Schema\Mcp\McpToolGenerator;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolGenerator;
 
 /**
  * Central registry combining JSON Schema and MCP tool outputs.

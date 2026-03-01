@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\User\Tests\Unit;
+namespace Waaseyaa\User\Tests\Unit;
 
-use Aurora\Access\AccountInterface;
-use Aurora\Entity\ContentEntityBase;
-use Aurora\User\User;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\User\User;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

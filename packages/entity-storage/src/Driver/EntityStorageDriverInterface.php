@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Driver;
+namespace Waaseyaa\EntityStorage\Driver;
 
 /**
  * Low-level persistence SPI for entity storage.

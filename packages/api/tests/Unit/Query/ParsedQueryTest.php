@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Query;
+namespace Waaseyaa\Api\Tests\Unit\Query;
 
-use Aurora\Api\Query\ParsedQuery;
-use Aurora\Api\Query\QueryFilter;
-use Aurora\Api\Query\QuerySort;
+use Waaseyaa\Api\Query\ParsedQuery;
+use Waaseyaa\Api\Query\QueryFilter;
+use Waaseyaa\Api\Query\QuerySort;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

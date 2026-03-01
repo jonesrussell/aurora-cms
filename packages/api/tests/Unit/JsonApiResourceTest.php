@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit;
+namespace Waaseyaa\Api\Tests\Unit;
 
-use Aurora\Api\JsonApiResource;
+use Waaseyaa\Api\JsonApiResource;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\SSR\Attribute;
+namespace Waaseyaa\SSR\Attribute;
 
 use Attribute;
 

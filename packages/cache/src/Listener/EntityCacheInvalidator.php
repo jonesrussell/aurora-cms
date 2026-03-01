@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Listener;
+namespace Waaseyaa\Cache\Listener;
 
-use Aurora\Cache\CacheTagsInvalidatorInterface;
-use Aurora\Entity\Event\EntityEvent;
+use Waaseyaa\Cache\CacheTagsInvalidatorInterface;
+use Waaseyaa\Entity\Event\EntityEvent;
 
 /**
  * Listens for entity save/delete events and invalidates related cache tags.

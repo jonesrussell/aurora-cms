@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Tests\Unit\Attribute;
+namespace Waaseyaa\Queue\Tests\Unit\Attribute;
 
-use Aurora\Queue\Attribute\UniqueJob;
-use Aurora\Queue\Job;
+use Waaseyaa\Queue\Attribute\UniqueJob;
+use Waaseyaa\Queue\Job;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

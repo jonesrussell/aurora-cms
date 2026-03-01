@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Result;
+namespace Waaseyaa\Foundation\Result;
 
 /**
  * @template T

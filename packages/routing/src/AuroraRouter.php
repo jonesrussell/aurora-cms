@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing;
+namespace Waaseyaa\Routing;
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;

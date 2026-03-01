@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Cache;
+namespace Waaseyaa\Api\Tests\Unit\Cache;
 
-use Aurora\Api\Cache\ApiCacheMiddleware;
-use Aurora\Api\JsonApiDocument;
-use Aurora\Api\JsonApiResource;
+use Waaseyaa\Api\Cache\ApiCacheMiddleware;
+use Waaseyaa\Api\JsonApiDocument;
+use Waaseyaa\Api\JsonApiResource;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

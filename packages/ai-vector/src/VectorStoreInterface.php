@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector;
+namespace Waaseyaa\AI\Vector;
 
 /**
  * Interface for vector storage backends.

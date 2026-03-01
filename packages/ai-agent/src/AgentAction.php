@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent;
+namespace Waaseyaa\AI\Agent;
 
 /**
  * Value object describing a single action taken by an agent.

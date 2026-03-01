@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Validation\Tests\Unit;
+namespace Waaseyaa\Validation\Tests\Unit;
 
-use Aurora\Validation\Constraint\AllowedValues;
-use Aurora\Validation\Constraint\EntityExists;
-use Aurora\Validation\Constraint\NotEmpty;
-use Aurora\Validation\Constraint\SafeMarkup;
-use Aurora\Validation\Constraint\UniqueField;
-use Aurora\Validation\ConstraintFactory;
+use Waaseyaa\Validation\Constraint\AllowedValues;
+use Waaseyaa\Validation\Constraint\EntityExists;
+use Waaseyaa\Validation\Constraint\NotEmpty;
+use Waaseyaa\Validation\Constraint\SafeMarkup;
+use Waaseyaa\Validation\Constraint\UniqueField;
+use Waaseyaa\Validation\ConstraintFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 

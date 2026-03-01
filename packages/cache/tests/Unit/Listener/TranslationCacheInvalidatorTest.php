@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Tests\Unit\Listener;
+namespace Waaseyaa\Cache\Tests\Unit\Listener;
 
-use Aurora\Cache\CacheTagsInvalidatorInterface;
-use Aurora\Cache\Listener\TranslationCacheInvalidator;
+use Waaseyaa\Cache\CacheTagsInvalidatorInterface;
+use Waaseyaa\Cache\Listener\TranslationCacheInvalidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

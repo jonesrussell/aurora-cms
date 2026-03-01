@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Path;
+namespace Waaseyaa\Path;
 
 /**
  * Processes URL paths by resolving aliases.

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit;
+namespace Waaseyaa\Entity\Tests\Unit;
 
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Aurora\Entity\EntityTypeManager
+ * @covers \Waaseyaa\Entity\EntityTypeManager
  */
 class EntityTypeManagerTest extends TestCase
 {

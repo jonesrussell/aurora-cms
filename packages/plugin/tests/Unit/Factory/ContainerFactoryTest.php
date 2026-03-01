@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Tests\Unit\Factory;
+namespace Waaseyaa\Plugin\Tests\Unit\Factory;
 
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\Plugin\Factory\ContainerFactory;
-use Aurora\Plugin\Tests\Fixtures\TestPlugin;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Plugin\Factory\ContainerFactory;
+use Waaseyaa\Plugin\Tests\Fixtures\TestPlugin;
 use PHPUnit\Framework\TestCase;
 
 final class ContainerFactoryTest extends TestCase

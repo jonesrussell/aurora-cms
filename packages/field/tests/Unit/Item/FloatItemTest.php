@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit\Item;
+namespace Waaseyaa\Field\Tests\Unit\Item;
 
-use Aurora\Field\Item\FloatItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Item\FloatItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\Item\FloatItem
+ * @covers \Waaseyaa\Field\Item\FloatItem
  */
 class FloatItemTest extends TestCase
 {

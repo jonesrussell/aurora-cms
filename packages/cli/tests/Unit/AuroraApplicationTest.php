@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit;
+namespace Waaseyaa\CLI\Tests\Unit;
 
-use Aurora\CLI\AuroraApplication;
+use Waaseyaa\CLI\AuroraApplication;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

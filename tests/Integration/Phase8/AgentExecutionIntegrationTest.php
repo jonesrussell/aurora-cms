@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase8;
+namespace Waaseyaa\Tests\Integration\Phase8;
 
-use Aurora\AI\Agent\AgentAction;
-use Aurora\AI\Agent\AgentContext;
-use Aurora\AI\Agent\AgentExecutor;
-use Aurora\AI\Agent\AgentInterface;
-use Aurora\AI\Agent\AgentResult;
-use Aurora\AI\Agent\McpServer;
-use Aurora\AI\Schema\EntityJsonSchemaGenerator;
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\AI\Schema\Mcp\McpToolGenerator;
-use Aurora\AI\Schema\SchemaRegistry;
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\User\User;
+use Waaseyaa\AI\Agent\AgentAction;
+use Waaseyaa\AI\Agent\AgentContext;
+use Waaseyaa\AI\Agent\AgentExecutor;
+use Waaseyaa\AI\Agent\AgentInterface;
+use Waaseyaa\AI\Agent\AgentResult;
+use Waaseyaa\AI\Agent\McpServer;
+use Waaseyaa\AI\Schema\EntityJsonSchemaGenerator;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\AI\Schema\Mcp\McpToolGenerator;
+use Waaseyaa\AI\Schema\SchemaRegistry;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\User\User;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

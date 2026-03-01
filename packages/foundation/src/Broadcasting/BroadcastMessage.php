@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Broadcasting;
+namespace Waaseyaa\Foundation\Broadcasting;
 
 /**
  * Immutable value object representing a message to broadcast over SSE.

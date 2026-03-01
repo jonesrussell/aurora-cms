@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity;
+namespace Waaseyaa\Entity;
 
 use Symfony\Component\Uid\Uuid;
 

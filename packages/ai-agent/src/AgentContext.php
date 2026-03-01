@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent;
+namespace Waaseyaa\AI\Agent;
 
-use Aurora\Access\AccountInterface;
+use Waaseyaa\Access\AccountInterface;
 
 /**
  * Context passed to agents during execution.

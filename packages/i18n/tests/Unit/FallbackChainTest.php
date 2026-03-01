@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\I18n\Tests\Unit;
+namespace Waaseyaa\I18n\Tests\Unit;
 
-use Aurora\I18n\FallbackChain;
-use Aurora\I18n\Language;
-use Aurora\I18n\LanguageManager;
+use Waaseyaa\I18n\FallbackChain;
+use Waaseyaa\I18n\Language;
+use Waaseyaa\I18n\LanguageManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

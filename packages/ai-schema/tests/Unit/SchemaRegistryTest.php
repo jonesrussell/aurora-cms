@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Tests\Unit;
+namespace Waaseyaa\AI\Schema\Tests\Unit;
 
-use Aurora\AI\Schema\EntityJsonSchemaGenerator;
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
-use Aurora\AI\Schema\Mcp\McpToolGenerator;
-use Aurora\AI\Schema\SchemaRegistry;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\AI\Schema\EntityJsonSchemaGenerator;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolGenerator;
+use Waaseyaa\AI\Schema\SchemaRegistry;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

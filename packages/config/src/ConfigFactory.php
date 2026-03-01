@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config;
+namespace Waaseyaa\Config;
 
-use Aurora\Config\Event\ConfigEvent;
-use Aurora\Config\Event\ConfigEvents;
+use Waaseyaa\Config\Event\ConfigEvent;
+use Waaseyaa\Config\Event\ConfigEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class ConfigFactory implements ConfigFactoryInterface

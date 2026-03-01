@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command;
+namespace Waaseyaa\CLI\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -32,8 +32,8 @@ class MakeEntityTypeCommand extends Command
         $className = str_replace('_', '', ucwords($name, '_'));
         $baseClass = $isContent ? 'ContentEntityBase' : 'ConfigEntityBase';
         $baseImport = $isContent
-            ? 'use Aurora\Entity\ContentEntityBase;'
-            : 'use Aurora\Entity\ConfigEntityBase;';
+            ? 'use Waaseyaa\Entity\ContentEntityBase;'
+            : 'use Waaseyaa\Entity\ConfigEntityBase;';
 
         $template = <<<PHP
 <?php

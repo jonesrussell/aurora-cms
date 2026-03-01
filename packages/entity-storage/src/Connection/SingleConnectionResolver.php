@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Connection;
+namespace Waaseyaa\EntityStorage\Connection;
 
-use Aurora\Database\DatabaseInterface;
+use Waaseyaa\Database\DatabaseInterface;
 
 /**
  * Single-connection resolver for single-tenant deployments.

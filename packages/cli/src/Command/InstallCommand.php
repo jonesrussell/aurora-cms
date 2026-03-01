@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command;
+namespace Waaseyaa\CLI\Command;
 
-use Aurora\Config\ConfigManagerInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Config\ConfigManagerInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

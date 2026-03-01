@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Asset;
+namespace Waaseyaa\Foundation\Tests\Unit\Asset;
 
-use Aurora\Foundation\Asset\AssetManagerInterface;
-use Aurora\Foundation\Asset\TenantAssetResolver;
-use Aurora\Foundation\Asset\ViteAssetManager;
+use Waaseyaa\Foundation\Asset\AssetManagerInterface;
+use Waaseyaa\Foundation\Asset\TenantAssetResolver;
+use Waaseyaa\Foundation\Asset\ViteAssetManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

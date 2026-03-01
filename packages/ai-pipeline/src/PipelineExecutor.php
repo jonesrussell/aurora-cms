@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline;
+namespace Waaseyaa\AI\Pipeline;
 
 /**
  * Executes pipelines synchronously.

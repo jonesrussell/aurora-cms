@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase4;
+namespace Waaseyaa\Tests\Integration\Phase4;
 
-use Aurora\Config\Config;
-use Aurora\Config\ConfigFactory;
-use Aurora\Config\ConfigManager;
-use Aurora\Config\Event\ConfigEvent;
-use Aurora\Config\Event\ConfigEvents;
-use Aurora\Config\Storage\FileStorage;
-use Aurora\Config\Storage\MemoryStorage;
+use Waaseyaa\Config\Config;
+use Waaseyaa\Config\ConfigFactory;
+use Waaseyaa\Config\ConfigManager;
+use Waaseyaa\Config\Event\ConfigEvent;
+use Waaseyaa\Config\Event\ConfigEvents;
+use Waaseyaa\Config\Storage\FileStorage;
+use Waaseyaa\Config\Storage\MemoryStorage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -441,7 +441,7 @@ final class ConfigEntityLifecycleTest extends TestCase
 
         $immutable = $factory->get('test.immutable');
 
-        $this->expectException(\Aurora\Config\Exception\ImmutableConfigException::class);
+        $this->expectException(\Waaseyaa\Config\Exception\ImmutableConfigException::class);
         $immutable->set('key', 'new_value');
     }
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Tests\Unit\Mcp;
+namespace Waaseyaa\AI\Schema\Tests\Unit\Mcp;
 
-use Aurora\AI\Schema\Mcp\McpToolExecutor;
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\Storage\EntityQueryInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\AI\Schema\Mcp\McpToolExecutor;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Fixtures;
+namespace Waaseyaa\Api\Tests\Fixtures;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Simple test entity for API tests.

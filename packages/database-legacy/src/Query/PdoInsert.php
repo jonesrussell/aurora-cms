@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Query;
+namespace Waaseyaa\Database\Query;
 
-use Aurora\Database\InsertInterface;
+use Waaseyaa\Database\InsertInterface;
 
 final class PdoInsert implements InsertInterface
 {

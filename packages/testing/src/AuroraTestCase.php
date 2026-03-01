@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Testing;
+namespace Waaseyaa\Testing;
 
-use Aurora\Testing\Traits\CreatesApplication;
-use Aurora\Testing\Traits\InteractsWithAuth;
-use Aurora\Testing\Traits\InteractsWithEvents;
+use Waaseyaa\Testing\Traits\CreatesApplication;
+use Waaseyaa\Testing\Traits\InteractsWithAuth;
+use Waaseyaa\Testing\Traits\InteractsWithEvents;
 use PHPUnit\Framework\TestCase;
 
 /**

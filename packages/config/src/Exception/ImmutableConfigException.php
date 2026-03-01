@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Exception;
+namespace Waaseyaa\Config\Exception;
 
 final class ImmutableConfigException extends \LogicException
 {

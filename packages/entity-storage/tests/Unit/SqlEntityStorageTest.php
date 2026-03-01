@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Unit;
+namespace Waaseyaa\EntityStorage\Tests\Unit;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Entity\EntityConstants;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\Event\EntityEvent;
-use Aurora\Entity\Event\EntityEvents;
-use Aurora\EntityStorage\SqlEntityStorage;
-use Aurora\EntityStorage\SqlSchemaHandler;
-use Aurora\EntityStorage\Tests\Fixtures\TestStorageEntity;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\EntityConstants;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
+use Waaseyaa\EntityStorage\SqlEntityStorage;
+use Waaseyaa\EntityStorage\SqlSchemaHandler;
+use Waaseyaa\EntityStorage\Tests\Fixtures\TestStorageEntity;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -246,7 +246,7 @@ final class SqlEntityStorageTest extends TestCase
     {
         $query = $this->storage->getQuery();
 
-        $this->assertInstanceOf(\Aurora\Entity\Storage\EntityQueryInterface::class, $query);
+        $this->assertInstanceOf(\Waaseyaa\Entity\Storage\EntityQueryInterface::class, $query);
     }
 
     public function testEntityPreservesUuidAfterSaveAndLoad(): void

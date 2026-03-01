@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Handler;
+namespace Waaseyaa\Queue\Handler;
 
 interface HandlerInterface
 {

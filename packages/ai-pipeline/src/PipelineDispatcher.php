@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline;
+namespace Waaseyaa\AI\Pipeline;
 
-use Aurora\Queue\QueueInterface;
+use Waaseyaa\Queue\QueueInterface;
 
 /**
  * Dispatches pipelines to a queue for async execution.

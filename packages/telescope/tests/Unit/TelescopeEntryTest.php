@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Telescope\Tests\Unit;
+namespace Waaseyaa\Telescope\Tests\Unit;
 
-use Aurora\Telescope\TelescopeEntry;
+use Waaseyaa\Telescope\TelescopeEntry;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command;
+namespace Waaseyaa\CLI\Tests\Unit\Command;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheFactoryInterface;
-use Aurora\CLI\Command\CacheClearCommand;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheFactoryInterface;
+use Waaseyaa\CLI\Command\CacheClearCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

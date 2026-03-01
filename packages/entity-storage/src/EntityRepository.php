@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage;
+namespace Waaseyaa\EntityStorage;
 
-use Aurora\Entity\EntityConstants;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\Event\EntityEvent;
-use Aurora\Entity\Event\EntityEvents;
-use Aurora\Entity\Repository\EntityRepositoryInterface;
-use Aurora\EntityStorage\Driver\EntityStorageDriverInterface;
+use Waaseyaa\Entity\EntityConstants;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
+use Waaseyaa\Entity\Repository\EntityRepositoryInterface;
+use Waaseyaa\EntityStorage\Driver\EntityStorageDriverInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**

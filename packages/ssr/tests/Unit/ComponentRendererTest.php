@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\SSR\Tests\Unit;
+namespace Waaseyaa\SSR\Tests\Unit;
 
-use Aurora\SSR\Attribute\Component;
-use Aurora\SSR\ComponentMetadata;
-use Aurora\SSR\ComponentRegistry;
-use Aurora\SSR\ComponentRenderer;
+use Waaseyaa\SSR\Attribute\Component;
+use Waaseyaa\SSR\ComponentMetadata;
+use Waaseyaa\SSR\ComponentRegistry;
+use Waaseyaa\SSR\ComponentRenderer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

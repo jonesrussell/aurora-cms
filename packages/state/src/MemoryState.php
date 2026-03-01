@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\State;
+namespace Waaseyaa\State;
 
 final class MemoryState implements StateInterface
 {

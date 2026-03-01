@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Tests\Unit\Event;
+namespace Waaseyaa\Entity\Tests\Unit\Event;
 
-use Aurora\Entity\Event\EntityDeleted;
-use Aurora\Entity\Event\EntitySaved;
-use Aurora\Foundation\Event\DomainEvent;
+use Waaseyaa\Entity\Event\EntityDeleted;
+use Waaseyaa\Entity\Event\EntitySaved;
+use Waaseyaa\Foundation\Event\DomainEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

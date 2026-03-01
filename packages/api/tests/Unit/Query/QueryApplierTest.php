@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Tests\Unit\Query;
+namespace Waaseyaa\Api\Tests\Unit\Query;
 
-use Aurora\Api\Query\ParsedQuery;
-use Aurora\Api\Query\QueryApplier;
-use Aurora\Api\Query\QueryFilter;
-use Aurora\Api\Query\QuerySort;
-use Aurora\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Api\Query\ParsedQuery;
+use Waaseyaa\Api\Query\QueryApplier;
+use Waaseyaa\Api\Query\QueryFilter;
+use Waaseyaa\Api\Query\QuerySort;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

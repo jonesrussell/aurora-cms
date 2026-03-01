@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase9;
+namespace Waaseyaa\Tests\Integration\Phase9;
 
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Cache\CacheFactory;
-use Aurora\CLI\Command\CacheClearCommand;
-use Aurora\CLI\Command\ConfigExportCommand;
-use Aurora\CLI\Command\ConfigImportCommand;
-use Aurora\CLI\Command\EntityCreateCommand;
-use Aurora\Config\ConfigManager;
-use Aurora\Config\Storage\MemoryStorage;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\SSR\Attribute\Component;
-use Aurora\SSR\ComponentMetadata;
-use Aurora\SSR\ComponentRegistry;
-use Aurora\SSR\ComponentRenderer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Cache\CacheFactory;
+use Waaseyaa\CLI\Command\CacheClearCommand;
+use Waaseyaa\CLI\Command\ConfigExportCommand;
+use Waaseyaa\CLI\Command\ConfigImportCommand;
+use Waaseyaa\CLI\Command\EntityCreateCommand;
+use Waaseyaa\Config\ConfigManager;
+use Waaseyaa\Config\Storage\MemoryStorage;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\SSR\Attribute\Component;
+use Waaseyaa\SSR\ComponentMetadata;
+use Waaseyaa\SSR\ComponentRegistry;
+use Waaseyaa\SSR\ComponentRenderer;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

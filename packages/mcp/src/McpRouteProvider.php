@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp;
+namespace Waaseyaa\Mcp;
 
-use Aurora\Routing\AuroraRouter;
-use Aurora\Routing\RouteBuilder;
+use Waaseyaa\Routing\AuroraRouter;
+use Waaseyaa\Routing\RouteBuilder;
 
 final readonly class McpRouteProvider
 {
@@ -14,7 +14,7 @@ final readonly class McpRouteProvider
         $router->addRoute(
             'mcp.endpoint',
             RouteBuilder::create('/mcp')
-                ->controller('Aurora\\Mcp\\McpEndpoint::handle')
+                ->controller('Waaseyaa\\Mcp\\McpEndpoint::handle')
                 ->methods('POST', 'GET')
                 ->build(),
         );
@@ -22,7 +22,7 @@ final readonly class McpRouteProvider
         $router->addRoute(
             'mcp.server_card',
             RouteBuilder::create('/.well-known/mcp.json')
-                ->controller('Aurora\\Mcp\\McpServerCard::toJson')
+                ->controller('Waaseyaa\\Mcp\\McpServerCard::toJson')
                 ->methods('GET')
                 ->allowAll()
                 ->build(),

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase4;
+namespace Waaseyaa\Tests\Integration\Phase4;
 
-use Aurora\Field\Attribute\FieldType;
-use Aurora\Field\FieldDefinition;
-use Aurora\Field\FieldItemBase;
-use Aurora\Field\FieldItemList;
-use Aurora\Field\FieldTypeManager;
-use Aurora\Field\Item\BooleanItem;
-use Aurora\Field\Item\EntityReferenceItem;
-use Aurora\Field\Item\FloatItem;
-use Aurora\Field\Item\IntegerItem;
-use Aurora\Field\Item\StringItem;
-use Aurora\Field\Item\TextItem;
-use Aurora\Plugin\Definition\PluginDefinition;
+use Waaseyaa\Field\Attribute\FieldType;
+use Waaseyaa\Field\FieldDefinition;
+use Waaseyaa\Field\FieldItemBase;
+use Waaseyaa\Field\FieldItemList;
+use Waaseyaa\Field\FieldTypeManager;
+use Waaseyaa\Field\Item\BooleanItem;
+use Waaseyaa\Field\Item\EntityReferenceItem;
+use Waaseyaa\Field\Item\FloatItem;
+use Waaseyaa\Field\Item\IntegerItem;
+use Waaseyaa\Field\Item\StringItem;
+use Waaseyaa\Field\Item\TextItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI;
+namespace Waaseyaa\CLI;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;

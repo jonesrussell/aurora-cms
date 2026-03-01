@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Mcp\Bridge;
+namespace Waaseyaa\Mcp\Bridge;
 
-use Aurora\AI\Schema\Mcp\McpToolDefinition;
+use Waaseyaa\AI\Schema\Mcp\McpToolDefinition;
 
 /**
  * Interface for accessing MCP tool definitions.

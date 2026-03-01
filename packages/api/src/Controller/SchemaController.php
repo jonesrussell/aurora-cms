@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Controller;
+namespace Waaseyaa\Api\Controller;
 
-use Aurora\Api\JsonApiDocument;
-use Aurora\Api\JsonApiError;
-use Aurora\Api\Schema\SchemaPresenter;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Api\JsonApiDocument;
+use Waaseyaa\Api\JsonApiError;
+use Waaseyaa\Api\Schema\SchemaPresenter;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 
 /**
  * Returns JSON Schema representations of entity types.

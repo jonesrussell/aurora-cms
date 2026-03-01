@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase7;
+namespace Waaseyaa\Tests\Integration\Phase7;
 
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Api\JsonApiController;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
-use Aurora\Api\Tests\Fixtures\TestEntity;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\Node\Node;
-use Aurora\Node\NodeAccessPolicy;
-use Aurora\User\AnonymousUser;
-use Aurora\User\User;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Api\JsonApiController;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Waaseyaa\Api\Tests\Fixtures\TestEntity;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\Node\Node;
+use Waaseyaa\Node\NodeAccessPolicy;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\User;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -505,7 +505,7 @@ class NodeInMemoryStorage extends InMemoryEntityStorage
         return $result;
     }
 
-    public function save(\Aurora\Entity\EntityInterface $entity): int
+    public function save(\Waaseyaa\Entity\EntityInterface $entity): int
     {
         $isNew = $entity->isNew();
 
@@ -527,9 +527,9 @@ class NodeInMemoryStorage extends InMemoryEntityStorage
         }
     }
 
-    public function getQuery(): \Aurora\Entity\Storage\EntityQueryInterface
+    public function getQuery(): \Waaseyaa\Entity\Storage\EntityQueryInterface
     {
-        return new \Aurora\Api\Tests\Fixtures\InMemoryEntityQuery(
+        return new \Waaseyaa\Api\Tests\Fixtures\InMemoryEntityQuery(
             array_keys($this->nodes),
             $this->nodes,
         );

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData\Tests\Unit;
+namespace Waaseyaa\TypedData\Tests\Unit;
 
-use Aurora\TypedData\DataDefinition;
-use Aurora\TypedData\DataDefinitionInterface;
-use Aurora\TypedData\Type\BooleanData;
-use Aurora\TypedData\Type\FloatData;
-use Aurora\TypedData\Type\IntegerData;
-use Aurora\TypedData\Type\ListData;
-use Aurora\TypedData\Type\MapData;
-use Aurora\TypedData\Type\StringData;
-use Aurora\TypedData\TypedDataManager;
-use Aurora\TypedData\TypedDataManagerInterface;
+use Waaseyaa\TypedData\DataDefinition;
+use Waaseyaa\TypedData\DataDefinitionInterface;
+use Waaseyaa\TypedData\Type\BooleanData;
+use Waaseyaa\TypedData\Type\FloatData;
+use Waaseyaa\TypedData\Type\IntegerData;
+use Waaseyaa\TypedData\Type\ListData;
+use Waaseyaa\TypedData\Type\MapData;
+use Waaseyaa\TypedData\Type\StringData;
+use Waaseyaa\TypedData\TypedDataManager;
+use Waaseyaa\TypedData\TypedDataManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

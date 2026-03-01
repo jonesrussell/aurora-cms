@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy\Tests\Unit;
+namespace Waaseyaa\Taxonomy\Tests\Unit;
 
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\ContentEntityInterface;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\FieldableInterface;
-use Aurora\Taxonomy\Term;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\FieldableInterface;
+use Waaseyaa\Taxonomy\Term;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Taxonomy\Term
+ * @covers \Waaseyaa\Taxonomy\Term
  */
 class TermTest extends TestCase
 {

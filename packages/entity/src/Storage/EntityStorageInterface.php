@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Storage;
+namespace Waaseyaa\Entity\Storage;
 
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityInterface;
 
 interface EntityStorageInterface
 {

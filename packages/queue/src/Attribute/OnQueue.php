@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Queue\Attribute;
+namespace Waaseyaa\Queue\Attribute;
 
 /**
  * Specifies which named queue a job should be dispatched to.

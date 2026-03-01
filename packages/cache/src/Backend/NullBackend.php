@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache\Backend;
+namespace Waaseyaa\Cache\Backend;
 
-use Aurora\Cache\CacheBackendInterface;
-use Aurora\Cache\CacheItem;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
 
 final class NullBackend implements CacheBackendInterface
 {

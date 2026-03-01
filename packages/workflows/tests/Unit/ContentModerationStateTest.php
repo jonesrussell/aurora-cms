@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Workflows\Tests\Unit;
+namespace Waaseyaa\Workflows\Tests\Unit;
 
-use Aurora\Workflows\ContentModerationState;
+use Waaseyaa\Workflows\ContentModerationState;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

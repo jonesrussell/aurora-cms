@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Gate;
+namespace Waaseyaa\Access\Gate;
 
 /**
  * Marks a class as a Gate policy for a specific entity type.

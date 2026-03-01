@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media\Tests\Unit;
+namespace Waaseyaa\Media\Tests\Unit;
 
-use Aurora\Media\File;
-use Aurora\Media\FileRepositoryInterface;
-use Aurora\Media\InMemoryFileRepository;
+use Waaseyaa\Media\File;
+use Waaseyaa\Media\FileRepositoryInterface;
+use Waaseyaa\Media\InMemoryFileRepository;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Media\InMemoryFileRepository
+ * @covers \Waaseyaa\Media\InMemoryFileRepository
  */
 final class InMemoryFileRepositoryTest extends TestCase
 {

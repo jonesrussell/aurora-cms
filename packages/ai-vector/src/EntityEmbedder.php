@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector;
+namespace Waaseyaa\AI\Vector;
 
-use Aurora\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityInterface;
 
 /**
  * Service that generates and manages embeddings for entities.

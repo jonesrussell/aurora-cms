@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Controller;
+namespace Waaseyaa\Api\Controller;
 
-use Aurora\Api\JsonApiDocument;
-use Aurora\Api\JsonApiError;
-use Aurora\Api\JsonApiResource;
-use Aurora\Api\MutableTranslatableInterface;
-use Aurora\Api\ResourceSerializer;
-use Aurora\Entity\EntityTypeManagerInterface;
-use Aurora\Entity\FieldableInterface;
-use Aurora\Entity\TranslatableInterface;
+use Waaseyaa\Api\JsonApiDocument;
+use Waaseyaa\Api\JsonApiError;
+use Waaseyaa\Api\JsonApiResource;
+use Waaseyaa\Api\MutableTranslatableInterface;
+use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\FieldableInterface;
+use Waaseyaa\Entity\TranslatableInterface;
 
 /**
  * Handles translation CRUD sub-endpoints for entities.

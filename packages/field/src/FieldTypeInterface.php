@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field;
+namespace Waaseyaa\Field;
 
-use Aurora\Plugin\PluginInspectionInterface;
+use Waaseyaa\Plugin\PluginInspectionInterface;
 
 interface FieldTypeInterface extends PluginInspectionInterface
 {

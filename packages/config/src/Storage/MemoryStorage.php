@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Storage;
+namespace Waaseyaa\Config\Storage;
 
-use Aurora\Config\StorageInterface;
+use Waaseyaa\Config\StorageInterface;
 
 final class MemoryStorage implements StorageInterface
 {

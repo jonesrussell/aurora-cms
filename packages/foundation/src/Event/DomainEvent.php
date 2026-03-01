@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Event;
+namespace Waaseyaa\Foundation\Event;
 
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\Event;

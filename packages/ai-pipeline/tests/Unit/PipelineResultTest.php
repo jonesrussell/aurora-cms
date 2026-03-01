@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Pipeline\Tests\Unit;
+namespace Waaseyaa\AI\Pipeline\Tests\Unit;
 
-use Aurora\AI\Pipeline\PipelineResult;
-use Aurora\AI\Pipeline\StepResult;
+use Waaseyaa\AI\Pipeline\PipelineResult;
+use Waaseyaa\AI\Pipeline\StepResult;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\AI\Pipeline\PipelineResult
+ * @covers \Waaseyaa\AI\Pipeline\PipelineResult
  */
 final class PipelineResultTest extends TestCase
 {

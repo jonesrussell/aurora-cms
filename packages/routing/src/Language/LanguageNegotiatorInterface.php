@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Language;
+namespace Waaseyaa\Routing\Language;
 
 /**
  * Strategy interface for language negotiation.

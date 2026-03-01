@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage;
+namespace Waaseyaa\EntityStorage;
 
-use Aurora\Database\DatabaseInterface;
-use Aurora\Entity\EntityConstants;
-use Aurora\Entity\EntityInterface;
-use Aurora\Entity\EntityTypeInterface;
-use Aurora\Entity\Event\EntityEvent;
-use Aurora\Entity\Event\EntityEvents;
-use Aurora\Entity\Storage\EntityQueryInterface;
-use Aurora\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Database\DatabaseInterface;
+use Waaseyaa\Entity\EntityConstants;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\EntityTypeInterface;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
+use Waaseyaa\Entity\Storage\EntityQueryInterface;
+use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -326,7 +326,7 @@ final class SqlEntityStorage implements EntityStorageInterface
     /**
      * Check if a column exists in the entity table (with caching).
      */
-    private function columnExists(string $column, \Aurora\Database\SchemaInterface $schema): bool
+    private function columnExists(string $column, \Waaseyaa\Database\SchemaInterface $schema): bool
     {
         if (!isset($this->columnCache[$column])) {
             $this->columnCache[$column] = $schema->fieldExists($this->tableName, $column);

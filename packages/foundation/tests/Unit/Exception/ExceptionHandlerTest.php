@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Exception;
+namespace Waaseyaa\Foundation\Tests\Unit\Exception;
 
-use Aurora\Foundation\Exception\AuthenticationException;
-use Aurora\Foundation\Exception\ExceptionHandler;
-use Aurora\Foundation\Exception\RequestContext;
-use Aurora\Foundation\Exception\StorageException;
+use Waaseyaa\Foundation\Exception\AuthenticationException;
+use Waaseyaa\Foundation\Exception\ExceptionHandler;
+use Waaseyaa\Foundation\Exception\RequestContext;
+use Waaseyaa\Foundation\Exception\StorageException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Agent\Tests\Unit;
+namespace Waaseyaa\AI\Agent\Tests\Unit;
 
-use Aurora\Access\AccountInterface;
-use Aurora\AI\Agent\AgentContext;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\AI\Agent\AgentContext;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

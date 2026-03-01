@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\ServiceProvider;
+namespace Waaseyaa\Foundation\Tests\Unit\ServiceProvider;
 
-use Aurora\Foundation\ServiceProvider\ProviderDiscovery;
+use Waaseyaa\Foundation\ServiceProvider\ProviderDiscovery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ final class ProviderDiscoveryTest extends TestCase
                     'name' => 'aurora/entity',
                     'extra' => [
                         'aurora' => [
-                            'providers' => ['Aurora\\Entity\\EntityServiceProvider'],
+                            'providers' => ['Waaseyaa\\Entity\\EntityServiceProvider'],
                         ],
                     ],
                 ],
@@ -29,7 +29,7 @@ final class ProviderDiscoveryTest extends TestCase
                     'name' => 'aurora/cache',
                     'extra' => [
                         'aurora' => [
-                            'providers' => ['Aurora\\Cache\\CacheServiceProvider'],
+                            'providers' => ['Waaseyaa\\Cache\\CacheServiceProvider'],
                         ],
                     ],
                 ],
@@ -44,8 +44,8 @@ final class ProviderDiscoveryTest extends TestCase
         $providers = $discovery->discoverFromArray($installed);
 
         $this->assertCount(2, $providers);
-        $this->assertContains('Aurora\\Entity\\EntityServiceProvider', $providers);
-        $this->assertContains('Aurora\\Cache\\CacheServiceProvider', $providers);
+        $this->assertContains('Waaseyaa\\Entity\\EntityServiceProvider', $providers);
+        $this->assertContains('Waaseyaa\\Cache\\CacheServiceProvider', $providers);
     }
 
     #[Test]
@@ -74,8 +74,8 @@ final class ProviderDiscoveryTest extends TestCase
                     'extra' => [
                         'aurora' => [
                             'providers' => [
-                                'Aurora\\AiSchema\\SchemaServiceProvider',
-                                'Aurora\\AiSchema\\McpToolServiceProvider',
+                                'Waaseyaa\\AiSchema\\SchemaServiceProvider',
+                                'Waaseyaa\\AiSchema\\McpToolServiceProvider',
                             ],
                         ],
                     ],

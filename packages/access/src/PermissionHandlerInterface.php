@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access;
+namespace Waaseyaa\Access;
 
 /**
  * Manages the registry of available permissions.

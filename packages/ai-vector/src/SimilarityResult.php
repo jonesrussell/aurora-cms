@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector;
+namespace Waaseyaa\AI\Vector;
 
 /**
  * Value object representing a similarity search result.

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase5;
+namespace Waaseyaa\Tests\Integration\Phase5;
 
-use Aurora\Access\AccessPolicyInterface;
-use Aurora\Access\AccessResult;
-use Aurora\Access\AccountInterface;
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Access\PermissionHandler;
-use Aurora\Entity\EntityInterface;
-use Aurora\User\AnonymousUser;
-use Aurora\User\Role;
-use Aurora\User\User;
-use Aurora\User\UserSession;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Access\PermissionHandler;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\Role;
+use Waaseyaa\User\User;
+use Waaseyaa\User\UserSession;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 

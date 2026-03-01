@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Query;
+namespace Waaseyaa\Database\Query;
 
-use Aurora\Database\UpdateInterface;
+use Waaseyaa\Database\UpdateInterface;
 
 final class PdoUpdate implements UpdateInterface
 {

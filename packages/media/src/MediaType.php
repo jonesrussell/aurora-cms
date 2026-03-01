@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Media;
+namespace Waaseyaa\Media;
 
-use Aurora\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityBase;
 
 /**
  * Defines a media type configuration entity.

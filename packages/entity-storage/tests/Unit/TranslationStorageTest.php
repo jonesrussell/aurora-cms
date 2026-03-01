@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Unit;
+namespace Waaseyaa\EntityStorage\Tests\Unit;
 
-use Aurora\Database\PdoDatabase;
-use Aurora\Entity\EntityType;
-use Aurora\EntityStorage\SqlSchemaHandler;
-use Aurora\EntityStorage\Tests\Fixtures\TestStorageEntity;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\EntityStorage\SqlSchemaHandler;
+use Waaseyaa\EntityStorage\Tests\Fixtures\TestStorageEntity;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

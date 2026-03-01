@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Event;
+namespace Waaseyaa\Entity\Event;
 
-use Aurora\Foundation\Event\DomainEvent;
+use Waaseyaa\Foundation\Event\DomainEvent;
 
 final class EntityDeleted extends DomainEvent
 {

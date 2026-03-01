@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Aurora\TypedData\Tests\Unit\Type;
+namespace Waaseyaa\TypedData\Tests\Unit\Type;
 
-use Aurora\TypedData\ComplexDataInterface;
-use Aurora\TypedData\DataDefinition;
-use Aurora\TypedData\DataDefinitionInterface;
-use Aurora\TypedData\Type\MapData;
-use Aurora\TypedData\Type\StringData;
-use Aurora\TypedData\TypedDataInterface;
-use Aurora\TypedData\TypedDataManager;
+use Waaseyaa\TypedData\ComplexDataInterface;
+use Waaseyaa\TypedData\DataDefinition;
+use Waaseyaa\TypedData\DataDefinitionInterface;
+use Waaseyaa\TypedData\Type\MapData;
+use Waaseyaa\TypedData\Type\StringData;
+use Waaseyaa\TypedData\TypedDataInterface;
+use Waaseyaa\TypedData\TypedDataManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

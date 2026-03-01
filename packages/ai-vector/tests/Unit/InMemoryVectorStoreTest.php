@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector\Tests\Unit;
+namespace Waaseyaa\AI\Vector\Tests\Unit;
 
-use Aurora\AI\Vector\EntityEmbedding;
-use Aurora\AI\Vector\InMemoryVectorStore;
-use Aurora\AI\Vector\SimilarityResult;
+use Waaseyaa\AI\Vector\EntityEmbedding;
+use Waaseyaa\AI\Vector\InMemoryVectorStore;
+use Waaseyaa\AI\Vector\SimilarityResult;
 use PHPUnit\Framework\TestCase;
 
 final class InMemoryVectorStoreTest extends TestCase

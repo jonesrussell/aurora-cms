@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Node\Tests\Unit;
+namespace Waaseyaa\Node\Tests\Unit;
 
-use Aurora\Entity\ContentEntityBase;
-use Aurora\Node\Node;
+use Waaseyaa\Entity\ContentEntityBase;
+use Waaseyaa\Node\Node;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

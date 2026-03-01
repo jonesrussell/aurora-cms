@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Cache;
+namespace Waaseyaa\Cache;
 
-use Aurora\Cache\Backend\MemoryBackend;
+use Waaseyaa\Cache\Backend\MemoryBackend;
 
 final class CacheFactory implements CacheFactoryInterface
 {

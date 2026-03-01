@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy\Tests\Unit;
+namespace Waaseyaa\Taxonomy\Tests\Unit;
 
-use Aurora\Entity\ConfigEntityBase;
-use Aurora\Entity\ConfigEntityInterface;
-use Aurora\Entity\EntityInterface;
-use Aurora\Taxonomy\Vocabulary;
+use Waaseyaa\Entity\ConfigEntityBase;
+use Waaseyaa\Entity\ConfigEntityInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Taxonomy\Vocabulary;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Taxonomy\Vocabulary
+ * @covers \Waaseyaa\Taxonomy\Vocabulary
  */
 class VocabularyTest extends TestCase
 {

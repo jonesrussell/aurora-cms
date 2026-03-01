@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Workflows\Tests\Unit;
+namespace Waaseyaa\Workflows\Tests\Unit;
 
-use Aurora\Workflows\ContentModerationState;
-use Aurora\Workflows\ContentModerator;
-use Aurora\Workflows\Workflow;
-use Aurora\Workflows\WorkflowState;
-use Aurora\Workflows\WorkflowTransition;
+use Waaseyaa\Workflows\ContentModerationState;
+use Waaseyaa\Workflows\ContentModerator;
+use Waaseyaa\Workflows\Workflow;
+use Waaseyaa\Workflows\WorkflowState;
+use Waaseyaa\Workflows\WorkflowTransition;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

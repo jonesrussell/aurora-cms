@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Plugin\Attribute;
+namespace Waaseyaa\Plugin\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class AuroraPlugin

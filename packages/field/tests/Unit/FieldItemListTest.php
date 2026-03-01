@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Tests\Unit;
+namespace Waaseyaa\Field\Tests\Unit;
 
-use Aurora\Field\FieldDefinition;
-use Aurora\Field\FieldItemList;
-use Aurora\Field\FieldItemListInterface;
-use Aurora\Field\Item\StringItem;
-use Aurora\Field\Item\TextItem;
-use Aurora\Plugin\Definition\PluginDefinition;
-use Aurora\TypedData\ListInterface;
+use Waaseyaa\Field\FieldDefinition;
+use Waaseyaa\Field\FieldItemList;
+use Waaseyaa\Field\FieldItemListInterface;
+use Waaseyaa\Field\Item\StringItem;
+use Waaseyaa\Field\Item\TextItem;
+use Waaseyaa\Plugin\Definition\PluginDefinition;
+use Waaseyaa\TypedData\ListInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Aurora\Field\FieldItemList
+ * @covers \Waaseyaa\Field\FieldItemList
  */
 class FieldItemListTest extends TestCase
 {

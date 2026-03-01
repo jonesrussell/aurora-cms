@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Event;
+namespace Waaseyaa\Entity\Event;
 
 enum EntityEvents: string
 {

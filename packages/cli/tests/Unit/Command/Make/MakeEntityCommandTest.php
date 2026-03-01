@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Tests\Unit\Command\Make;
+namespace Waaseyaa\CLI\Tests\Unit\Command\Make;
 
-use Aurora\CLI\Command\Make\MakeEntityCommand;
+use Waaseyaa\CLI\Command\Make\MakeEntityCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ final class MakeEntityCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $output = $tester->getDisplay();
         $this->assertStringContainsString('class Article extends ContentEntityBase', $output);
-        $this->assertStringContainsString('use Aurora\\Entity\\ContentEntityBase;', $output);
+        $this->assertStringContainsString('use Waaseyaa\\Entity\\ContentEntityBase;', $output);
         $this->assertStringContainsString('declare(strict_types=1);', $output);
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity;
+namespace Waaseyaa\Entity;
 
 /**
  * Abstract base class for content entities (nodes, users, terms, etc.).

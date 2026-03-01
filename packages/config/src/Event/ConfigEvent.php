@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Config\Event;
+namespace Waaseyaa\Config\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

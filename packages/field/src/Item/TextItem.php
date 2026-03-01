@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Field\Item;
+namespace Waaseyaa\Field\Item;
 
-use Aurora\Field\Attribute\FieldType;
-use Aurora\Field\FieldItemBase;
+use Waaseyaa\Field\Attribute\FieldType;
+use Waaseyaa\Field\FieldItemBase;
 
 #[FieldType(
     id: 'text',

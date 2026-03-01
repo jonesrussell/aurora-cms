@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Asset;
+namespace Waaseyaa\Foundation\Asset;
 
 /**
  * Resolves asset URLs considering tenant-specific overrides.

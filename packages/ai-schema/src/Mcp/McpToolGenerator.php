@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Mcp;
+namespace Waaseyaa\AI\Schema\Mcp;
 
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 
 /**
  * Generates MCP tool definitions for CRUD operations on entity types.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Taxonomy;
+namespace Waaseyaa\Taxonomy;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Represents a taxonomy term within a vocabulary.

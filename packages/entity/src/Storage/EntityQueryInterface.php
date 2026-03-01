@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Entity\Storage;
+namespace Waaseyaa\Entity\Storage;
 
 interface EntityQueryInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Database\Query;
+namespace Waaseyaa\Database\Query;
 
-use Aurora\Database\SelectInterface;
+use Waaseyaa\Database\SelectInterface;
 
 final class PdoSelect implements SelectInterface
 {

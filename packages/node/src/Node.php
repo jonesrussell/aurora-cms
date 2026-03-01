@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Node;
+namespace Waaseyaa\Node;
 
-use Aurora\Entity\ContentEntityBase;
+use Waaseyaa\Entity\ContentEntityBase;
 
 /**
  * Represents a piece of content (a node).

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command\Make;
+namespace Waaseyaa\CLI\Command\Make;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;

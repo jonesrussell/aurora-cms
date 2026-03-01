@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Cache;
+namespace Waaseyaa\Api\Cache;
 
-use Aurora\Api\JsonApiDocument;
+use Waaseyaa\Api\JsonApiDocument;
 
 /**
  * HTTP cache middleware for API responses.

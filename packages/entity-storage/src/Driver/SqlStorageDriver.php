@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Driver;
+namespace Waaseyaa\EntityStorage\Driver;
 
-use Aurora\Database\DatabaseInterface;
-use Aurora\EntityStorage\Connection\ConnectionResolverInterface;
+use Waaseyaa\Database\DatabaseInterface;
+use Waaseyaa\EntityStorage\Connection\ConnectionResolverInterface;
 
 /**
  * SQL-based storage driver.

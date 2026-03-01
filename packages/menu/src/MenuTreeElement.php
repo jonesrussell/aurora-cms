@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Menu;
+namespace Waaseyaa\Menu;
 
 /**
  * Value object representing a node in a menu tree.

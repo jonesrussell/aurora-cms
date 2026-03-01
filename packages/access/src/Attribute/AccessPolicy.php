@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Access\Attribute;
+namespace Waaseyaa\Access\Attribute;
 
-use Aurora\Plugin\Attribute\AuroraPlugin;
+use Waaseyaa\Plugin\Attribute\AuroraPlugin;
 
 /**
  * Attribute for discovering access policy plugins.

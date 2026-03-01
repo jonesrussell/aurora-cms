@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Tests\Integration\Phase6;
+namespace Waaseyaa\Tests\Integration\Phase6;
 
-use Aurora\Access\EntityAccessHandler;
-use Aurora\Database\PdoDatabase;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManager;
-use Aurora\EntityStorage\SqlEntityStorage;
-use Aurora\EntityStorage\SqlSchemaHandler;
-use Aurora\Node\Node;
-use Aurora\Node\NodeAccessPolicy;
-use Aurora\Taxonomy\Term;
-use Aurora\Taxonomy\TermAccessPolicy;
-use Aurora\Taxonomy\Vocabulary;
-use Aurora\User\AnonymousUser;
-use Aurora\User\User;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManager;
+use Waaseyaa\EntityStorage\SqlEntityStorage;
+use Waaseyaa\EntityStorage\SqlSchemaHandler;
+use Waaseyaa\Node\Node;
+use Waaseyaa\Node\NodeAccessPolicy;
+use Waaseyaa\Taxonomy\Term;
+use Waaseyaa\Taxonomy\TermAccessPolicy;
+use Waaseyaa\Taxonomy\Vocabulary;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\User;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

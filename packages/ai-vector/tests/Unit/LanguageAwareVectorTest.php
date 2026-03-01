@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Vector\Tests\Unit;
+namespace Waaseyaa\AI\Vector\Tests\Unit;
 
-use Aurora\AI\Vector\EntityEmbedding;
-use Aurora\AI\Vector\InMemoryVectorStore;
+use Waaseyaa\AI\Vector\EntityEmbedding;
+use Waaseyaa\AI\Vector\InMemoryVectorStore;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Aurora\AI\Schema\Tests\Unit;
+namespace Waaseyaa\AI\Schema\Tests\Unit;
 
-use Aurora\AI\Schema\EntityJsonSchemaGenerator;
-use Aurora\Entity\EntityType;
-use Aurora\Entity\EntityTypeManagerInterface;
+use Waaseyaa\AI\Schema\EntityJsonSchemaGenerator;
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityTypeManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

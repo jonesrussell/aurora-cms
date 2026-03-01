@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Routing\Attribute;
+namespace Waaseyaa\Routing\Attribute;
 
 /**
  * PHP attribute for route-level access control via the Gate system.

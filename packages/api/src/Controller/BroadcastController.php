@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Api\Controller;
+namespace Waaseyaa\Api\Controller;
 
-use Aurora\Foundation\Broadcasting\BroadcasterInterface;
-use Aurora\Foundation\Broadcasting\BroadcastMessage;
+use Waaseyaa\Foundation\Broadcasting\BroadcasterInterface;
+use Waaseyaa\Foundation\Broadcasting\BroadcastMessage;
 
 /**
  * SSE endpoint controller for real-time broadcasting.

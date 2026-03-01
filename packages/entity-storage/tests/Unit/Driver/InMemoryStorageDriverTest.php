@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aurora\EntityStorage\Tests\Unit\Driver;
+namespace Waaseyaa\EntityStorage\Tests\Unit\Driver;
 
-use Aurora\EntityStorage\Driver\EntityStorageDriverInterface;
-use Aurora\EntityStorage\Driver\InMemoryStorageDriver;
+use Waaseyaa\EntityStorage\Driver\EntityStorageDriverInterface;
+use Waaseyaa\EntityStorage\Driver\InMemoryStorageDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

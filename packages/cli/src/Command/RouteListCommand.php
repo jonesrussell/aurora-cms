@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\CLI\Command;
+namespace Waaseyaa\CLI\Command;
 
-use Aurora\Routing\AuroraRouter;
+use Waaseyaa\Routing\AuroraRouter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;

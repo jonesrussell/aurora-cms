@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aurora\Foundation\Tests\Unit\Result;
+namespace Waaseyaa\Foundation\Tests\Unit\Result;
 
-use Aurora\Foundation\Result\Result;
+use Waaseyaa\Foundation\Result\Result;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
