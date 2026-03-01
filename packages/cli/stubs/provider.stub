@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Provider;
 
-use Aurora\Foundation\ServiceProvider\ServiceProvider;
+use Waaseyaa\Foundation\ServiceProvider\ServiceProvider;
 
 final class {{ class }} extends ServiceProvider
 {

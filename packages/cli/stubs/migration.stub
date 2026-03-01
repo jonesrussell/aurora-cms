@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Aurora\Foundation\Migration\Migration;
-use Aurora\Foundation\Migration\SchemaBuilder;
+use Waaseyaa\Foundation\Migration\Migration;
+use Waaseyaa\Foundation\Migration\SchemaBuilder;
 
 return new class extends Migration
 {
