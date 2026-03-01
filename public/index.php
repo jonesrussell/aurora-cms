@@ -190,26 +190,42 @@ if (in_array($method, ['POST', 'PATCH'], true)) {
 parse_str($queryString, $query);
 
 try {
-    $document = match (true) {
-        // OpenAPI spec.
-        $controller === 'openapi' => null,
+    match (true) {
+        // OpenAPI spec — returns directly, no JsonApiDocument.
+        $controller === 'openapi' => (function () use ($entityTypeManager): never {
+            $openApi = new OpenApiGenerator($entityTypeManager);
+            sendJson(200, $openApi->generate());
+        })(),
 
-        // Entity types listing.
-        $controller === 'entity_types' => null,
+        // Entity types listing — returns directly, no JsonApiDocument.
+        $controller === 'entity_types' => (function () use ($entityTypeManager): never {
+            $types = [];
+            foreach ($entityTypeManager->getDefinitions() as $id => $def) {
+                $types[] = [
+                    'id' => $id,
+                    'label' => $def->getLabel(),
+                    'keys' => $def->getKeys(),
+                    'translatable' => $def->isTranslatable(),
+                    'revisionable' => $def->isRevisionable(),
+                ];
+            }
+            sendJson(200, ['data' => $types]);
+        })(),
 
         // Schema controller.
-        str_contains($controller, 'SchemaController') => (function () use ($entityTypeManager, $schemaPresenter, $params): JsonApiDocument {
+        str_contains($controller, 'SchemaController') => (function () use ($entityTypeManager, $schemaPresenter, $params): never {
             $schemaController = new SchemaController($entityTypeManager, $schemaPresenter);
-            return $schemaController->show($params['entity_type']);
+            $document = $schemaController->show($params['entity_type']);
+            sendJson($document->statusCode, $document->toArray());
         })(),
 
         // JSON:API controller.
-        str_contains($controller, 'JsonApiController') => (function () use ($entityTypeManager, $serializer, $params, $query, $body, $method): JsonApiDocument {
+        str_contains($controller, 'JsonApiController') => (function () use ($entityTypeManager, $serializer, $params, $query, $body, $method): never {
             $jsonApiController = new JsonApiController($entityTypeManager, $serializer);
             $entityTypeId = $params['_entity_type'];
             $id = $params['id'] ?? null;
 
-            return match (true) {
+            $document = match (true) {
                 $method === 'GET' && $id === null => $jsonApiController->index($entityTypeId, $query),
                 $method === 'GET' && $id !== null => $jsonApiController->show($entityTypeId, $id),
                 $method === 'POST' => $jsonApiController->store($entityTypeId, $body ?? []),
@@ -220,36 +236,14 @@ try {
                     statusCode: 400,
                 ),
             };
+            sendJson($document->statusCode, $document->toArray());
         })(),
 
-        default => JsonApiDocument::fromErrors(
-            [new \Aurora\Api\JsonApiError('500', 'Internal Server Error', "Unknown controller: {$controller}")],
-            statusCode: 500,
-        ),
+        default => (function () use ($controller): never {
+            error_log(sprintf('[Aurora] Unknown controller: %s', $controller));
+            sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Unknown route handler.']]]);
+        })(),
     };
-
-    // Handle non-document responses.
-    if ($controller === 'openapi') {
-        $openApi = new OpenApiGenerator($entityTypeManager);
-        sendJson(200, $openApi->generate());
-    }
-
-    if ($controller === 'entity_types') {
-        $types = [];
-        foreach ($entityTypeManager->getDefinitions() as $id => $def) {
-            $types[] = [
-                'id' => $id,
-                'label' => $def->getLabel(),
-                'keys' => $def->getKeys(),
-                'translatable' => $def->isTranslatable(),
-                'revisionable' => $def->isRevisionable(),
-            ];
-        }
-        sendJson(200, ['data' => $types]);
-    }
-
-    // Send JSON:API document response.
-    sendJson($document->statusCode, $document->toArray());
 
 } catch (\Throwable $e) {
     error_log(sprintf('[Aurora] Unhandled exception: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
