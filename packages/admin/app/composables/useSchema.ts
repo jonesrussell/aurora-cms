@@ -1,0 +1,86 @@
+import { ref, type Ref } from 'vue'
+
+export interface SchemaProperty {
+  type: string
+  description?: string
+  format?: string
+  readOnly?: boolean
+  enum?: string[]
+  minimum?: number
+  maximum?: number
+  maxLength?: number
+  'x-widget'?: string
+  'x-label'?: string
+  'x-description'?: string
+  'x-weight'?: number
+  'x-required'?: boolean
+  'x-enum-labels'?: Record<string, string>
+}
+
+export interface EntitySchema {
+  $schema: string
+  title: string
+  description: string
+  type: string
+  'x-entity-type': string
+  'x-translatable': boolean
+  'x-revisionable': boolean
+  properties: Record<string, SchemaProperty>
+  required?: string[]
+}
+
+const schemaCache = new Map<string, EntitySchema>()
+
+export function useSchema(entityType: string) {
+  const schema: Ref<EntitySchema | null> = ref(null)
+  const loading = ref(false)
+  const error: Ref<string | null> = ref(null)
+
+  async function fetch() {
+    if (schemaCache.has(entityType)) {
+      schema.value = schemaCache.get(entityType)!
+      return
+    }
+
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await $fetch<{ meta: { schema: EntitySchema } }>(
+        `/api/schema/${entityType}`,
+      )
+      schema.value = response.meta.schema
+      schemaCache.set(entityType, schema.value)
+    } catch (e: any) {
+      error.value = e.data?.errors?.[0]?.detail ?? e.message ?? 'Failed to load schema'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  function invalidate() {
+    schemaCache.delete(entityType)
+  }
+
+  /**
+   * Return properties sorted by x-weight, filtering out readOnly/hidden fields when
+   * `editable` is true.
+   */
+  function sortedProperties(editable = false) {
+    if (!schema.value) return []
+
+    const entries = Object.entries(schema.value.properties)
+
+    const filtered = editable
+      ? entries.filter(([, prop]) => !prop.readOnly && prop['x-widget'] !== 'hidden')
+      : entries
+
+    return filtered.sort(([, a], [, b]) => {
+      const wa = a['x-weight'] ?? 0
+      const wb = b['x-weight'] ?? 0
+      return wa - wb
+    })
+  }
+
+  return { schema, loading, error, fetch, invalidate, sortedProperties }
+}

@@ -1,0 +1,28 @@
+export default defineNuxtConfig({
+  compatibilityDate: '2025-01-01',
+  devtools: { enabled: true },
+  srcDir: 'app/',
+
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:8080/api',
+        changeOrigin: true,
+      },
+    },
+  },
+
+  routeRules: {
+    '/api/**': { proxy: 'http://localhost:8080/api/**' },
+  },
+
+  app: {
+    head: {
+      title: 'Aurora CMS',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+    },
+  },
+})
