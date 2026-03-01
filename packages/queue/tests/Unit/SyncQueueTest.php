@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace Aurora\Queue\Tests\Unit;
 
+use Aurora\Queue\Attribute\RateLimited;
+use Aurora\Queue\Attribute\UniqueJob;
+use Aurora\Queue\AttributeGuard;
 use Aurora\Queue\Handler\HandlerInterface;
+use Aurora\Queue\Job;
 use Aurora\Queue\Message\EntityMessage;
 use Aurora\Queue\Message\GenericMessage;
 use Aurora\Queue\QueueInterface;
 use Aurora\Queue\SyncQueue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(SyncQueue::class)]
+#[CoversClass(AttributeGuard::class)]
 final class SyncQueueTest extends TestCase
 {
     public function testImplementsQueueInterface(): void
@@ -104,5 +112,98 @@ final class SyncQueueTest extends TestCase
             entityId: 5,
             operation: 'update',
         ));
+    }
+
+    // -----------------------------------------------------------------------
+    // Attribute enforcement via SyncQueue::dispatch()
+    // -----------------------------------------------------------------------
+
+    #[Test]
+    public function uniqueJobIsHandledOnFirstDispatchOnly(): void
+    {
+        $handledCount = 0;
+
+        $handler = $this->createMock(HandlerInterface::class);
+        $handler->method('supports')->willReturn(true);
+        $handler->method('handle')->willReturnCallback(
+            function () use (&$handledCount): void {
+                $handledCount++;
+            },
+        );
+
+        $guard = new AttributeGuard();
+        $queue = new SyncQueue([$handler], $guard);
+
+        $job = new #[UniqueJob(lockSeconds: 3600)] class extends Job {
+            public function handle(): void {}
+        };
+
+        $queue->dispatch($job);
+        $queue->dispatch($job);
+        $queue->dispatch($job);
+
+        // The built-in JobHandler is also in the chain; only it counts here
+        // because the custom handler's supports() always returns true as well.
+        // The key assertion: handle() on the custom handler is called exactly
+        // once (first dispatch), and zero more times for the two skipped ones.
+        $this->assertSame(1, $handledCount);
+    }
+
+    #[Test]
+    public function rateLimitedJobIsHandledOnlyUpToMaxAttempts(): void
+    {
+        $handledCount = 0;
+
+        $handler = $this->createMock(HandlerInterface::class);
+        $handler->method('supports')->willReturn(true);
+        $handler->method('handle')->willReturnCallback(
+            function () use (&$handledCount): void {
+                $handledCount++;
+            },
+        );
+
+        $guard = new AttributeGuard();
+        $queue = new SyncQueue([$handler], $guard);
+
+        $job = new #[RateLimited(maxAttempts: 2, decaySeconds: 60)] class extends Job {
+            public function handle(): void {}
+        };
+
+        $queue->dispatch($job); // allowed (attempt 1)
+        $queue->dispatch($job); // allowed (attempt 2)
+        $queue->dispatch($job); // blocked
+        $queue->dispatch($job); // blocked
+
+        $this->assertSame(2, $handledCount);
+    }
+
+    #[Test]
+    public function uniqueJobCanBeRedispatchedAfterGuardReset(): void
+    {
+        $handledCount = 0;
+
+        $handler = $this->createMock(HandlerInterface::class);
+        $handler->method('supports')->willReturn(true);
+        $handler->method('handle')->willReturnCallback(
+            function () use (&$handledCount): void {
+                $handledCount++;
+            },
+        );
+
+        $guard = new AttributeGuard();
+        $queue = new SyncQueue([$handler], $guard);
+
+        $job = new #[UniqueJob(lockSeconds: 3600, key: 'reset-test')] class extends Job {
+            public function handle(): void {}
+        };
+
+        $queue->dispatch($job); // allowed
+        $queue->dispatch($job); // blocked
+
+        $guard->reset();
+
+        $queue->dispatch($job); // allowed again after reset
+
+        $this->assertSame(2, $handledCount);
     }
 }

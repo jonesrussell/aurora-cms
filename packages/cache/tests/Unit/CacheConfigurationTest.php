@@ -85,4 +85,75 @@ final class CacheConfigurationTest extends TestCase
         // Other bins return default.
         $this->assertSame(MemoryBackend::class, $config->getBackendForBin('cache_default'));
     }
+
+    // ---------------------------------------------------------------------------
+    // Factory callable support
+    // ---------------------------------------------------------------------------
+
+    #[Test]
+    public function get_factory_for_bin_returns_null_when_none_registered(): void
+    {
+        $config = new CacheConfiguration();
+
+        $this->assertNull($config->getFactoryForBin('cache_db'));
+    }
+
+    #[Test]
+    public function set_factory_for_bin_and_retrieve_it(): void
+    {
+        $config = new CacheConfiguration();
+        $factory = fn() => new NullBackend();
+
+        $config->setFactoryForBin('cache_db', $factory);
+
+        $this->assertSame($factory, $config->getFactoryForBin('cache_db'));
+    }
+
+    #[Test]
+    public function bin_factory_takes_precedence_over_default_factory(): void
+    {
+        $config = new CacheConfiguration();
+        $defaultFactory = fn() => new MemoryBackend();
+        $binFactory = fn() => new NullBackend();
+
+        $config->setDefaultFactory($defaultFactory);
+        $config->setFactoryForBin('special', $binFactory);
+
+        $this->assertSame($binFactory, $config->getFactoryForBin('special'));
+        $this->assertSame($defaultFactory, $config->getFactoryForBin('other'));
+    }
+
+    #[Test]
+    public function default_factory_used_when_no_bin_factory_registered(): void
+    {
+        $config = new CacheConfiguration();
+        $defaultFactory = fn() => new MemoryBackend();
+
+        $config->setDefaultFactory($defaultFactory);
+
+        $this->assertSame($defaultFactory, $config->getFactoryForBin('any_bin'));
+    }
+
+    #[Test]
+    public function bin_factories_via_constructor_parameter(): void
+    {
+        $factory = fn() => new NullBackend();
+        $config = new CacheConfiguration(
+            binFactories: ['cache_null' => $factory],
+        );
+
+        $this->assertSame($factory, $config->getFactoryForBin('cache_null'));
+        $this->assertNull($config->getFactoryForBin('other'));
+    }
+
+    #[Test]
+    public function default_factory_via_constructor_parameter(): void
+    {
+        $defaultFactory = fn() => new NullBackend();
+        $config = new CacheConfiguration(
+            defaultFactory: $defaultFactory,
+        );
+
+        $this->assertSame($defaultFactory, $config->getFactoryForBin('any_bin'));
+    }
 }

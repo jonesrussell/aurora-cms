@@ -29,8 +29,14 @@ final class CacheFactory implements CacheFactoryInterface
     public function get(string $bin): CacheBackendInterface
     {
         if (!isset($this->bins[$bin])) {
-            $class = $this->configuration->getBackendForBin($bin);
-            $this->bins[$bin] = new $class();
+            $factory = $this->configuration->getFactoryForBin($bin);
+
+            if ($factory !== null) {
+                $this->bins[$bin] = $factory();
+            } else {
+                $class = $this->configuration->getBackendForBin($bin);
+                $this->bins[$bin] = new $class();
+            }
         }
 
         return $this->bins[$bin];

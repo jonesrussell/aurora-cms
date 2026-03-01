@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Aurora\Api\Tests\Fixtures;
 
+use Aurora\Api\MutableTranslatableInterface;
 use Aurora\Entity\ContentEntityBase;
-use Aurora\Entity\TranslatableInterface;
 
 /**
  * Test entity that supports translations.
@@ -13,7 +13,7 @@ use Aurora\Entity\TranslatableInterface;
  * Each TranslatableTestEntity object represents one language. Translations
  * are stored as separate entity objects tracked by the original entity.
  */
-class TranslatableTestEntity extends ContentEntityBase implements TranslatableInterface
+class TranslatableTestEntity extends ContentEntityBase implements MutableTranslatableInterface
 {
     /**
      * Translation storage: langcode => TranslatableTestEntity.
@@ -88,12 +88,24 @@ class TranslatableTestEntity extends ContentEntityBase implements TranslatableIn
             return $this->translations[$langcode];
         }
 
-        // Create a new translation with the same base values.
+        throw new \InvalidArgumentException(
+            "Translation '{$langcode}' does not exist. Use addTranslation() to create it.",
+        );
+    }
+
+    public function addTranslation(string $langcode): static
+    {
+        if ($this->hasTranslation($langcode)) {
+            throw new \InvalidArgumentException(
+                "Translation '{$langcode}' already exists. Use getTranslation() to retrieve it.",
+            );
+        }
+
+        // Create a new translation object seeded with the base entity's values.
         $values = $this->values;
         $langcodeKey = $this->entityKeys['langcode'] ?? 'langcode';
         $values[$langcodeKey] = $langcode;
 
-        // Keep the same uuid for the translation.
         $translation = new static(
             values: $values,
             entityTypeId: $this->entityTypeId,
@@ -101,17 +113,17 @@ class TranslatableTestEntity extends ContentEntityBase implements TranslatableIn
             fieldDefinitions: $this->fieldDefinitions,
         );
 
-        // Share the same ID.
+        // Share the same ID and UUID as the source entity.
         $idKey = $this->entityKeys['id'] ?? 'id';
         if (isset($this->values[$idKey])) {
             $translation->values[$idKey] = $this->values[$idKey];
         }
 
-        // Override uuid to use the parent's uuid.
         $uuidKey = $this->entityKeys['uuid'] ?? 'uuid';
         $translation->values[$uuidKey] = $this->values[$uuidKey];
 
-        // Track the translation.
+        // Register the new translation so hasTranslation() and getTranslation()
+        // return it from now on.
         $this->translations[$langcode] = $translation;
 
         return $translation;

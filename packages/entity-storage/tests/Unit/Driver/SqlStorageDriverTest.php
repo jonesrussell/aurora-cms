@@ -25,9 +25,8 @@ final class SqlStorageDriverTest extends TestCase
     {
         $this->database = PdoDatabase::createSqlite();
         $resolver = new SingleConnectionResolver($this->database);
-        $this->driver = new SqlStorageDriver($resolver);
 
-        // Create the test table.
+        // Create the test entity type first so we can resolve the id key.
         $entityType = new EntityType(
             id: 'test_entity',
             label: 'Test Entity',
@@ -39,6 +38,14 @@ final class SqlStorageDriverTest extends TestCase
                 'label' => 'label',
                 'langcode' => 'langcode',
             ],
+        );
+
+        $keys = $entityType->getKeys();
+        $idKey = $keys['id'] ?? 'id';
+
+        $this->driver = new SqlStorageDriver(
+            connectionResolver: $resolver,
+            idKey: $idKey,
         );
 
         $schemaHandler = new SqlSchemaHandler($entityType, $this->database);

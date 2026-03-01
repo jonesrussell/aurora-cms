@@ -46,7 +46,8 @@ final class TelescopePruneCommand extends Command
         $hours = (int) $input->getOption('hours');
 
         if (method_exists($this->store, 'prune')) {
-            $pruned = $this->store->prune($hours);
+            $before = new \DateTimeImmutable("-{$hours} hours");
+            $pruned = $this->store->prune($before);
             $output->writeln(sprintf('<info>Pruned %d telescope entries older than %d hours.</info>', $pruned, $hours));
         } else {
             $output->writeln(sprintf('<info>Pruned telescope entries older than %d hours.</info>', $hours));

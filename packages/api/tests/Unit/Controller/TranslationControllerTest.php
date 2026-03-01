@@ -7,6 +7,7 @@ namespace Aurora\Api\Tests\Unit\Controller;
 use Aurora\Api\Controller\TranslationController;
 use Aurora\Api\ResourceSerializer;
 use Aurora\Api\Tests\Fixtures\InMemoryEntityStorage;
+use Aurora\Api\Tests\Fixtures\ReadOnlyTranslatableTestEntity;
 use Aurora\Api\Tests\Fixtures\TestEntity;
 use Aurora\Api\Tests\Fixtures\TranslatableTestEntity;
 use Aurora\Entity\EntityType;
@@ -21,16 +22,23 @@ final class TranslationControllerTest extends TestCase
 {
     private EntityTypeManager $entityTypeManager;
     private InMemoryEntityStorage $storage;
+    private InMemoryEntityStorage $readonlyStorage;
     private ResourceSerializer $serializer;
     private TranslationController $controller;
 
     protected function setUp(): void
     {
         $this->storage = new InMemoryEntityStorage('article');
+        $this->readonlyStorage = new InMemoryEntityStorage('readonly');
 
         $this->entityTypeManager = new EntityTypeManager(
             new EventDispatcher(),
-            fn() => $this->storage,
+            function (\Aurora\Entity\EntityTypeInterface $definition) {
+                return match ($definition->id()) {
+                    'readonly' => $this->readonlyStorage,
+                    default    => $this->storage,
+                };
+            },
         );
 
         $this->entityTypeManager->registerEntityType(new EntityType(
@@ -56,6 +64,23 @@ final class TranslationControllerTest extends TestCase
             translatable: false,
         ));
 
+        // Register a read-only translatable type: implements TranslatableInterface
+        // but NOT MutableTranslatableInterface. Used to verify that store() returns
+        // 422 instead of calling the non-existent addTranslation().
+        $this->entityTypeManager->registerEntityType(new EntityType(
+            id: 'readonly',
+            label: 'Read-Only Translatable',
+            class: ReadOnlyTranslatableTestEntity::class,
+            keys: [
+                'id' => 'id',
+                'uuid' => 'uuid',
+                'label' => 'title',
+                'bundle' => 'type',
+                'langcode' => 'langcode',
+            ],
+            translatable: true,
+        ));
+
         $this->serializer = new ResourceSerializer($this->entityTypeManager);
         $this->controller = new TranslationController(
             $this->entityTypeManager,
@@ -71,7 +96,7 @@ final class TranslationControllerTest extends TestCase
         $entity = $this->createTranslatableEntity(['title' => 'Hello', 'langcode' => 'en']);
 
         // Add a French translation.
-        $fr = $entity->getTranslation('fr');
+        $fr = $entity->addTranslation('fr');
         $fr->set('title', 'Bonjour');
         $this->storage->save($entity);
 
@@ -140,7 +165,7 @@ final class TranslationControllerTest extends TestCase
     public function showReturnsSpecificTranslation(): void
     {
         $entity = $this->createTranslatableEntity(['title' => 'Hello', 'langcode' => 'en']);
-        $fr = $entity->getTranslation('fr');
+        $fr = $entity->addTranslation('fr');
         $fr->set('title', 'Bonjour');
         $this->storage->save($entity);
 
@@ -207,7 +232,7 @@ final class TranslationControllerTest extends TestCase
     public function storeReturnsConflictForExistingTranslation(): void
     {
         $entity = $this->createTranslatableEntity(['title' => 'Hello', 'langcode' => 'en']);
-        $entity->getTranslation('fr');
+        $entity->addTranslation('fr');
         $this->storage->save($entity);
 
         $data = [
@@ -223,13 +248,39 @@ final class TranslationControllerTest extends TestCase
         $this->assertSame('409', $array['errors'][0]['status']);
     }
 
+    #[Test]
+    public function storeReturns422ForNonMutableTranslatableEntity(): void
+    {
+        // ReadOnlyTranslatableTestEntity implements TranslatableInterface but NOT
+        // MutableTranslatableInterface, so store() must return 422 instead of
+        // calling the non-existent addTranslation().
+        $entity = new ReadOnlyTranslatableTestEntity(
+            values: ['title' => 'Hello', 'langcode' => 'en'],
+            entityTypeId: 'readonly',
+        );
+        $this->readonlyStorage->save($entity);
+
+        $data = [
+            'data' => [
+                'attributes' => ['title' => 'Bonjour'],
+            ],
+        ];
+
+        $doc = $this->controller->store('readonly', $entity->id(), 'fr', $data);
+        $array = $doc->toArray();
+
+        $this->assertArrayHasKey('errors', $array);
+        $this->assertSame('422', $array['errors'][0]['status']);
+        $this->assertStringContainsString('does not support creating translations', $array['errors'][0]['detail']);
+    }
+
     // --- Update (modify translation) ---
 
     #[Test]
     public function updateModifiesExistingTranslation(): void
     {
         $entity = $this->createTranslatableEntity(['title' => 'Hello', 'langcode' => 'en']);
-        $fr = $entity->getTranslation('fr');
+        $fr = $entity->addTranslation('fr');
         $fr->set('title', 'Bonjour');
         $this->storage->save($entity);
 
@@ -271,7 +322,7 @@ final class TranslationControllerTest extends TestCase
     public function destroyRemovesTranslation(): void
     {
         $entity = $this->createTranslatableEntity(['title' => 'Hello', 'langcode' => 'en']);
-        $fr = $entity->getTranslation('fr');
+        $fr = $entity->addTranslation('fr');
         $fr->set('title', 'Bonjour');
         $this->storage->save($entity);
 

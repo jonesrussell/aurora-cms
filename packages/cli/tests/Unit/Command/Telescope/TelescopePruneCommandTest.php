@@ -30,45 +30,55 @@ final class TelescopePruneCommandTest extends TestCase
     public function it_prunes_with_default_hours(): void
     {
         $store = new class {
-            public ?int $prunedHours = null;
+            public ?\DateTimeInterface $prunedBefore = null;
 
-            public function prune(int $hours): int
+            public function prune(\DateTimeInterface $before): int
             {
-                $this->prunedHours = $hours;
+                $this->prunedBefore = $before;
 
                 return 42;
             }
         };
 
+        $before = new \DateTimeImmutable();
         $tester = $this->createTester($store);
         $tester->execute([]);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $output = $tester->getDisplay();
         $this->assertStringContainsString('Pruned 42 telescope entries older than 24 hours', $output);
-        $this->assertSame(24, $store->prunedHours);
+        $this->assertNotNull($store->prunedBefore);
+        // The cutoff should be approximately 24 hours ago (within a 5-second tolerance).
+        $expectedCutoff = $before->modify('-24 hours');
+        $diff = abs($store->prunedBefore->getTimestamp() - $expectedCutoff->getTimestamp());
+        $this->assertLessThanOrEqual(5, $diff, 'Prune cutoff should be ~24 hours ago');
     }
 
     #[Test]
     public function it_prunes_with_custom_hours(): void
     {
         $store = new class {
-            public ?int $prunedHours = null;
+            public ?\DateTimeInterface $prunedBefore = null;
 
-            public function prune(int $hours): int
+            public function prune(\DateTimeInterface $before): int
             {
-                $this->prunedHours = $hours;
+                $this->prunedBefore = $before;
 
                 return 10;
             }
         };
 
+        $before = new \DateTimeImmutable();
         $tester = $this->createTester($store);
         $tester->execute(['--hours' => '48']);
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString('older than 48 hours', $output);
-        $this->assertSame(48, $store->prunedHours);
+        $this->assertNotNull($store->prunedBefore);
+        // The cutoff should be approximately 48 hours ago (within a 5-second tolerance).
+        $expectedCutoff = $before->modify('-48 hours');
+        $diff = abs($store->prunedBefore->getTimestamp() - $expectedCutoff->getTimestamp());
+        $this->assertLessThanOrEqual(5, $diff, 'Prune cutoff should be ~48 hours ago');
     }
 
     private function createTester(?object $store): CommandTester

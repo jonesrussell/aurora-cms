@@ -7,6 +7,7 @@ namespace Aurora\Api\Controller;
 use Aurora\Api\JsonApiDocument;
 use Aurora\Api\JsonApiError;
 use Aurora\Api\JsonApiResource;
+use Aurora\Api\MutableTranslatableInterface;
 use Aurora\Api\ResourceSerializer;
 use Aurora\Entity\EntityTypeManagerInterface;
 use Aurora\Entity\FieldableInterface;
@@ -117,8 +118,21 @@ final class TranslationController
 
         $attributes = $data['data']['attributes'] ?? [];
 
-        // Create the translation by getting a new translation object and setting fields.
-        $translation = $entity->getTranslation($langcode);
+        // Create the translation using the dedicated creation method.
+        // getTranslation() retrieves an existing translation; addTranslation()
+        // explicitly creates a new one, which is the semantically correct
+        // operation here (we already confirmed the translation does not exist).
+        if (!$entity instanceof MutableTranslatableInterface) {
+            return $this->errorDocument(
+                new JsonApiError(
+                    status: '422',
+                    title: 'Unprocessable Entity',
+                    detail: "Entity type '{$entityTypeId}' does not support creating translations.",
+                ),
+            );
+        }
+
+        $translation = $entity->addTranslation($langcode);
         if ($translation instanceof FieldableInterface) {
             foreach ($attributes as $field => $value) {
                 $translation->set($field, $value);

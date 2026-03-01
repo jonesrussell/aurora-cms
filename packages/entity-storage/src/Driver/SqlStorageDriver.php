@@ -13,11 +13,17 @@ use Aurora\EntityStorage\Connection\ConnectionResolverInterface;
  * Pure I/O layer: reads and writes rows without entity hydration
  * or event dispatch. Uses the ConnectionResolver to obtain the
  * database connection.
+ *
+ * The $idKey parameter names the primary key column for the entity type
+ * (e.g. 'id', 'nid', 'uid'). Resolved from EntityTypeInterface::getKeys()
+ * by the caller, matching the convention used by SqlEntityStorage and
+ * SqlEntityQuery.
  */
 final class SqlStorageDriver implements EntityStorageDriverInterface
 {
     public function __construct(
         private readonly ConnectionResolverInterface $connectionResolver,
+        private readonly string $idKey = 'id',
     ) {}
 
     public function read(string $entityType, string $id, ?string $langcode = null): ?array
@@ -26,7 +32,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
 
         $query = $db->select($entityType)
             ->fields($entityType)
-            ->condition('id', $id);
+            ->condition($this->idKey, $id);
 
         if ($langcode !== null) {
             $translationTable = $entityType . '_translations';
@@ -70,7 +76,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
             // Update: exclude the id from update fields.
             $updateFields = [];
             foreach ($values as $key => $value) {
-                if ($key === 'id') {
+                if ($key === $this->idKey) {
                     continue;
                 }
                 $updateFields[$key] = $value;
@@ -78,7 +84,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
 
             $db->update($entityType)
                 ->fields($updateFields)
-                ->condition('id', $id)
+                ->condition($this->idKey, $id)
                 ->execute();
         }
     }
@@ -96,7 +102,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
         }
 
         $db->delete($entityType)
-            ->condition('id', $id)
+            ->condition($this->idKey, $id)
             ->execute();
     }
 
@@ -105,8 +111,8 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
         $db = $this->getDatabase();
 
         $result = $db->select($entityType)
-            ->fields($entityType, ['id'])
-            ->condition('id', $id)
+            ->fields($entityType, [$this->idKey])
+            ->condition($this->idKey, $id)
             ->execute();
 
         foreach ($result as $row) {
@@ -186,7 +192,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
         // Load base entity first.
         $baseResult = $db->select($entityType)
             ->fields($entityType)
-            ->condition('id', $id)
+            ->condition($this->idKey, $id)
             ->execute();
 
         $base = null;
