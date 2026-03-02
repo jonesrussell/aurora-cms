@@ -232,7 +232,7 @@ $accessHandler = new EntityAccessHandler([]);
 For `SchemaController`, a prototype entity is created for policy evaluation:
 
 ```php
-$class = $entityType->getEntityClass();
+$class = $entityType->getClass();
 $prototypeEntity = new $class([]); // User/Node accept (array $values)
 $schema = $schemaPresenter->present($entityType, $fields, $prototypeEntity, $accessHandler, $account);
 ```

@@ -290,10 +290,10 @@ Always pair `json_encode(..., JSON_THROW_ON_ERROR)` with `json_decode(..., JSON_
 
 ### Layer discipline for imports
 
-Foundation (layer 1) must never import from higher layers. When cross-layer attribute scanning is needed, use string constants:
+Foundation (layer 0) must never import from higher layers. When cross-layer attribute scanning is needed, use string constants:
 
 ```php
-// WRONG -- imports from layer 3
+// WRONG -- imports from layer 1
 use Waaseyaa\Access\Gate\PolicyAttribute;
 
 // CORRECT -- string constant, no import

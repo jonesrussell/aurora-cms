@@ -147,15 +147,15 @@ Field access: open-by-default. Only explicit `Forbidden` restricts.
 ### Package Dependencies
 
 ```
-access (layer 3) -- owns AccountInterface, AccessPolicyInterface, FieldAccessPolicyInterface, EntityAccessHandler
+access (layer 1) -- owns AccountInterface, AccessPolicyInterface, FieldAccessPolicyInterface, EntityAccessHandler
     |
     +-- Does NOT depend on user package
     |
-user (layer 3) -- owns User, AnonymousUser, SessionMiddleware
+user (layer 1) -- owns User, AnonymousUser, SessionMiddleware
     |
     +-- Depends on access (for AccountInterface)
     |
-routing (layer 5) -- owns AccessChecker
+routing (layer 4) -- owns AccessChecker
     |
     +-- Depends on access (for AccessResult, AccountInterface, GateInterface)
 ```
@@ -246,7 +246,7 @@ Passing `EntityAccessHandler` without `AccountInterface` (or vice versa) results
 
 ### Layer discipline for discovery
 
-Foundation (layer 1) must never import from access (layer 3). Policy attribute scanning in `PackageManifestCompiler` uses string constants:
+Foundation (layer 0) must never import from access (layer 1). Policy attribute scanning in `PackageManifestCompiler` uses string constants:
 
 ```php
 private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute';

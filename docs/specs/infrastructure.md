@@ -6,10 +6,10 @@ Specification for the foundational infrastructure layer of Waaseyaa CMS: domain 
 
 | Package | Namespace | Layer | Purpose |
 |---------|-----------|-------|---------|
-| `packages/foundation/` | `Waaseyaa\Foundation\` | 1 (Foundation) | DomainEvent, ServiceProvider, middleware interfaces, migration system, attribute discovery |
-| `packages/cache/` | `Waaseyaa\Cache\` | 1 (Foundation) | CacheBackendInterface, MemoryBackend, DatabaseBackend, NullBackend, tag invalidation |
-| `packages/database-legacy/` | `Waaseyaa\Database\` | 1 (Foundation) | DatabaseInterface, PdoDatabase, query builder (select/insert/update/delete), schema, transactions |
-| `packages/plugin/` | `Waaseyaa\Plugin\` | 2 (Core Data) | PluginManager, attribute-based plugin discovery, plugin factory |
+| `packages/foundation/` | `Waaseyaa\Foundation\` | 0 (Foundation) | DomainEvent, ServiceProvider, middleware interfaces, migration system, attribute discovery |
+| `packages/cache/` | `Waaseyaa\Cache\` | 0 (Foundation) | CacheBackendInterface, MemoryBackend, DatabaseBackend, NullBackend, tag invalidation |
+| `packages/database-legacy/` | `Waaseyaa\Database\` | 0 (Foundation) | DatabaseInterface, PdoDatabase, query builder (select/insert/update/delete), schema, transactions |
+| `packages/plugin/` | `Waaseyaa\Plugin\` | 0 (Foundation) | PluginManager, attribute-based plugin discovery, plugin factory |
 
 ## Domain Events
 

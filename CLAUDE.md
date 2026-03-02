@@ -2,7 +2,7 @@
 
 ## Project Structure
 - Monorepo: 29 PHP packages in `packages/`, 3 meta-packages, 1 JS admin SPA
-- 7-layer architecture (Foundation → Core Data → Services → Content Types → API → AI → Interfaces)
+- 7-layer architecture (Foundation → Core Data → Content Types → Services → API → AI → Interfaces)
 - Each package has its own `composer.json` with path repository references
 - Root `composer.json` uses `@dev` constraints for all waaseyaa/* packages
 - Authorization pipeline in `public/index.php`: SessionMiddleware → AuthorizationMiddleware. Session always sets `_account` on request; authorization reads it.
@@ -59,7 +59,7 @@ Use `waaseyaa_search_specs` MCP tool to find specs affected by a change when the
 
 **Adding an access policy:**
 1. Create class implementing `AccessPolicyInterface` (add `FieldAccessPolicyInterface` if field access needed — same class, intersection type)
-2. Register via `#[PolicyAttribute('entity_type_id')]` attribute on the class
+2. Register via `#[PolicyAttribute(entityType: 'entity_type_id')]` attribute on the class
 3. Implement `access()` returning `AccessResult` — use `::allowed()`, `::neutral()`, `::forbidden()`
 4. For field access: implement `fieldAccess()` — Neutral = accessible (open-by-default), only Forbidden restricts
 5. Test with anonymous classes implementing both interfaces (PHPUnit `createMock()` can't mock intersection types)
@@ -73,15 +73,15 @@ Use `waaseyaa_search_specs` MCP tool to find specs affected by a change when the
 
 **Adding middleware:**
 1. Implement `HttpMiddlewareInterface` (or `EventMiddlewareInterface` / `JobMiddlewareInterface`)
-2. Add `#[AsMiddleware(priority: N)]` attribute — lower priority runs first (outer onion layer)
-3. Middleware is auto-discovered by `MiddlewareCompiler` via attribute scanning
+2. Add `#[AsMiddleware(priority: N)]` attribute — higher priority runs first (outer onion layer)
+3. Middleware is auto-discovered by `PackageManifestCompiler` via attribute scanning
 4. Follow handler naming: `{Type}HandlerInterface` for handler, `{Type}MiddlewareInterface` for middleware
 
 **Adding a service provider:**
 1. Create class extending `ServiceProvider` in the package's root namespace
 2. `register()` — bind interfaces to implementations, register entity types, set up factories
 3. `boot()` — subscribe to events, register routes, warm caches (after all providers registered)
-4. Add `extra.waaseyaa.provider` to the package's `composer.json` for auto-discovery
+4. Add `extra.waaseyaa.providers` to the package's `composer.json` for auto-discovery
 
 ## Codified Context
 
@@ -116,7 +116,7 @@ Design docs in `docs/plans/` are session artifacts (implementation history). Spe
 - **_data JSON blob**: SqlSchemaHandler adds a `_data` TEXT column. SqlEntityStorage::splitForStorage() puts non-schema values into it as JSON; mapRowToEntity() merges them back on load.
 - **PascalCase conversion**: Use `str_replace('_', '', ucwords($name, '_'))` not `ucfirst()`.
 - **InMemoryEntityStorage** (`Waaseyaa\Api\Tests\Fixtures\`) — use for tests. SqlEntityStorage for real storage.
-- **EntityTypeManager** takes `(EventDispatcher, callable $storageFactory)` where factory receives `EntityType $definition`.
+- **EntityTypeManager** takes `(EventDispatcherInterface, ?\Closure $storageFactory = null)` where factory receives `EntityTypeInterface $definition`.
 - **EntityEvent uses public properties**: `$event->entity` and `$event->originalEntity` are public readonly — no getter methods. Common mistake: `$event->getEntity()`.
 - **DatabaseInterface vs PdoDatabase**: `DatabaseInterface` does NOT have `getPdo()`. If raw PDO is needed, type-hint `PdoDatabase` directly. Prefer using query builder (`select()`, `insert()`, `delete()`) over raw PDO when possible.
 - **LIKE wildcard escaping**: `PdoSelect` appends `ESCAPE '\'` for LIKE/NOT LIKE operators. When building LIKE patterns in `SqlEntityQuery`, escape `%` and `_` in user input with `str_replace(['%', '_'], ['\\%', '\\_'], $value)`.
@@ -127,7 +127,7 @@ Design docs in `docs/plans/` are session artifacts (implementation history). Spe
 - **No psr/log**: Project does not use `psr/log`. For best-effort logging (e.g., in event listeners), use `error_log()`.
 - **Middleware interface naming**: Handler interfaces follow `{Type}HandlerInterface` pattern (HttpHandlerInterface, EventHandlerInterface, JobHandlerInterface). Middleware follows `{Type}MiddlewareInterface`.
 - **Entity enforceIsNew()**: When creating entities with pre-set IDs (e.g., `new User(['uid' => 2])`), call `$entity->enforceIsNew()` before `save()`. Otherwise `isNew()` returns false, SqlEntityStorage tries UPDATE instead of INSERT, and silently affects 0 rows.
-- **Layer discipline for imports**: Foundation (layer 1) must never import from higher layers. When cross-layer attribute scanning is needed, use string constants instead of `::class` references (e.g., `private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute'`). `ReflectionClass::getAttributes()` accepts string class names.
+- **Layer discipline for imports**: Foundation (layer 0) must never import from higher layers. When cross-layer attribute scanning is needed, use string constants instead of `::class` references (e.g., `private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute'`). `ReflectionClass::getAttributes()` accepts string class names.
 - **Avoid circular package deps**: Access owns `AccountInterface`; User owns `AnonymousUser`. Access must not depend on User. Middleware needing an account should type-hint `AccountInterface`, not concrete `AnonymousUser`.
 - **php://input is single-read**: `HttpRequest::createFromGlobals()` consumes `php://input`. For subsequent body reads, use `$httpRequest->getContent()`, not `file_get_contents('php://input')`.
 - **Backward-compatible cache evolution**: When adding new properties to cached manifests/configs, make them optional in deserialization (use `$data['key'] ?? []`) to avoid breaking old cached files.

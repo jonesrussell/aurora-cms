@@ -290,20 +290,21 @@ The compiler scans classes that start with `Waaseyaa\` from the classmap. For ea
 
 **Atomic file write**: Cache is written via temp file + `rename()` to prevent serving partial writes. See `compileAndCache()`.
 
-## Three Compilers
+## Two Compilers
 
-The system has three independent compilers, orchestrated by `waaseyaa optimize`:
+The system has two independent compilers, orchestrated by `waaseyaa optimize`:
 
 | Compiler | Artifact | File |
 |----------|----------|------|
 | `PackageManifestCompiler` | `storage/framework/packages.php` | `packages/foundation/src/Discovery/PackageManifestCompiler.php` |
-| `MiddlewarePipelineCompiler` | `storage/framework/middleware.php` | `packages/foundation/src/Middleware/MiddlewarePipelineCompiler.php` |
 | `ConfigCacheCompiler` | `storage/framework/config.php` | `packages/config/src/Cache/ConfigCacheCompiler.php` |
 
-**Compilation order**: Manifest first (middleware and config compilers may need it):
+`PackageManifestCompiler` handles middleware discovery via `#[AsMiddleware]` attribute scanning — middleware order is stored in the `middleware` key of `packages.php`. There is no separate middleware compiler.
+
+**Compilation order**: Manifest first (config compiler may need it):
 
 ```
-optimize:manifest -> optimize:middleware -> optimize:config
+optimize:manifest -> optimize:config
 ```
 
 ### CLI commands
@@ -398,7 +399,7 @@ $instance = $manager->createInstance('text');
 
 File: `packages/foundation/src/Discovery/PackageManifestCompiler.php`
 
-Foundation (layer 1) must never import from higher layers. When the compiler needs to scan for attributes defined in higher-layer packages (e.g., `PolicyAttribute` from the Access package), it uses string constants instead of `::class` references:
+Foundation (layer 0) must never import from higher layers. When the compiler needs to scan for attributes defined in higher-layer packages (e.g., `PolicyAttribute` from the Access package), it uses string constants instead of `::class` references:
 
 ```php
 private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute';
@@ -416,11 +417,11 @@ foreach ($ref->getAttributes(self::POLICY_ATTRIBUTE) as $attr) {
 
 ### Import rules
 
-Foundation (layer 1) must never import from higher layers. This is enforced by convention and code review:
+Foundation (layer 0) must never import from higher layers. This is enforced by convention and code review:
 
-- Layer 1 (Foundation, Cache, Database) -> imports only PHP core and Symfony components
-- Layer 2 (Core Data: Entity, Config, Plugin) -> may import from layer 1
-- Layer 3 (Services: Access, Field, I18n) -> may import from layers 1-2
+- Layer 0 (Foundation, Cache, Database) -> imports only PHP core and Symfony components
+- Layer 1 (Core Data: Entity, Access, User, Config, Field) -> may import from layer 0
+- Layer 2 (Content Types: Node, Taxonomy, Media) -> may import from layers 0-1
 - Higher layers follow the same upward-only pattern
 
 ### Avoiding circular package dependencies
@@ -434,7 +435,7 @@ Middleware needing an account type-hints `AccountInterface`, never concrete `Ano
 
 ### String constants for cross-layer attribute names
 
-When layer 1 code needs to reference attribute classes from higher layers:
+When layer 0 code needs to reference attribute classes from higher layers:
 
 ```php
 // WRONG -- creates import dependency on higher layer

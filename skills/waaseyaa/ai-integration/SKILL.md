@@ -90,7 +90,7 @@ ai-pipeline depends on: entity, queue
 ai-vector   depends on: entity
 ```
 
-Layer discipline: all four packages are in layer 6 (AI). They depend downward on layer 2 (entity) and layer 3 (access, queue). They must never import from layer 7 (interfaces) or from each other except `ai-agent -> ai-schema`.
+Layer discipline: all four packages are in layer 5 (AI). They depend downward on layer 1 (entity, access) and layer 0 (queue). They must never import from layer 6 (interfaces) or from each other except `ai-agent -> ai-schema`.
 
 ### Namespace Conventions
 

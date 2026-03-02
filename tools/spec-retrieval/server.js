@@ -87,16 +87,23 @@ export async function listSpecs(specsDir = DEFAULT_SPECS_DIR) {
   let entries;
   try {
     entries = await fs.readdir(specsDir);
-  } catch {
-    return [];
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return [];
+    }
+    throw new Error(`Failed to read specs directory "${specsDir}": ${err.message}`);
   }
 
   const mdFiles = entries.filter((f) => f.endsWith('.md')).sort();
   const results = [];
 
   for (const file of mdFiles) {
-    const content = await fs.readFile(path.join(specsDir, file), 'utf-8');
-    results.push(parseSpec(content, file));
+    try {
+      const content = await fs.readFile(path.join(specsDir, file), 'utf-8');
+      results.push(parseSpec(content, file));
+    } catch (err) {
+      console.error(`[waaseyaa-specs] Skipping unreadable spec "${file}": ${err.message}`);
+    }
   }
 
   return results;
@@ -106,13 +113,22 @@ export async function listSpecs(specsDir = DEFAULT_SPECS_DIR) {
  * Get the full markdown content of a spec by name (filename without extension).
  */
 export async function getSpec(name, specsDir = DEFAULT_SPECS_DIR) {
-  const filename = name.endsWith('.md') ? name : `${name}.md`;
-  const filePath = path.join(specsDir, filename);
+  const safeName = path.basename(name);
+  const filename = safeName.endsWith('.md') ? safeName : `${safeName}.md`;
+  const filePath = path.resolve(specsDir, filename);
+  const resolvedDir = path.resolve(specsDir);
+
+  if (!filePath.startsWith(resolvedDir + path.sep) && filePath !== resolvedDir) {
+    throw new Error(`Spec not found: ${name}`);
+  }
 
   try {
     return await fs.readFile(filePath, 'utf-8');
-  } catch {
-    throw new Error(`Spec not found: ${name}`);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error(`Spec not found: ${name}`);
+    }
+    throw new Error(`Failed to read spec "${name}": ${err.message}`);
   }
 }
 
@@ -124,8 +140,11 @@ export async function searchSpecs(query, specsDir = DEFAULT_SPECS_DIR) {
   let entries;
   try {
     entries = await fs.readdir(specsDir);
-  } catch {
-    return [];
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return [];
+    }
+    throw new Error(`Failed to read specs directory "${specsDir}": ${err.message}`);
   }
 
   const mdFiles = entries.filter((f) => f.endsWith('.md')).sort();
@@ -133,17 +152,21 @@ export async function searchSpecs(query, specsDir = DEFAULT_SPECS_DIR) {
   const results = [];
 
   for (const file of mdFiles) {
-    const content = await fs.readFile(path.join(specsDir, file), 'utf-8');
-    const sections = splitIntoSections(content);
+    try {
+      const content = await fs.readFile(path.join(specsDir, file), 'utf-8');
+      const sections = splitIntoSections(content);
 
-    for (const section of sections) {
-      if (section.content.toLowerCase().includes(lowerQuery)) {
-        results.push({
-          file,
-          section: section.heading,
-          content: section.content,
-        });
+      for (const section of sections) {
+        if (section.content.toLowerCase().includes(lowerQuery)) {
+          results.push({
+            file,
+            section: section.heading,
+            content: section.content,
+          });
+        }
       }
+    } catch (err) {
+      console.error(`[waaseyaa-specs] Skipping unreadable spec "${file}": ${err.message}`);
     }
   }
 
@@ -254,10 +277,17 @@ if (isMainModule) {
 
     switch (name) {
       case 'waaseyaa_list_specs': {
-        const specs = await listSpecs();
-        return {
-          content: [{ type: 'text', text: JSON.stringify(specs, null, 2) }],
-        };
+        try {
+          const specs = await listSpecs();
+          return {
+            content: [{ type: 'text', text: JSON.stringify(specs, null, 2) }],
+          };
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `Error: ${err.message}` }],
+            isError: true,
+          };
+        }
       }
 
       case 'waaseyaa_get_spec': {
@@ -292,10 +322,17 @@ if (isMainModule) {
             isError: true,
           };
         }
-        const results = await searchSpecs(args.query);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
-        };
+        try {
+          const results = await searchSpecs(args.query);
+          return {
+            content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+          };
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `Error: ${err.message}` }],
+            isError: true,
+          };
+        }
       }
 
       default:
