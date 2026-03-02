@@ -12,6 +12,8 @@ final class PackageManifest
         /** @var array<string, string> */ public readonly array $fieldTypes = [],
         /** @var array<string, list<array{class: string, priority: int}>> */ public readonly array $listeners = [],
         /** @var array<string, list<array{class: string, priority: int}>> */ public readonly array $middleware = [],
+        /** @var array<string, array{title: string, description?: string}> */ public readonly array $permissions = [],
+        /** @var array<string, string> */ public readonly array $policies = [],
     ) {}
 
     /**
@@ -21,7 +23,7 @@ final class PackageManifest
      */
     public static function fromArray(array $data): self
     {
-        $requiredKeys = ['providers', 'commands', 'routes', 'migrations', 'field_types', 'listeners', 'middleware'];
+        $requiredKeys = ['providers', 'commands', 'routes', 'migrations', 'field_types', 'listeners', 'middleware', 'permissions', 'policies'];
         $missing = array_diff($requiredKeys, array_keys($data));
 
         if ($missing !== []) {
@@ -49,6 +51,8 @@ final class PackageManifest
             fieldTypes: $data['field_types'],
             listeners: $data['listeners'],
             middleware: $data['middleware'],
+            permissions: $data['permissions'],
+            policies: $data['policies'],
         );
     }
 
@@ -65,6 +69,8 @@ final class PackageManifest
             'field_types' => $this->fieldTypes,
             'listeners' => $this->listeners,
             'middleware' => $this->middleware,
+            'permissions' => $this->permissions,
+            'policies' => $this->policies,
         ];
     }
 }
