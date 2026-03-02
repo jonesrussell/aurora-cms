@@ -9,6 +9,8 @@ use Waaseyaa\Foundation\Event\Attribute\Listener;
 
 final class PackageManifestCompiler
 {
+    private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute';
+
     public function __construct(
         private readonly string $basePath,
         private readonly string $storagePath,
@@ -26,6 +28,8 @@ final class PackageManifestCompiler
         $fieldTypes = [];
         $listeners = [];
         $middleware = [];
+        $permissions = [];
+        $policies = [];
 
         // Read installed packages manifest
         $installedPath = $this->basePath . '/vendor/composer/installed.json';
@@ -51,6 +55,11 @@ final class PackageManifestCompiler
                 if (isset($extra['migrations'])) {
                     $packageName = $package['name'] ?? 'unknown';
                     $migrations[$packageName] = $extra['migrations'];
+                }
+                if (isset($extra['permissions']) && is_array($extra['permissions'])) {
+                    foreach ($extra['permissions'] as $permId => $permDef) {
+                        $permissions[$permId] = $permDef;
+                    }
                 }
             }
         }
@@ -96,6 +105,11 @@ final class PackageManifestCompiler
             foreach ($ref->getAttributes(AsEntityType::class) as $attr) {
                 // Entity types are tracked in providers for now
             }
+
+            foreach ($ref->getAttributes(self::POLICY_ATTRIBUTE) as $attr) {
+                $instance = $attr->newInstance();
+                $policies[$instance->entityType] = $class;
+            }
         }
 
         // Sort middleware by priority (descending)
@@ -116,6 +130,8 @@ final class PackageManifestCompiler
             fieldTypes: $fieldTypes,
             listeners: $listeners,
             middleware: $middleware,
+            permissions: $permissions,
+            policies: $policies,
         );
     }
 
@@ -200,7 +216,8 @@ final class PackageManifestCompiler
                 $hasDiscoveryAttribute = !empty($ref->getAttributes(AsFieldType::class))
                     || !empty($ref->getAttributes(Listener::class))
                     || !empty($ref->getAttributes(AsMiddleware::class))
-                    || !empty($ref->getAttributes(AsEntityType::class));
+                    || !empty($ref->getAttributes(AsEntityType::class))
+                    || !empty($ref->getAttributes(self::POLICY_ATTRIBUTE));
 
                 if ($hasDiscoveryAttribute) {
                     $classes[] = $class;

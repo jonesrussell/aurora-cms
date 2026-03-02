@@ -8,12 +8,17 @@
         {"type": "path", "url": "../plugin"},
         {"type": "path", "url": "../cache"},
         {"type": "path", "url": "../typed-data"},
-        {"type": "path", "url": "../config"}
+        {"type": "path", "url": "../config"},
+        {"type": "path", "url": "../foundation"},
+        {"type": "path", "url": "../routing"}
     ],
     "require": {
         "php": ">=8.3",
         "waaseyaa/entity": "@dev",
-        "waaseyaa/plugin": "@dev"
+        "waaseyaa/plugin": "@dev",
+        "waaseyaa/foundation": "@dev",
+        "waaseyaa/routing": "@dev",
+        "symfony/http-foundation": "^7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"

@@ -65,6 +65,53 @@ final class PackageManifestTest extends TestCase
             'field_types' => [],
             'listeners' => [],
             'middleware' => [],
+            'permissions' => [],
+            'policies' => [],
         ]);
+    }
+
+    #[Test]
+    public function from_array_defaults_missing_permissions_and_policies(): void
+    {
+        $manifest = PackageManifest::fromArray([
+            'providers' => [],
+            'commands' => [],
+            'routes' => [],
+            'migrations' => [],
+            'field_types' => [],
+            'listeners' => [],
+            'middleware' => [],
+        ]);
+
+        $this->assertSame([], $manifest->permissions);
+        $this->assertSame([], $manifest->policies);
+    }
+
+    #[Test]
+    public function defaults_include_permissions_and_policies(): void
+    {
+        $manifest = new PackageManifest();
+        $this->assertSame([], $manifest->permissions);
+        $this->assertSame([], $manifest->policies);
+    }
+
+    #[Test]
+    public function round_trips_permissions_and_policies_through_array(): void
+    {
+        $manifest = new PackageManifest(
+            permissions: [
+                'access content' => ['title' => 'Access published content'],
+                'create article' => ['title' => 'Create Article content', 'description' => 'Allows creating article nodes'],
+            ],
+            policies: [
+                'node' => 'App\\Policy\\NodePolicy',
+            ],
+        );
+
+        $array = $manifest->toArray();
+        $restored = PackageManifest::fromArray($array);
+
+        $this->assertSame($manifest->permissions, $restored->permissions);
+        $this->assertSame($manifest->policies, $restored->policies);
     }
 }

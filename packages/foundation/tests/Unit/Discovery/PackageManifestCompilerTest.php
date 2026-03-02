@@ -99,6 +99,8 @@ final class PackageManifestCompilerTest extends TestCase
             'field_types' => [],
             'listeners' => [],
             'middleware' => [],
+            'permissions' => [],
+            'policies' => [],
         ];
 
         file_put_contents(
@@ -198,6 +200,85 @@ final class PackageManifestCompilerTest extends TestCase
         $manifest = $compiler->load();
 
         $this->assertSame([], $manifest->providers);
+    }
+
+    #[Test]
+    public function compile_collects_permissions_from_installed_json(): void
+    {
+        $installed = [
+            'packages' => [
+                [
+                    'name' => 'waaseyaa/node',
+                    'extra' => [
+                        'waaseyaa' => [
+                            'permissions' => [
+                                'access content' => ['title' => 'Access published content'],
+                                'create article' => ['title' => 'Create Article', 'description' => 'Create article nodes'],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'waaseyaa/user',
+                    'extra' => [
+                        'waaseyaa' => [
+                            'permissions' => [
+                                'administer users' => ['title' => 'Administer users'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode($installed, JSON_THROW_ON_ERROR),
+        );
+
+        $storagePath = $this->tempDir . '/storage';
+        $compiler = new PackageManifestCompiler($this->tempDir, $storagePath);
+        $manifest = $compiler->compile();
+
+        $this->assertCount(3, $manifest->permissions);
+        $this->assertSame('Access published content', $manifest->permissions['access content']['title']);
+        $this->assertSame('Administer users', $manifest->permissions['administer users']['title']);
+    }
+
+    #[Test]
+    public function compile_discovers_policy_classes(): void
+    {
+        $fixtureDir = $this->tempDir . '/src';
+        mkdir($fixtureDir, 0o755, true);
+
+        $fixtureClass = <<<'PHP'
+        <?php
+        declare(strict_types=1);
+        namespace Waaseyaa\TestFixtures;
+        use Waaseyaa\Access\Gate\PolicyAttribute;
+        #[PolicyAttribute(entityType: 'node')]
+        final class NodePolicy {}
+        PHP;
+
+        file_put_contents($fixtureDir . '/NodePolicy.php', $fixtureClass);
+
+        require_once $fixtureDir . '/NodePolicy.php';
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [\'Waaseyaa\\\\TestFixtures\\\\NodePolicy\' => \'' . $fixtureDir . '/NodePolicy.php\'];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $storagePath = $this->tempDir . '/storage';
+        $compiler = new PackageManifestCompiler($this->tempDir, $storagePath);
+        $manifest = $compiler->compile();
+
+        $this->assertSame('Waaseyaa\\TestFixtures\\NodePolicy', $manifest->policies['node'] ?? null);
     }
 
     private function removeDir(string $dir): void

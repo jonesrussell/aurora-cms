@@ -57,6 +57,13 @@ use Waaseyaa\User\User;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Routing\RequestContext;
 use Waaseyaa\Api\Controller\BroadcastController;
+use Waaseyaa\Access\Middleware\AuthorizationMiddleware;
+use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
+use Waaseyaa\Foundation\Middleware\HttpPipeline;
+use Waaseyaa\Routing\AccessChecker;
+use Waaseyaa\User\Middleware\SessionMiddleware;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 // --- CORS -------------------------------------------------------------------
 
@@ -196,7 +203,7 @@ $router->addRoute(
         ->build(),
 );
 
-// --- Dispatch ---------------------------------------------------------------
+// --- Route matching ---------------------------------------------------------
 
 $serializer = new ResourceSerializer($entityTypeManager);
 $schemaPresenter = new SchemaPresenter();
@@ -212,12 +219,49 @@ try {
     sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'A routing error occurred.']]]);
 }
 
+// --- Authorization pipeline -------------------------------------------------
+
+$httpRequest = HttpRequest::createFromGlobals();
+$routeName = $params['_route'] ?? '';
+$matchedRoute = $router->getRouteCollection()->get($routeName);
+if ($matchedRoute !== null) {
+    $httpRequest->attributes->set('_route_object', $matchedRoute);
+}
+
+$userStorage = $entityTypeManager->getStorage('user');
+$accessChecker = new AccessChecker();
+$pipeline = (new HttpPipeline())
+    ->withMiddleware(new SessionMiddleware($userStorage))
+    ->withMiddleware(new AuthorizationMiddleware($accessChecker));
+
+try {
+    $authResponse = $pipeline->handle(
+        $httpRequest,
+        new class implements HttpHandlerInterface {
+            public function handle(HttpRequest $request): HttpResponse
+            {
+                return new HttpResponse('', 200);
+            }
+        },
+    );
+} catch (\Throwable $e) {
+    error_log(sprintf('[Waaseyaa] Authorization pipeline error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+    sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'An authorization error occurred.']]]);
+}
+
+if ($authResponse->getStatusCode() >= 400) {
+    $authResponse->send();
+    exit;
+}
+
+// --- Dispatch ---------------------------------------------------------------
+
 $controller = $params['_controller'] ?? '';
 
-// Parse request body for POST/PATCH.
+// Parse request body for POST/PATCH (use $httpRequest to avoid double-reading php://input).
 $body = null;
 if (in_array($method, ['POST', 'PATCH'], true)) {
-    $raw = file_get_contents('php://input');
+    $raw = $httpRequest->getContent();
     if ($raw !== '') {
         $body = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
