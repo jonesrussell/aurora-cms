@@ -23,7 +23,8 @@ final class PackageManifest
      */
     public static function fromArray(array $data): self
     {
-        $requiredKeys = ['providers', 'commands', 'routes', 'migrations', 'field_types', 'listeners', 'middleware', 'permissions', 'policies'];
+        $requiredKeys = ['providers', 'commands', 'routes', 'migrations', 'field_types', 'listeners', 'middleware'];
+        $optionalKeys = ['permissions', 'policies'];
         $missing = array_diff($requiredKeys, array_keys($data));
 
         if ($missing !== []) {
@@ -33,8 +34,8 @@ final class PackageManifest
             ));
         }
 
-        foreach ($requiredKeys as $key) {
-            if (!is_array($data[$key])) {
+        foreach ([...$requiredKeys, ...$optionalKeys] as $key) {
+            if (isset($data[$key]) && !is_array($data[$key])) {
                 throw new \InvalidArgumentException(sprintf(
                     'PackageManifest cache key "%s" must be an array, got %s',
                     $key,
@@ -51,8 +52,8 @@ final class PackageManifest
             fieldTypes: $data['field_types'],
             listeners: $data['listeners'],
             middleware: $data['middleware'],
-            permissions: $data['permissions'],
-            policies: $data['policies'],
+            permissions: $data['permissions'] ?? [],
+            policies: $data['policies'] ?? [],
         );
     }
 

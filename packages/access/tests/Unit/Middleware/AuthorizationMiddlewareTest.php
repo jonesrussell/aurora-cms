@@ -118,4 +118,29 @@ final class AuthorizationMiddlewareTest extends TestCase
 
         $this->assertSame(200, $response->getStatusCode());
     }
+
+    #[Test]
+    public function returns_403_when_no_account_set(): void
+    {
+        $route = new Route('/api/node');
+        $route->setOption('_permission', 'access content');
+
+        $accessChecker = new AccessChecker();
+        $middleware = new AuthorizationMiddleware($accessChecker);
+
+        $request = Request::create('/api/node');
+        $request->attributes->set('_route_object', $route);
+
+        $next = new class implements HttpHandlerInterface {
+            public function handle(Request $request): Response
+            {
+                return new Response('should not reach here');
+            }
+        };
+
+        $response = $middleware->process($request, $next);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertStringContainsString('No authenticated account', $response->getContent());
+    }
 }

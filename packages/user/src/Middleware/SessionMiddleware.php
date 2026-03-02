@@ -35,7 +35,12 @@ final class SessionMiddleware implements HttpMiddlewareInterface
             return new AnonymousUser();
         }
 
-        $user = $this->userStorage->load($uid);
+        try {
+            $user = $this->userStorage->load($uid);
+        } catch (\Throwable $e) {
+            error_log(sprintf('[Waaseyaa] SessionMiddleware: failed to load user %s: %s', $uid, $e->getMessage()));
+            return new AnonymousUser();
+        }
 
         if ($user instanceof AccountInterface) {
             return $user;

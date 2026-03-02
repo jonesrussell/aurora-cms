@@ -234,17 +234,22 @@ $pipeline = (new HttpPipeline())
     ->withMiddleware(new SessionMiddleware($userStorage))
     ->withMiddleware(new AuthorizationMiddleware($accessChecker));
 
-$authResponse = $pipeline->handle(
-    $httpRequest,
-    new class implements HttpHandlerInterface {
-        public function handle(HttpRequest $request): HttpResponse
-        {
-            return new HttpResponse('', 200);
-        }
-    },
-);
+try {
+    $authResponse = $pipeline->handle(
+        $httpRequest,
+        new class implements HttpHandlerInterface {
+            public function handle(HttpRequest $request): HttpResponse
+            {
+                return new HttpResponse('', 200);
+            }
+        },
+    );
+} catch (\Throwable $e) {
+    error_log(sprintf('[Waaseyaa] Authorization pipeline error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+    sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'An authorization error occurred.']]]);
+}
 
-if ($authResponse->getStatusCode() !== 200) {
+if ($authResponse->getStatusCode() >= 400) {
     $authResponse->send();
     exit;
 }
@@ -253,10 +258,10 @@ if ($authResponse->getStatusCode() !== 200) {
 
 $controller = $params['_controller'] ?? '';
 
-// Parse request body for POST/PATCH.
+// Parse request body for POST/PATCH (use $httpRequest to avoid double-reading php://input).
 $body = null;
 if (in_array($method, ['POST', 'PATCH'], true)) {
-    $raw = file_get_contents('php://input');
+    $raw = $httpRequest->getContent();
     if ($raw !== '') {
         $body = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE) {

@@ -5,11 +5,12 @@ namespace Waaseyaa\Foundation\Discovery;
 use Waaseyaa\Foundation\Attribute\AsEntityType;
 use Waaseyaa\Foundation\Attribute\AsFieldType;
 use Waaseyaa\Foundation\Attribute\AsMiddleware;
-use Waaseyaa\Access\Gate\PolicyAttribute;
 use Waaseyaa\Foundation\Event\Attribute\Listener;
 
 final class PackageManifestCompiler
 {
+    private const POLICY_ATTRIBUTE = 'Waaseyaa\\Access\\Gate\\PolicyAttribute';
+
     public function __construct(
         private readonly string $basePath,
         private readonly string $storagePath,
@@ -105,7 +106,7 @@ final class PackageManifestCompiler
                 // Entity types are tracked in providers for now
             }
 
-            foreach ($ref->getAttributes(PolicyAttribute::class) as $attr) {
+            foreach ($ref->getAttributes(self::POLICY_ATTRIBUTE) as $attr) {
                 $instance = $attr->newInstance();
                 $policies[$instance->entityType] = $class;
             }
@@ -216,7 +217,7 @@ final class PackageManifestCompiler
                     || !empty($ref->getAttributes(Listener::class))
                     || !empty($ref->getAttributes(AsMiddleware::class))
                     || !empty($ref->getAttributes(AsEntityType::class))
-                    || !empty($ref->getAttributes(PolicyAttribute::class));
+                    || !empty($ref->getAttributes(self::POLICY_ATTRIBUTE));
 
                 if ($hasDiscoveryAttribute) {
                     $classes[] = $class;

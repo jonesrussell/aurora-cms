@@ -7,10 +7,10 @@ namespace Waaseyaa\Access\Middleware;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
 use Waaseyaa\Foundation\Middleware\HttpMiddlewareInterface;
 use Waaseyaa\Routing\AccessChecker;
-use Waaseyaa\User\AnonymousUser;
 
 final class AuthorizationMiddleware implements HttpMiddlewareInterface
 {
@@ -26,7 +26,19 @@ final class AuthorizationMiddleware implements HttpMiddlewareInterface
             return $next->handle($request);
         }
 
-        $account = $request->attributes->get('_account') ?? new AnonymousUser();
+        $account = $request->attributes->get('_account');
+
+        if (!$account instanceof AccountInterface) {
+            error_log('[Waaseyaa] AuthorizationMiddleware: _account not set or invalid; denying access.');
+            return new JsonResponse([
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '403',
+                    'title' => 'Forbidden',
+                    'detail' => 'No authenticated account available.',
+                ]],
+            ], 403, ['Content-Type' => 'application/vnd.api+json']);
+        }
 
         $result = $this->accessChecker->check($route, $account);
 

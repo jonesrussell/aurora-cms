@@ -106,6 +106,35 @@ final class SessionMiddlewareTest extends TestCase
     }
 
     #[Test]
+    public function falls_back_to_anonymous_when_storage_throws(): void
+    {
+        $storage = $this->createMock(EntityStorageInterface::class);
+        $storage->expects($this->once())
+            ->method('load')
+            ->with(42)
+            ->willThrowException(new \RuntimeException('Database unavailable'));
+
+        $middleware = new SessionMiddleware($storage);
+        $request = Request::create('/test');
+        $request->attributes->set('_session', ['waaseyaa_uid' => 42]);
+
+        $capturedAccount = null;
+        $next = new class($capturedAccount) implements HttpHandlerInterface {
+            public function __construct(private ?AccountInterface &$ref) {}
+
+            public function handle(Request $request): Response
+            {
+                $this->ref = $request->attributes->get('_account');
+                return new Response('ok');
+            }
+        };
+
+        $middleware->process($request, $next);
+
+        $this->assertInstanceOf(AnonymousUser::class, $capturedAccount);
+    }
+
+    #[Test]
     public function passes_response_from_next_handler(): void
     {
         $storage = $this->createMock(EntityStorageInterface::class);

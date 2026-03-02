@@ -71,6 +71,23 @@ final class PackageManifestTest extends TestCase
     }
 
     #[Test]
+    public function from_array_defaults_missing_permissions_and_policies(): void
+    {
+        $manifest = PackageManifest::fromArray([
+            'providers' => [],
+            'commands' => [],
+            'routes' => [],
+            'migrations' => [],
+            'field_types' => [],
+            'listeners' => [],
+            'middleware' => [],
+        ]);
+
+        $this->assertSame([], $manifest->permissions);
+        $this->assertSame([], $manifest->policies);
+    }
+
+    #[Test]
     public function defaults_include_permissions_and_policies(): void
     {
         $manifest = new PackageManifest();
