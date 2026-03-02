@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Waaseyaa\Api\Schema;
 
+use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\EntityTypeInterface;
 
 /**
@@ -16,6 +19,7 @@ use Waaseyaa\Entity\EntityTypeInterface;
  * - "x-description": field description for help text
  * - "x-weight": field display order weight
  * - "x-required": whether the field is required in forms
+ * - "x-access-restricted": field is viewable but not editable by the current account
  */
 final class SchemaPresenter
 {
@@ -86,13 +90,24 @@ final class SchemaPresenter
     /**
      * Present an entity type as a JSON Schema with widget hints.
      *
-     * @param EntityTypeInterface          $entityType       The entity type definition.
-     * @param array<string, array<string, mixed>> $fieldDefinitions Optional field definitions keyed by field name.
+     * @param EntityTypeInterface                  $entityType       The entity type definition.
+     * @param array<string, array<string, mixed>>  $fieldDefinitions Optional field definitions keyed by field name.
      *   Each field definition may contain: type, label, description, required, weight, settings.
+     * @param EntityInterface|null                 $entity           Optional entity for field access checking.
+     * @param EntityAccessHandler|null             $accessHandler    Optional access handler for field filtering.
+     * @param AccountInterface|null                $account          Optional account for access checks.
+     *   When all three optional parameters are provided, view-denied fields are removed
+     *   and edit-denied fields are marked readOnly with x-access-restricted.
      *
      * @return array<string, mixed> JSON Schema array.
      */
-    public function present(EntityTypeInterface $entityType, array $fieldDefinitions = []): array
+    public function present(
+        EntityTypeInterface $entityType,
+        array $fieldDefinitions = [],
+        ?EntityInterface $entity = null,
+        ?EntityAccessHandler $accessHandler = null,
+        ?AccountInterface $account = null,
+    ): array
     {
         $schema = [
             '$schema' => 'https://json-schema.org/draft-07/schema#',
@@ -128,6 +143,34 @@ final class SchemaPresenter
 
                 if (!empty($definition['required'])) {
                     $required[] = $fieldName;
+                }
+            }
+        }
+
+        // Apply field access control if context is available.
+        if ($entity !== null && $accessHandler !== null && $account !== null) {
+            $systemKeys = array_values($keys);
+            foreach ($properties as $fieldName => $property) {
+                // Skip system properties — they are always shown as-is.
+                if (in_array($fieldName, $systemKeys, true)) {
+                    continue;
+                }
+
+                $viewResult = $accessHandler->checkFieldAccess($entity, $fieldName, 'view', $account);
+                if ($viewResult->isForbidden()) {
+                    unset($properties[$fieldName]);
+                    // Also remove from required list.
+                    $required = array_values(array_filter(
+                        $required,
+                        static fn(string $name): bool => $name !== $fieldName,
+                    ));
+                    continue;
+                }
+
+                $editResult = $accessHandler->checkFieldAccess($entity, $fieldName, 'edit', $account);
+                if ($editResult->isForbidden()) {
+                    $properties[$fieldName]['readOnly'] = true;
+                    $properties[$fieldName]['x-access-restricted'] = true;
                 }
             }
         }
