@@ -246,6 +246,100 @@ final class PackageManifestCompilerTest extends TestCase
     }
 
     #[Test]
+    public function compile_discovers_policies_via_psr4_fallback(): void
+    {
+        $fixtureDir = $this->tempDir . '/src/Gate';
+        mkdir($fixtureDir, 0o755, true);
+
+        $fixtureClass = <<<'PHP'
+        <?php
+        declare(strict_types=1);
+        namespace Waaseyaa\TestFixturesPsr4\Gate;
+        use Waaseyaa\Access\Gate\PolicyAttribute;
+        #[PolicyAttribute(entityType: 'taxonomy_term')]
+        final class Psr4Policy {}
+        PHP;
+
+        file_put_contents($fixtureDir . '/Psr4Policy.php', $fixtureClass);
+
+        require_once $fixtureDir . '/Psr4Policy.php';
+
+        // Empty classmap — no Waaseyaa classes
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [];',
+        );
+
+        // PSR-4 map pointing to fixture directory
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php return [\'Waaseyaa\\\\TestFixturesPsr4\\\\\' => [\'' . $this->tempDir . '/src\']];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $storagePath = $this->tempDir . '/storage';
+        $compiler = new PackageManifestCompiler($this->tempDir, $storagePath);
+        $manifest = $compiler->compile();
+
+        $this->assertSame(
+            ['taxonomy_term'],
+            $manifest->policies['Waaseyaa\\TestFixturesPsr4\\Gate\\Psr4Policy'] ?? null,
+        );
+    }
+
+    #[Test]
+    public function compile_prefers_classmap_over_psr4(): void
+    {
+        $fixtureDir = $this->tempDir . '/src';
+        mkdir($fixtureDir, 0o755, true);
+
+        $fixtureClass = <<<'PHP'
+        <?php
+        declare(strict_types=1);
+        namespace Waaseyaa\TestFixturesClassmap;
+        use Waaseyaa\Access\Gate\PolicyAttribute;
+        #[PolicyAttribute(entityType: 'media')]
+        final class ClassmapPolicy {}
+        PHP;
+
+        file_put_contents($fixtureDir . '/ClassmapPolicy.php', $fixtureClass);
+
+        require_once $fixtureDir . '/ClassmapPolicy.php';
+
+        // Classmap includes the policy class — should be used
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [\'Waaseyaa\\\\TestFixturesClassmap\\\\ClassmapPolicy\' => \'' . $fixtureDir . '/ClassmapPolicy.php\'];',
+        );
+
+        // PSR-4 also points to the same directory — should be skipped
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php return [\'Waaseyaa\\\\TestFixturesClassmap\\\\\' => [\'' . $fixtureDir . '\']];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $storagePath = $this->tempDir . '/storage';
+        $compiler = new PackageManifestCompiler($this->tempDir, $storagePath);
+        $manifest = $compiler->compile();
+
+        // Policy discovered via classmap, not duplicated
+        $this->assertSame(
+            ['media'],
+            $manifest->policies['Waaseyaa\\TestFixturesClassmap\\ClassmapPolicy'] ?? null,
+        );
+        $this->assertCount(1, $manifest->policies);
+    }
+
+    #[Test]
     public function compile_discovers_policy_classes(): void
     {
         $fixtureDir = $this->tempDir . '/src';

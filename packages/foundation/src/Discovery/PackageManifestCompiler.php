@@ -192,21 +192,34 @@ final class PackageManifestCompiler
      */
     private function scanClasses(): array
     {
-        $classes = [];
-        $autoloadPath = $this->basePath . '/vendor/composer/autoload_classmap.php';
-
-        if (!is_file($autoloadPath)) {
-            return $classes;
+        // Try classmap first (populated by composer dump-autoload --optimize)
+        $classmapPath = $this->basePath . '/vendor/composer/autoload_classmap.php';
+        if (is_file($classmapPath)) {
+            $classMap = require $classmapPath;
+            $candidates = array_filter(
+                array_keys($classMap),
+                fn(string $c) => str_starts_with($c, 'Waaseyaa\\'),
+            );
+            if ($candidates !== []) {
+                return $this->filterDiscoveryClasses($candidates);
+            }
         }
 
-        $classMap = require $autoloadPath;
+        // Fallback: scan PSR-4 directories
+        return $this->filterDiscoveryClasses($this->scanPsr4Classes());
+    }
 
-        foreach ($classMap as $class => $file) {
-            // Only scan Waaseyaa namespace classes
-            if (!str_starts_with($class, 'Waaseyaa\\')) {
-                continue;
-            }
+    /**
+     * Filter candidate class names to those with discovery attributes.
+     *
+     * @param string[] $candidates
+     * @return string[]
+     */
+    private function filterDiscoveryClasses(array $candidates): array
+    {
+        $classes = [];
 
+        foreach ($candidates as $class) {
             try {
                 $ref = new \ReflectionClass($class);
                 if ($ref->isAbstract() || $ref->isInterface() || $ref->isTrait()) {
@@ -225,6 +238,45 @@ final class PackageManifestCompiler
             } catch (\ReflectionException) {
                 // Skip classes that can't be reflected
                 continue;
+            }
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Scan PSR-4 directories for Waaseyaa classes.
+     *
+     * @return string[]
+     */
+    private function scanPsr4Classes(): array
+    {
+        $psr4Path = $this->basePath . '/vendor/composer/autoload_psr4.php';
+        if (!is_file($psr4Path)) {
+            return [];
+        }
+
+        $psr4Map = require $psr4Path;
+        $classes = [];
+
+        foreach ($psr4Map as $namespace => $dirs) {
+            if (!str_starts_with($namespace, 'Waaseyaa\\') || str_contains($namespace, 'Tests\\')) {
+                continue;
+            }
+            foreach ($dirs as $dir) {
+                if (!is_dir($dir)) {
+                    continue;
+                }
+                $iterator = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                );
+                foreach ($iterator as $file) {
+                    if ($file->getExtension() !== 'php') {
+                        continue;
+                    }
+                    $relativePath = substr($file->getPathname(), strlen($dir) + 1);
+                    $classes[] = $namespace . str_replace(['/', '.php'], ['\\', ''], $relativePath);
+                }
             }
         }
 
