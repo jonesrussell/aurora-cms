@@ -81,6 +81,43 @@ class EntityTypeTest extends TestCase
         $this->assertSame($constraints, $type->getConstraints());
     }
 
+    public function testFieldDefinitionsDefaultsToEmptyArray(): void
+    {
+        $type = new EntityType(
+            id: 'test',
+            label: 'Test',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
+        );
+
+        $this->assertSame([], $type->getFieldDefinitions());
+    }
+
+    public function testFieldDefinitionsWithValues(): void
+    {
+        $fields = [
+            'status' => [
+                'type' => 'boolean',
+                'label' => 'Published',
+                'weight' => 10,
+            ],
+            'uid' => [
+                'type' => 'entity_reference',
+                'label' => 'Author',
+                'settings' => ['target_type' => 'user'],
+                'weight' => 20,
+            ],
+        ];
+
+        $type = new EntityType(
+            id: 'node',
+            label: 'Content',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
+            fieldDefinitions: $fields,
+        );
+
+        $this->assertSame($fields, $type->getFieldDefinitions());
+    }
+
     public function testIsReadonly(): void
     {
         $type = new EntityType(

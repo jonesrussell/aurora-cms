@@ -33,6 +33,7 @@ final readonly class EntityType implements EntityTypeInterface
         private bool $translatable = false,
         private ?string $bundleEntityType = null,
         private array $constraints = [],
+        private array $fieldDefinitions = [],
     ) {}
 
     public function id(): string
@@ -81,5 +82,11 @@ final readonly class EntityType implements EntityTypeInterface
     public function getConstraints(): array
     {
         return $this->constraints;
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public function getFieldDefinitions(): array
+    {
+        return $this->fieldDefinitions;
     }
 }

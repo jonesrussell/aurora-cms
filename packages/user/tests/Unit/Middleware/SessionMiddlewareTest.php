@@ -13,6 +13,7 @@ use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Entity\Storage\EntityStorageInterface;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
 use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\DevAdminAccount;
 use Waaseyaa\User\Middleware\SessionMiddleware;
 use Waaseyaa\User\User;
 
@@ -132,6 +133,66 @@ final class SessionMiddlewareTest extends TestCase
         $middleware->process($request, $next);
 
         $this->assertInstanceOf(AnonymousUser::class, $capturedAccount);
+    }
+
+    #[Test]
+    public function uses_dev_fallback_when_no_session_and_fallback_provided(): void
+    {
+        $devAccount = new DevAdminAccount();
+        $storage = $this->createMock(EntityStorageInterface::class);
+        $storage->expects($this->never())->method('load');
+
+        $middleware = new SessionMiddleware($storage, $devAccount);
+        $request = Request::create('/test');
+
+        $capturedAccount = null;
+        $next = new class($capturedAccount) implements HttpHandlerInterface {
+            public function __construct(private ?AccountInterface &$ref) {}
+
+            public function handle(Request $request): Response
+            {
+                $this->ref = $request->attributes->get('_account');
+                return new Response('ok');
+            }
+        };
+
+        $middleware->process($request, $next);
+
+        $this->assertInstanceOf(DevAdminAccount::class, $capturedAccount);
+        $this->assertSame(1, $capturedAccount->id());
+    }
+
+    #[Test]
+    public function ignores_dev_fallback_when_session_exists(): void
+    {
+        $devAccount = new DevAdminAccount();
+        $user = new User(['uid' => 42, 'name' => 'admin', 'permissions' => ['access content']]);
+
+        $storage = $this->createMock(EntityStorageInterface::class);
+        $storage->expects($this->once())
+            ->method('load')
+            ->with(42)
+            ->willReturn($user);
+
+        $middleware = new SessionMiddleware($storage, $devAccount);
+        $request = Request::create('/test');
+        $request->attributes->set('_session', ['waaseyaa_uid' => 42]);
+
+        $capturedAccount = null;
+        $next = new class($capturedAccount) implements HttpHandlerInterface {
+            public function __construct(private ?AccountInterface &$ref) {}
+
+            public function handle(Request $request): Response
+            {
+                $this->ref = $request->attributes->get('_account');
+                return new Response('ok');
+            }
+        };
+
+        $middleware->process($request, $next);
+
+        $this->assertInstanceOf(User::class, $capturedAccount);
+        $this->assertSame(42, $capturedAccount->id());
     }
 
     #[Test]

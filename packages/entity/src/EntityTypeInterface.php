@@ -26,4 +26,7 @@ interface EntityTypeInterface
 
     /** @return array<string, mixed> */
     public function getConstraints(): array;
+
+    /** @return array<string, array<string, mixed>> Field definitions keyed by field name. */
+    public function getFieldDefinitions(): array;
 }

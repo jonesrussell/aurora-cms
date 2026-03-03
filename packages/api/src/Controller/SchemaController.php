@@ -57,7 +57,7 @@ final class SchemaController
 
         $schema = $this->schemaPresenter->present(
             $entityType,
-            [],
+            $entityType->getFieldDefinitions(),
             $entity,
             $this->accessHandler,
             $this->account,

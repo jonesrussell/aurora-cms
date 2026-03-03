@@ -16,6 +16,7 @@ final class SessionMiddleware implements HttpMiddlewareInterface
 {
     public function __construct(
         private readonly EntityStorageInterface $userStorage,
+        private readonly ?AccountInterface $devFallback = null,
     ) {}
 
     public function process(Request $request, HttpHandlerInterface $next): Response
@@ -32,7 +33,7 @@ final class SessionMiddleware implements HttpMiddlewareInterface
         $uid = $session['waaseyaa_uid'] ?? null;
 
         if ($uid === null) {
-            return new AnonymousUser();
+            return $this->devFallback ?? new AnonymousUser();
         }
 
         try {

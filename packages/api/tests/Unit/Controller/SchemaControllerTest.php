@@ -119,6 +119,47 @@ final class SchemaControllerTest extends TestCase
     }
 
     #[Test]
+    public function showIncludesFieldDefinitionsInSchema(): void
+    {
+        $storage = new InMemoryEntityStorage('node');
+        $manager = new EntityTypeManager(new EventDispatcher(), fn() => $storage);
+
+        $manager->registerEntityType(new EntityType(
+            id: 'node',
+            label: 'Content',
+            class: TestEntity::class,
+            keys: ['id' => 'nid', 'uuid' => 'uuid', 'label' => 'title', 'bundle' => 'type'],
+            fieldDefinitions: [
+                'status' => [
+                    'type' => 'boolean',
+                    'label' => 'Published',
+                    'weight' => 10,
+                ],
+                'uid' => [
+                    'type' => 'entity_reference',
+                    'label' => 'Author',
+                    'settings' => ['target_type' => 'user'],
+                    'weight' => 20,
+                ],
+            ],
+        ));
+
+        $controller = new SchemaController($manager, new SchemaPresenter());
+        $doc = $controller->show('node');
+        $schema = $doc->toArray()['meta']['schema'];
+
+        $this->assertSame(200, $doc->statusCode);
+        $this->assertArrayHasKey('status', $schema['properties']);
+        $this->assertSame('boolean', $schema['properties']['status']['type']);
+        $this->assertSame('boolean', $schema['properties']['status']['x-widget']);
+        $this->assertSame('Published', $schema['properties']['status']['x-label']);
+
+        $this->assertArrayHasKey('uid', $schema['properties']);
+        $this->assertSame('entity_autocomplete', $schema['properties']['uid']['x-widget']);
+        $this->assertSame('user', $schema['properties']['uid']['x-target-type']);
+    }
+
+    #[Test]
     public function showAcceptsFieldAccessContext(): void
     {
         $account = $this->createMock(AccountInterface::class);

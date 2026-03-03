@@ -33,3 +33,4 @@ The access control system has four layers, being built bottom-up:
 |---|---------|--------|-------------|
 | 1 | Entity CRUD views | Done | List, create, edit, delete for all entity types |
 | 2 | i18n locales beyond English | Planned | Infrastructure exists (`useLanguage` composable), needs locale files |
+| 3 | Dynamic CORS origin | Planned | CORS in `index.php` hardcodes `localhost:3000`. Nuxt dev server may bind to 3001+ if port is taken. Need dynamic origin handling (e.g., `WAASEYAA_CORS_ORIGIN` env var or pattern-based localhost matching). |

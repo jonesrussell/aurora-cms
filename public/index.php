@@ -75,6 +75,7 @@ use Waaseyaa\Foundation\Discovery\PackageManifestCompiler;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
 use Waaseyaa\Foundation\Middleware\HttpPipeline;
 use Waaseyaa\Routing\AccessChecker;
+use Waaseyaa\User\DevAdminAccount;
 use Waaseyaa\User\Middleware\SessionMiddleware;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -122,6 +123,26 @@ $entityTypes = [
         label: 'User',
         class: User::class,
         keys: ['id' => 'uid', 'uuid' => 'uuid', 'label' => 'name'],
+        fieldDefinitions: [
+            'mail' => [
+                'type' => 'email',
+                'label' => 'Email address',
+                'description' => 'The email address of the user.',
+                'weight' => 5,
+            ],
+            'status' => [
+                'type' => 'boolean',
+                'label' => 'Active',
+                'description' => 'Whether the user account is active.',
+                'weight' => 10,
+            ],
+            'created' => [
+                'type' => 'timestamp',
+                'label' => 'Member since',
+                'description' => 'The date the user account was created.',
+                'weight' => 20,
+            ],
+        ],
     ),
 
     // Layer 2: Content Types.
@@ -130,6 +151,45 @@ $entityTypes = [
         label: 'Content',
         class: Node::class,
         keys: ['id' => 'nid', 'uuid' => 'uuid', 'label' => 'title', 'bundle' => 'type'],
+        fieldDefinitions: [
+            'status' => [
+                'type' => 'boolean',
+                'label' => 'Published',
+                'description' => 'Whether the content is published.',
+                'weight' => 10,
+            ],
+            'promote' => [
+                'type' => 'boolean',
+                'label' => 'Promoted to front page',
+                'description' => 'Whether the content is promoted to the front page.',
+                'weight' => 11,
+            ],
+            'sticky' => [
+                'type' => 'boolean',
+                'label' => 'Sticky at top of lists',
+                'description' => 'Whether the content is sticky at the top of lists.',
+                'weight' => 12,
+            ],
+            'uid' => [
+                'type' => 'entity_reference',
+                'label' => 'Author',
+                'description' => 'The user who authored this content.',
+                'settings' => ['target_type' => 'user'],
+                'weight' => 20,
+            ],
+            'created' => [
+                'type' => 'timestamp',
+                'label' => 'Authored on',
+                'description' => 'The date and time the content was created.',
+                'weight' => 30,
+            ],
+            'changed' => [
+                'type' => 'timestamp',
+                'label' => 'Last updated',
+                'description' => 'The date and time the content was last updated.',
+                'weight' => 31,
+            ],
+        ],
     ),
     new EntityType(
         id: 'node_type',
@@ -142,12 +202,53 @@ $entityTypes = [
         label: 'Taxonomy Term',
         class: Term::class,
         keys: ['id' => 'tid', 'uuid' => 'uuid', 'label' => 'name', 'bundle' => 'vid'],
+        fieldDefinitions: [
+            'description' => [
+                'type' => 'text',
+                'label' => 'Description',
+                'description' => 'A description of the term.',
+                'weight' => 5,
+            ],
+            'weight' => [
+                'type' => 'integer',
+                'label' => 'Weight',
+                'description' => 'The weight of this term for ordering.',
+                'weight' => 10,
+            ],
+            'parent_id' => [
+                'type' => 'entity_reference',
+                'label' => 'Parent term',
+                'description' => 'The parent term for hierarchical vocabularies.',
+                'settings' => ['target_type' => 'taxonomy_term'],
+                'weight' => 15,
+            ],
+            'status' => [
+                'type' => 'boolean',
+                'label' => 'Published',
+                'description' => 'Whether the term is published.',
+                'weight' => 20,
+            ],
+        ],
     ),
     new EntityType(
         id: 'taxonomy_vocabulary',
         label: 'Vocabulary',
         class: Vocabulary::class,
         keys: ['id' => 'vid', 'label' => 'name'],
+        fieldDefinitions: [
+            'description' => [
+                'type' => 'text',
+                'label' => 'Description',
+                'description' => 'A description of the vocabulary.',
+                'weight' => 5,
+            ],
+            'weight' => [
+                'type' => 'integer',
+                'label' => 'Weight',
+                'description' => 'The weight of this vocabulary for ordering.',
+                'weight' => 10,
+            ],
+        ],
     ),
     new EntityType(
         id: 'media',
@@ -352,7 +453,10 @@ $accessHandler = new EntityAccessHandler($policies);
 $gate = new EntityAccessGate($accessHandler);
 $accessChecker = new AccessChecker(gate: $gate);
 $pipeline = (new HttpPipeline())
-    ->withMiddleware(new SessionMiddleware($userStorage))
+    ->withMiddleware(new SessionMiddleware(
+        $userStorage,
+        PHP_SAPI === 'cli-server' ? new DevAdminAccount() : null,
+    ))
     ->withMiddleware(new AuthorizationMiddleware($accessChecker));
 
 try {
