@@ -70,6 +70,7 @@ use Waaseyaa\Api\Controller\BroadcastController;
 use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Access\ConfigEntityAccessPolicy;
 use Waaseyaa\Access\EntityAccessHandler;
+use Waaseyaa\Access\Gate\EntityAccessGate;
 use Waaseyaa\Access\Middleware\AuthorizationMiddleware;
 use Waaseyaa\Node\NodeAccessPolicy;
 use Waaseyaa\Taxonomy\TermAccessPolicy;
@@ -329,7 +330,23 @@ if ($matchedRoute !== null) {
 }
 
 $userStorage = $entityTypeManager->getStorage('user');
-$accessChecker = new AccessChecker();
+
+// --- Entity access handler -----------------------------------------------------
+
+$accessHandler = new EntityAccessHandler([
+    new NodeAccessPolicy(),
+    new TermAccessPolicy(),
+    new ConfigEntityAccessPolicy(entityTypeIds: [
+        'node_type',
+        'taxonomy_vocabulary',
+        'media_type',
+        'workflow',
+        'pipeline',
+    ]),
+]);
+
+$gate = new EntityAccessGate($accessHandler);
+$accessChecker = new AccessChecker(gate: $gate);
 $pipeline = (new HttpPipeline())
     ->withMiddleware(new SessionMiddleware($userStorage))
     ->withMiddleware(new AuthorizationMiddleware($accessChecker));
@@ -354,25 +371,11 @@ if ($authResponse->getStatusCode() >= 400) {
     exit;
 }
 
-// --- Entity access handler -----------------------------------------------------
-
 $account = $httpRequest->attributes->get('_account');
 if (!$account instanceof AccountInterface) {
     error_log('[Waaseyaa] _account attribute missing or invalid after authorization pipeline.');
     sendJson(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Account resolution failed.']]]);
 }
-
-$accessHandler = new EntityAccessHandler([
-    new NodeAccessPolicy(),
-    new TermAccessPolicy(),
-    new ConfigEntityAccessPolicy(entityTypeIds: [
-        'node_type',
-        'taxonomy_vocabulary',
-        'media_type',
-        'workflow',
-        'pipeline',
-    ]),
-]);
 
 // --- Dispatch ---------------------------------------------------------------
 
