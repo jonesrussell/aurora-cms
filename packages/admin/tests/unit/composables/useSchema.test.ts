@@ -1,9 +1,11 @@
 // packages/admin/tests/unit/composables/useSchema.test.ts
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { userSchema } from '../../fixtures/schemas'
 
-// Import after stubbing $fetch so the module-level schemaCache is fresh per suite.
-// We re-import useSchema in each test to get a fresh closure.
+// Reset modules before each test so the module-level schemaCache starts fresh.
+beforeEach(() => {
+  vi.resetModules()
+})
 
 describe('sortedProperties', () => {
   it('returns all properties sorted by x-weight when editable=false', async () => {

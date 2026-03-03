@@ -78,3 +78,60 @@ describe('useEntity.create', () => {
     }))
   })
 })
+
+describe('useEntity.get', () => {
+  it('calls /api/:type/:id and returns the resource', async () => {
+    const resource = { type: 'user', id: '7', attributes: { name: 'alice' } }
+    const mockFetch = vi.fn().mockResolvedValue(makeDoc(resource))
+    vi.stubGlobal('$fetch', mockFetch)
+    const { get } = useEntity()
+    const result = await get('user', '7')
+    expect(mockFetch).toHaveBeenCalledWith('/api/user/7')
+    expect(result).toEqual(resource)
+  })
+})
+
+describe('useEntity.update', () => {
+  it('sends PATCH with JSON:API body including id', async () => {
+    const resource = { type: 'node', id: '3', attributes: { title: 'Updated' } }
+    const mockFetch = vi.fn().mockResolvedValue(makeDoc(resource))
+    vi.stubGlobal('$fetch', mockFetch)
+    const { update } = useEntity()
+    await update('node', '3', { title: 'Updated' })
+    expect(mockFetch).toHaveBeenCalledWith('/api/node/3', expect.objectContaining({
+      method: 'PATCH',
+      body: { data: { type: 'node', id: '3', attributes: { title: 'Updated' } } },
+    }))
+  })
+})
+
+describe('useEntity.remove', () => {
+  it('sends DELETE to /api/:type/:id', async () => {
+    const mockFetch = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('$fetch', mockFetch)
+    const { remove } = useEntity()
+    await remove('node', '5')
+    expect(mockFetch).toHaveBeenCalledWith('/api/node/5', expect.objectContaining({
+      method: 'DELETE',
+    }))
+  })
+})
+
+describe('useEntity.list with sort', () => {
+  it('appends sort param when query.sort is provided', async () => {
+    const mockFetch = vi.fn().mockResolvedValue(makeDoc([]))
+    vi.stubGlobal('$fetch', mockFetch)
+    const { list } = useEntity()
+    await list('node', { sort: '-title' })
+    const calledUrl = mockFetch.mock.calls[0][0] as string
+    expect(calledUrl).toContain('sort=-title')
+  })
+})
+
+describe('useEntity error propagation', () => {
+  it('propagates $fetch errors to the caller', async () => {
+    vi.stubGlobal('$fetch', vi.fn().mockRejectedValue(new Error('Network error')))
+    const { list } = useEntity()
+    await expect(list('node')).rejects.toThrow('Network error')
+  })
+})

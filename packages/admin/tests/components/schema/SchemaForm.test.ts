@@ -97,4 +97,23 @@ describe('SchemaForm submit — edit mode (with entityId)', () => {
     const nameInput = wrapper.find('input[type="text"]')
     expect((nameInput.element as HTMLInputElement).value).toBe('bob')
   })
+
+  it('emits saved event after PATCH when entityId is provided', async () => {
+    const existing = { type: 'user', id: '3', attributes: { name: 'bob' } }
+    const updated = { type: 'user', id: '3', attributes: { name: 'bob-updated' } }
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce(schemaResponse)      // schema
+      .mockResolvedValueOnce({ jsonapi: { version: '1.0' }, data: existing }) // get
+      .mockResolvedValueOnce({ jsonapi: { version: '1.0' }, data: updated }) // update (PATCH)
+    vi.stubGlobal('$fetch', mockFetch)
+    const wrapper = await mountSuspended(SchemaForm, {
+      props: { entityType: 'user_edit_patch', entityId: '3' },
+    })
+    await flushPromises()
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+    // Verify PATCH was sent (third call), not POST
+    expect(mockFetch.mock.calls[2][1]).toEqual(expect.objectContaining({ method: 'PATCH' }))
+    expect(wrapper.emitted('saved')?.[0]).toEqual([updated])
+  })
 })

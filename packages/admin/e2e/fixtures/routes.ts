@@ -38,7 +38,9 @@ export async function mockEntityCreateRoute(page: Page, entityType = 'user') {
         },
       })
     } else {
-      await route.continue()
+      // Fall through to other registered route handlers (e.g. mockEntityListRoute)
+      // rather than hitting the real server.
+      await route.fallback()
     }
   })
 }

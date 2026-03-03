@@ -144,7 +144,7 @@ Design docs in `docs/plans/` are session artifacts (implementation history). Spe
 - All storage can be in-memory: MemoryStorage (config), MemoryBackend (cache), InMemoryEntityStorage (entities), PdoDatabase::createSqlite() (SQL with :memory:)
 - Test cache file handling with corrupt files (`<?php throw new \RuntimeException("corrupt");`) and wrong return types (`<?php return "not an array";`) to verify recovery paths
 - Test access policies with anonymous classes implementing intersection types (`AccessPolicyInterface & FieldAccessPolicyInterface`) — PHPUnit `createMock()` can't mock intersection types, so use real anonymous classes with inline logic
-- Frontend tests: `cd packages/admin && npm test` — Vitest with `@nuxt/test-utils` nuxt environment; 49 tests covering composables and components
+- Frontend tests: `cd packages/admin && npm test` — Vitest with `@nuxt/test-utils` nuxt environment; 55 tests covering composables and components
 - Frontend build verification: `cd packages/admin && npm run build` — TypeScript compilation check
 - Frontend E2E: `cd packages/admin && npm run test:e2e` — Playwright specs in `e2e/`; requires `nuxt dev` on port 3000
 
