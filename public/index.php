@@ -341,7 +341,7 @@ $policies = [];
 foreach ($manifest->policies as $class => $entityTypes) {
     $ref = new \ReflectionClass($class);
     $constructor = $ref->getConstructor();
-    if ($constructor !== null && $constructor->getNumberOfParameters() > 0) {
+    if ($constructor !== null && $constructor->getNumberOfRequiredParameters() > 0) {
         $policies[] = new $class($entityTypes);
     } else {
         $policies[] = new $class();
