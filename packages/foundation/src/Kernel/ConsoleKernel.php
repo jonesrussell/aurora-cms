@@ -58,15 +58,25 @@ final class ConsoleKernel extends AbstractKernel
             return 1;
         }
 
-        $configDir = $this->config['config_dir']
-            ?? (getenv('WAASEYAA_CONFIG_DIR') ?: $this->projectRoot . '/config/sync');
-        $activeDir = $this->projectRoot . '/config/active';
+        try {
+            $configDir = $this->config['config_dir']
+                ?? (getenv('WAASEYAA_CONFIG_DIR') ?: $this->projectRoot . '/config/sync');
+            $activeDir = $this->projectRoot . '/config/active';
 
-        if (!is_dir($activeDir) && !mkdir($activeDir, 0755, true) && !is_dir($activeDir)) {
-            throw new \RuntimeException(sprintf('Unable to create config active directory: %s', $activeDir));
-        }
-        if (!is_dir($configDir) && !mkdir($configDir, 0755, true) && !is_dir($configDir)) {
-            throw new \RuntimeException(sprintf('Unable to create config sync directory: %s', $configDir));
+            if (!is_dir($activeDir) && !mkdir($activeDir, 0755, true) && !is_dir($activeDir)) {
+                throw new \RuntimeException(sprintf('Unable to create config active directory: %s', $activeDir));
+            }
+            if (!is_dir($configDir) && !mkdir($configDir, 0755, true) && !is_dir($configDir)) {
+                throw new \RuntimeException(sprintf('Unable to create config sync directory: %s', $configDir));
+            }
+        } catch (\Throwable $e) {
+            fwrite(STDERR, sprintf(
+                "[Waaseyaa] Startup failed: %s\n  in %s:%d\n",
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+            ));
+            return 1;
         }
 
         $activeStorage = new FileStorage($activeDir);
@@ -82,6 +92,7 @@ final class ConsoleKernel extends AbstractKernel
         );
 
         $app = new WaaseyaaApplication();
+        $app->setAutoExit(false);
 
         $app->registerCommands([
             new InstallCommand($this->entityTypeManager, $configManager),
