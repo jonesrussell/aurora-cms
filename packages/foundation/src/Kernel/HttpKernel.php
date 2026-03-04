@@ -130,13 +130,33 @@ final class HttpKernel extends AbstractKernel
         $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
         $allowedOrigins = $this->config['cors_origins'] ?? ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
+        foreach ($this->resolveCorsHeaders($origin, $allowedOrigins) as $header) {
+            header($header);
+        }
+
+        if ($this->isCorsPreflightRequest($_SERVER['REQUEST_METHOD'] ?? 'GET')) {
+            http_response_code(204);
+            exit;
+        }
+    }
+
+    /**
+     * @param list<string> $allowedOrigins
+     * @return list<string>
+     */
+    private function resolveCorsHeaders(string $origin, array $allowedOrigins): array
+    {
         if (in_array($origin, $allowedOrigins, true)) {
-            header("Access-Control-Allow-Origin: {$origin}");
-            header('Vary: Origin');
-            header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization');
-            header('Access-Control-Max-Age: 86400');
-        } elseif ($origin !== '') {
+            return [
+                "Access-Control-Allow-Origin: {$origin}",
+                'Vary: Origin',
+                'Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers: Content-Type, Accept, Authorization',
+                'Access-Control-Max-Age: 86400',
+            ];
+        }
+
+        if ($origin !== '') {
             error_log(sprintf(
                 '[Waaseyaa] CORS: origin "%s" not in allowed list (%s). '
                 . 'If using Nuxt dev server on a non-standard port, update cors_origins in config/waaseyaa.php.',
@@ -145,10 +165,12 @@ final class HttpKernel extends AbstractKernel
             ));
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(204);
-            exit;
-        }
+        return [];
+    }
+
+    private function isCorsPreflightRequest(string $method): bool
+    {
+        return strtoupper($method) === 'OPTIONS';
     }
 
     private function registerRoutes(WaaseyaaRouter $router): void

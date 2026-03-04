@@ -85,4 +85,34 @@ final class ConsoleKernelTest extends TestCase
 
         $this->assertSame(0, $exitCode);
     }
+
+    #[Test]
+    public function handle_returns_non_zero_for_unknown_command(): void
+    {
+        $_SERVER['argv'] = ['waaseyaa', 'not-a-real-command', '--no-ansi'];
+
+        $kernel = new ConsoleKernel($this->projectRoot);
+        $exitCode = $kernel->handle();
+
+        $this->assertNotSame(0, $exitCode);
+    }
+
+    #[Test]
+    public function handle_uses_configured_sync_directory(): void
+    {
+        $customSyncDir = $this->projectRoot . '/custom-sync';
+        file_put_contents(
+            $this->projectRoot . '/config/waaseyaa.php',
+            "<?php return ['database' => ':memory:', 'config_dir' => '" . addslashes($customSyncDir) . "'];",
+        );
+
+        $_SERVER['argv'] = ['waaseyaa', 'list', '--no-ansi'];
+
+        $kernel = new ConsoleKernel($this->projectRoot);
+        $exitCode = $kernel->handle();
+
+        $this->assertSame(0, $exitCode);
+        $this->assertDirectoryExists($customSyncDir);
+        $this->assertDirectoryExists($this->projectRoot . '/config/active');
+    }
 }

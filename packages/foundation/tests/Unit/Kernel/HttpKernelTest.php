@@ -13,6 +13,29 @@ use Waaseyaa\Foundation\Kernel\HttpKernel;
 #[CoversClass(HttpKernel::class)]
 final class HttpKernelTest extends TestCase
 {
+    private string $projectRoot;
+
+    protected function setUp(): void
+    {
+        $this->projectRoot = sys_get_temp_dir() . '/waaseyaa_http_test_' . uniqid();
+        mkdir($this->projectRoot . '/config', 0755, true);
+        mkdir($this->projectRoot . '/storage', 0755, true);
+        file_put_contents($this->projectRoot . '/config/waaseyaa.php', "<?php return ['database' => ':memory:'];");
+        file_put_contents($this->projectRoot . '/config/entity-types.php', '<?php return [];');
+    }
+
+    protected function tearDown(): void
+    {
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->projectRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+        rmdir($this->projectRoot);
+    }
+
     #[Test]
     public function is_an_abstract_kernel(): void
     {
@@ -35,5 +58,63 @@ final class HttpKernelTest extends TestCase
         $this->assertSame('/tmp/test-project', $kernel->getProjectRoot());
     }
 
+    #[Test]
+    public function resolve_cors_headers_for_allowed_origin(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'resolveCorsHeaders');
+        $method->setAccessible(true);
+
+        $headers = $method->invoke($kernel, 'http://localhost:3000', ['http://localhost:3000']);
+
+        $this->assertCount(5, $headers);
+        $this->assertContains('Access-Control-Allow-Origin: http://localhost:3000', $headers);
+        $this->assertContains('Vary: Origin', $headers);
+    }
+
+    #[Test]
+    public function resolve_cors_headers_for_disallowed_origin_returns_empty_list(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'resolveCorsHeaders');
+        $method->setAccessible(true);
+
+        $headers = $method->invoke($kernel, 'http://evil.test', ['http://localhost:3000']);
+
+        $this->assertSame([], $headers);
+    }
+
+    #[Test]
+    public function detects_cors_preflight_request_method(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'isCorsPreflightRequest');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($kernel, 'OPTIONS'));
+        $this->assertTrue($method->invoke($kernel, 'options'));
+        $this->assertFalse($method->invoke($kernel, 'GET'));
+    }
+
+    #[Test]
+    public function registers_core_routes_on_router(): void
+    {
+        $kernel = new HttpKernel($this->projectRoot);
+
+        $boot = new \ReflectionMethod(AbstractKernel::class, 'boot');
+        $boot->setAccessible(true);
+        $boot->invoke($kernel);
+
+        $router = new \Waaseyaa\Routing\WaaseyaaRouter(new \Symfony\Component\Routing\RequestContext('', 'GET'));
+        $registerRoutes = new \ReflectionMethod(HttpKernel::class, 'registerRoutes');
+        $registerRoutes->setAccessible(true);
+        $registerRoutes->invoke($kernel, $router);
+
+        $routes = $router->getRouteCollection();
+        $this->assertNotNull($routes->get('api.schema.show'));
+        $this->assertNotNull($routes->get('api.openapi'));
+        $this->assertNotNull($routes->get('api.entity_types'));
+        $this->assertNotNull($routes->get('api.broadcast'));
+    }
 
 }
