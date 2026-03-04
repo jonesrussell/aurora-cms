@@ -15,6 +15,10 @@ use Waaseyaa\EntityStorage\SqlSchemaHandler;
 use Waaseyaa\Foundation\Discovery\PackageManifest;
 use Waaseyaa\Foundation\Discovery\PackageManifestCompiler;
 use Waaseyaa\Foundation\ServiceProvider\ServiceProvider;
+use Waaseyaa\Plugin\Attribute\WaaseyaaPlugin;
+use Waaseyaa\Plugin\DefaultPluginManager;
+use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
+use Waaseyaa\Plugin\Extension\KnowledgeToolingExtensionRunner;
 
 abstract class AbstractKernel
 {
@@ -30,6 +34,7 @@ abstract class AbstractKernel
     /** @var list<ServiceProvider> */
     protected array $providers = [];
 
+    private ?KnowledgeToolingExtensionRunner $knowledgeExtensionRunner = null;
     private bool $booted = false;
 
     public function __construct(
@@ -58,6 +63,7 @@ abstract class AbstractKernel
         $this->loadAppEntityTypes();
         $this->bootProviders();
         $this->discoverAccessPolicies();
+        $this->bootKnowledgeExtensionRunner();
 
         $this->booted = true;
     }
@@ -206,6 +212,95 @@ abstract class AbstractKernel
         }
 
         $this->accessHandler = new EntityAccessHandler($policies);
+    }
+
+    protected function bootKnowledgeExtensionRunner(): void
+    {
+        $config = is_array($this->config['extensions'] ?? null) ? $this->config['extensions'] : [];
+        $rawDirectories = $config['plugin_directories'] ?? [];
+        if (is_string($rawDirectories)) {
+            $rawDirectories = [$rawDirectories];
+        }
+        if (!is_array($rawDirectories)) {
+            $rawDirectories = [];
+        }
+
+        $directories = [];
+        foreach ($rawDirectories as $directory) {
+            if (!is_string($directory)) {
+                continue;
+            }
+            $trimmed = trim($directory);
+            if ($trimmed === '') {
+                continue;
+            }
+            if (!str_starts_with($trimmed, '/')) {
+                $trimmed = $this->projectRoot . '/' . ltrim($trimmed, '/');
+            }
+            $directories[] = $trimmed;
+        }
+        $directories = array_values(array_unique($directories));
+        sort($directories);
+
+        if ($directories === []) {
+            $this->knowledgeExtensionRunner = new KnowledgeToolingExtensionRunner([]);
+            return;
+        }
+
+        $attributeClass = is_string($config['plugin_attribute'] ?? null)
+            ? trim((string) $config['plugin_attribute'])
+            : WaaseyaaPlugin::class;
+        if ($attributeClass === '') {
+            $attributeClass = WaaseyaaPlugin::class;
+        }
+
+        try {
+            $discovery = new AttributeDiscovery(
+                directories: $directories,
+                attributeClass: $attributeClass,
+            );
+            $manager = new DefaultPluginManager($discovery);
+            $this->knowledgeExtensionRunner = KnowledgeToolingExtensionRunner::fromPluginManager($manager);
+        } catch (\Throwable $e) {
+            error_log(sprintf('[Waaseyaa] Failed to boot knowledge extension runner: %s', $e->getMessage()));
+            $this->knowledgeExtensionRunner = new KnowledgeToolingExtensionRunner([]);
+        }
+    }
+
+    public function getKnowledgeToolingExtensionRunner(): KnowledgeToolingExtensionRunner
+    {
+        if ($this->knowledgeExtensionRunner === null) {
+            $this->knowledgeExtensionRunner = new KnowledgeToolingExtensionRunner([]);
+        }
+
+        return $this->knowledgeExtensionRunner;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
+    public function applyWorkflowExtensionContext(array $context): array
+    {
+        return $this->getKnowledgeToolingExtensionRunner()->applyWorkflowContext($context);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
+    public function applyTraversalExtensionContext(array $context): array
+    {
+        return $this->getKnowledgeToolingExtensionRunner()->applyTraversalContext($context);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
+    public function applyDiscoveryExtensionContext(array $context): array
+    {
+        return $this->getKnowledgeToolingExtensionRunner()->applyDiscoveryContext($context);
     }
 
     public function getProjectRoot(): string

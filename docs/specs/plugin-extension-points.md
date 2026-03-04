@@ -41,6 +41,20 @@ Runner surfaces:
 - `applyDiscoveryContext()`
 - `describeExtensions()`
 
+## Bootstrap Integration Seam
+
+App-level composition roots can load extensions via kernel config:
+
+- `extensions.plugin_directories`: list of absolute or project-relative plugin directories
+- `extensions.plugin_attribute` (optional): custom attribute class for discovery (defaults to `Waaseyaa\Plugin\Attribute\WaaseyaaPlugin`)
+
+Kernel integration surfaces:
+
+- `AbstractKernel::getKnowledgeToolingExtensionRunner()`
+- `AbstractKernel::applyWorkflowExtensionContext(array $context): array`
+- `AbstractKernel::applyTraversalExtensionContext(array $context): array`
+- `AbstractKernel::applyDiscoveryExtensionContext(array $context): array`
+
 ## Reference Example Module
 
 Reference plugin:
