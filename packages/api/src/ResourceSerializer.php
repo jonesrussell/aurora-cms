@@ -51,6 +51,8 @@ final class ResourceSerializer
             $attributes = array_intersect_key($attributes, array_flip($allowedFields));
         }
 
+        $attributes = $this->castAttributes($attributes, $entityType->getFieldDefinitions());
+
         // Build self link.
         $selfLink = $this->basePath . '/' . $entityTypeId . '/' . $resourceId;
 
@@ -101,5 +103,40 @@ final class ResourceSerializer
         }
 
         return array_unique($excluded);
+    }
+
+    /**
+     * Cast attribute values based on field type definitions.
+     *
+     * @param array<string, mixed> $attributes
+     * @param array<string, array<string, mixed>> $fieldDefinitions
+     * @return array<string, mixed>
+     */
+    private function castAttributes(array $attributes, array $fieldDefinitions): array
+    {
+        foreach ($attributes as $name => &$value) {
+            $type = $fieldDefinitions[$name]['type'] ?? null;
+
+            $value = match ($type) {
+                'boolean' => (bool) $value,
+                'timestamp', 'datetime' => $this->formatTimestamp($value),
+                default => $value,
+            };
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Convert a Unix timestamp to ISO 8601 string, or null if zero/empty.
+     */
+    private function formatTimestamp(mixed $value): ?string
+    {
+        $ts = (int) $value;
+        if ($ts === 0) {
+            return null;
+        }
+
+        return (new \DateTimeImmutable('@' . $ts))->format(\DateTimeInterface::ATOM);
     }
 }
