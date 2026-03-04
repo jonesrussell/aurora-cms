@@ -531,6 +531,55 @@ final class HttpKernelTest extends TestCase
     }
 
     #[Test]
+    public function mcp_read_cache_listener_uses_tag_invalidation_when_available(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $dispatcher = new EventDispatcher();
+
+        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
+        $dispatcherProp->setAccessible(true);
+        $dispatcherProp->setValue($kernel, $dispatcher);
+
+        $cache = new TestTagAwareCacheBackend();
+        $method = new \ReflectionMethod(HttpKernel::class, 'registerMcpReadCacheListeners');
+        $method->setAccessible(true);
+        $method->invoke($kernel, $cache);
+
+        $dispatcher->dispatch(
+            new EntityEvent(new TestKernelEntity(11, 'node')),
+            EntityEvents::POST_SAVE->value,
+        );
+
+        $this->assertSame(0, $cache->deleteAllCalls);
+        $this->assertContains('mcp_read', $cache->invalidatedTags);
+        $this->assertContains('mcp_read:entity:node', $cache->invalidatedTags);
+        $this->assertContains('mcp_read:entity:node:11', $cache->invalidatedTags);
+    }
+
+    #[Test]
+    public function mcp_read_cache_listener_falls_back_to_delete_all_for_non_tag_backend(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $dispatcher = new EventDispatcher();
+
+        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
+        $dispatcherProp->setAccessible(true);
+        $dispatcherProp->setValue($kernel, $dispatcher);
+
+        $cache = new TestNonTagCacheBackend();
+        $method = new \ReflectionMethod(HttpKernel::class, 'registerMcpReadCacheListeners');
+        $method->setAccessible(true);
+        $method->invoke($kernel, $cache);
+
+        $dispatcher->dispatch(
+            new EntityEvent(new TestKernelEntity(12, 'node')),
+            EntityEvents::POST_DELETE->value,
+        );
+
+        $this->assertSame(1, $cache->deleteAllCalls);
+    }
+
+    #[Test]
     public function ssr_cache_variant_langcode_is_deterministic_for_equivalent_context_order(): void
     {
         $kernel = new HttpKernel('/tmp/test-project');

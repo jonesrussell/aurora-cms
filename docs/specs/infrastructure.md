@@ -348,6 +348,45 @@ Invalidation:
   - plus broad discovery-surface tags for relationship/node graph-impact changes
 - Fallback path (non tag-aware backends): `deleteAll()` for correctness.
 
+## MCP Read-Path Caching (v1.1)
+
+The HTTP kernel maintains a dedicated MCP read cache bin (database-backed, table `cache_mcp_read`) for read-heavy tool calls served by `Waaseyaa\Mcp\McpController`:
+
+- `search_entities` / `search_teachings`
+- `ai_discover`
+- `traverse_relationships`
+- `get_related_entities`
+- `get_knowledge_graph`
+
+Cache key contract:
+
+- Stable hash of `{contract_version, tool, arguments, account_context}`.
+- `arguments` are recursively normalized with deterministic associative-key sorting.
+- `account_context` includes:
+  - `authenticated` flag
+  - account ID
+  - sorted role list
+
+This prevents cross-account and anonymous/authenticated cache leakage while preserving deterministic replay for identical callers and inputs.
+
+Runtime behavior:
+
+- Tool result payloads are cached with 120-second TTL.
+- Payload contract remains unchanged (`meta.contract_version`, `meta.contract_stability`, tool metadata).
+- Cache writes include tags:
+  - `mcp_read`
+  - `mcp_read:contract:v1.0`
+  - `mcp_read:tool:{tool}`
+  - entity tags extracted from arguments/payload (`mcp_read:entity:{type}` and `mcp_read:entity:{type}:{id}`).
+
+Invalidation:
+
+- Preferred path (tag-aware backends): targeted `invalidateByTags()` on entity save/delete:
+  - `mcp_read`
+  - `mcp_read:entity:{type}`
+  - `mcp_read:entity:{type}:{id}`
+- Fallback path (non tag-aware backends): `deleteAll()`.
+
 ## SSR Render Cache Variant Contract (v1.1)
 
 SSR render cache keys include a deterministic variant suffix built from:

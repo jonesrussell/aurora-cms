@@ -26,6 +26,7 @@
         "waaseyaa/ai-agent": "@dev",
         "waaseyaa/routing": "@dev",
         "waaseyaa/access": "@dev",
+        "waaseyaa/cache": "@dev",
         "waaseyaa/api": "@dev",
         "waaseyaa/ai-vector": "@dev",
         "waaseyaa/entity": "@dev",

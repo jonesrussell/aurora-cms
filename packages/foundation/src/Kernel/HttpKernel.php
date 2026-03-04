@@ -77,6 +77,7 @@ final class HttpKernel extends AbstractKernel
 
     private ?RenderCache $renderCache = null;
     private ?CacheBackendInterface $discoveryCache = null;
+    private ?CacheBackendInterface $mcpReadCache = null;
 
     public function handle(): never
     {
@@ -103,10 +104,17 @@ final class HttpKernel extends AbstractKernel
             $this->database->getPdo(),
             'cache_discovery',
         ));
-        $this->renderCache = new RenderCache((new CacheFactory($cacheConfig))->get('render'));
-        $this->discoveryCache = (new CacheFactory($cacheConfig))->get('discovery');
+        $cacheConfig->setFactoryForBin('mcp_read', fn(): DatabaseBackend => new DatabaseBackend(
+            $this->database->getPdo(),
+            'cache_mcp_read',
+        ));
+        $cacheFactory = new CacheFactory($cacheConfig);
+        $this->renderCache = new RenderCache($cacheFactory->get('render'));
+        $this->discoveryCache = $cacheFactory->get('discovery');
+        $this->mcpReadCache = $cacheFactory->get('mcp_read');
         $this->registerRenderCacheListeners($this->renderCache);
         $this->registerDiscoveryCacheListeners($this->discoveryCache);
+        $this->registerMcpReadCacheListeners($this->mcpReadCache);
         $this->registerEmbeddingLifecycleListeners(new SqliteEmbeddingStorage($this->database->getPdo()));
 
         // Router setup.
@@ -792,6 +800,7 @@ final class HttpKernel extends AbstractKernel
                         account: $account,
                         embeddingStorage: $embeddingStorage,
                         embeddingProvider: $embeddingProvider,
+                        readCache: $this->mcpReadCache,
                     );
 
                     if ($method === 'GET') {
@@ -1468,6 +1477,38 @@ final class HttpKernel extends AbstractKernel
                 $cache->deleteAll();
             } catch (\Throwable $e) {
                 error_log(sprintf('[Waaseyaa] Failed to clear discovery cache: %s', $e->getMessage()));
+            }
+        };
+
+        $this->dispatcher->addListener(EntityEvents::POST_SAVE->value, static function (EntityEvent $event) use ($invalidate): void {
+            $invalidate($event);
+        });
+        $this->dispatcher->addListener(EntityEvents::POST_DELETE->value, static function (EntityEvent $event) use ($invalidate): void {
+            $invalidate($event);
+        });
+    }
+
+    private function registerMcpReadCacheListeners(CacheBackendInterface $cache): void
+    {
+        $invalidate = static function (EntityEvent $event) use ($cache): void {
+            try {
+                if ($cache instanceof TagAwareCacheInterface) {
+                    $entityType = strtolower($event->entity->getEntityTypeId());
+                    $entityId = $event->entity->id();
+                    $tags = [
+                        'mcp_read',
+                        'mcp_read:entity:' . $entityType,
+                    ];
+                    if ($entityId !== null && $entityId !== '') {
+                        $tags[] = sprintf('mcp_read:entity:%s:%s', $entityType, (string) $entityId);
+                    }
+                    $cache->invalidateByTags(array_values(array_unique($tags)));
+                    return;
+                }
+
+                $cache->deleteAll();
+            } catch (\Throwable $e) {
+                error_log(sprintf('[Waaseyaa] Failed to clear MCP read cache: %s', $e->getMessage()));
             }
         };
 

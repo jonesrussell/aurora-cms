@@ -211,6 +211,13 @@ Traversal and graph permission boundaries (v1.0 hardening):
 - Rows referencing inaccessible related entities are filtered out before payload composition.
 - Hidden source entities produce deterministic execution errors (`-32000`) instead of partial graph leakage.
 
+MCP read-path caching (v1.1 hardening):
+- read-heavy tool responses are cached for 120 seconds (`search_entities`, `search_teachings`, `ai_discover`, traversal/graph reads),
+- cache keys include contract-relevant arguments plus permission/visibility context (`authenticated`, account ID, roles),
+- cache keys are deterministic under equivalent argument ordering,
+- entity save/delete invalidates tagged MCP cache entries to avoid stale graph/discovery responses,
+- payload contract remains stable; caching is transparent to tool consumers.
+
 ### Request Format
 
 ```json

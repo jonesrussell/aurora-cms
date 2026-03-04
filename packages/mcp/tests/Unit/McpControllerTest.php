@@ -13,6 +13,10 @@ use Waaseyaa\Access\AccessResult;
 use Waaseyaa\Access\EntityAccessHandler;
 use Waaseyaa\AI\Vector\EmbeddingStorageInterface;
 use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Cache\Backend\MemoryBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
 use Waaseyaa\Entity\EntityType;
 use Waaseyaa\Entity\EntityInterface;
@@ -452,6 +456,95 @@ final class McpControllerTest extends TestCase
         $this->assertSame('search_teachings', $legacyPayload['meta']['deprecated_alias']);
     }
 
+    #[Test]
+    public function mcpReadCacheReusesEquivalentTraversalResponses(): void
+    {
+        $cache = new TrackingMemoryCacheBackend();
+        $controller = $this->createTraversalControllerWithCache(
+            sourceStatus: 1,
+            relatedStatus: 1,
+            permissions: [],
+            roles: ['anonymous'],
+            authenticated: false,
+            userId: 0,
+            cache: $cache,
+        );
+
+        $first = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 29,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'traverse_relationships',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]);
+        $second = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 30,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'traverse_relationships',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]);
+
+        $this->assertSame(1, $cache->setCalls);
+        $this->assertGreaterThanOrEqual(2, $cache->getCalls);
+        $this->assertSame(
+            $this->decodeToolPayload($first),
+            $this->decodeToolPayload($second),
+        );
+    }
+
+    #[Test]
+    public function mcpReadCacheKeysArePermissionScopedAcrossAccounts(): void
+    {
+        $cache = new TrackingMemoryCacheBackend();
+
+        $privileged = $this->createTraversalControllerWithCache(
+            sourceStatus: 1,
+            relatedStatus: 0,
+            permissions: ['view unpublished content'],
+            roles: ['editor'],
+            authenticated: true,
+            userId: 101,
+            cache: $cache,
+        );
+        $restricted = $this->createTraversalControllerWithCache(
+            sourceStatus: 1,
+            relatedStatus: 0,
+            permissions: [],
+            roles: ['anonymous'],
+            authenticated: false,
+            userId: 0,
+            cache: $cache,
+        );
+
+        $privilegedPayload = $this->decodeToolPayload($privileged->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 31,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'get_related_entities',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]));
+        $restrictedPayload = $this->decodeToolPayload($restricted->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 32,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'get_related_entities',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]));
+
+        $this->assertSame(1, $privilegedPayload['meta']['count']);
+        $this->assertSame(0, $restrictedPayload['meta']['count']);
+        $this->assertSame(2, $cache->setCalls);
+    }
+
     private function createController(): McpController
     {
         $manager = $this->createMock(EntityTypeManagerInterface::class);
@@ -606,6 +699,100 @@ final class McpControllerTest extends TestCase
     }
 
     /**
+     * @param list<string> $permissions
+     * @param list<string> $roles
+     */
+    private function createTraversalControllerWithCache(
+        int $sourceStatus,
+        int $relatedStatus,
+        array $permissions,
+        array $roles,
+        bool $authenticated,
+        int|string $userId,
+        CacheBackendInterface $cache,
+    ): McpController {
+        $nodeDefinition = new EntityType(
+            id: 'node',
+            label: 'Node',
+            class: \stdClass::class,
+            keys: ['id' => 'id', 'label' => 'title', 'bundle' => 'type'],
+            fieldDefinitions: [],
+        );
+        $relationshipDefinition = new EntityType(
+            id: 'relationship',
+            label: 'Relationship',
+            class: \stdClass::class,
+            keys: ['id' => 'id', 'label' => 'relationship_type'],
+            fieldDefinitions: [],
+        );
+
+        $nodeStorage = new InMemoryEntityStorage('node');
+        $source = $nodeStorage->create([
+            'type' => 'article',
+            'title' => 'Source Node',
+            'status' => $sourceStatus,
+            'workflow_state' => $sourceStatus === 1 ? 'published' : 'draft',
+        ]);
+        $nodeStorage->save($source);
+
+        $related = $nodeStorage->create([
+            'type' => 'article',
+            'title' => 'Related Node',
+            'status' => $relatedStatus,
+            'workflow_state' => $relatedStatus === 1 ? 'published' : 'draft',
+        ]);
+        $nodeStorage->save($related);
+
+        $relationshipStorage = new InMemoryEntityStorage('relationship');
+        $relationship = $relationshipStorage->create([
+            'relationship_type' => 'related',
+            'from_entity_type' => 'node',
+            'from_entity_id' => (string) $source->id(),
+            'to_entity_type' => 'node',
+            'to_entity_id' => (string) $related->id(),
+            'status' => 1,
+        ]);
+        $relationshipStorage->save($relationship);
+
+        $manager = $this->createMock(EntityTypeManagerInterface::class);
+        $manager->method('hasDefinition')->willReturnCallback(static fn(string $entityTypeId): bool => in_array($entityTypeId, ['node', 'relationship'], true));
+        $manager->method('getStorage')->willReturnCallback(static fn(string $entityTypeId) => match ($entityTypeId) {
+            'node' => $nodeStorage,
+            'relationship' => $relationshipStorage,
+            default => throw new \RuntimeException('Unknown storage'),
+        });
+        $manager->method('getDefinition')->willReturnCallback(static fn(string $entityTypeId) => match ($entityTypeId) {
+            'node' => $nodeDefinition,
+            'relationship' => $relationshipDefinition,
+            default => throw new \RuntimeException('Unknown definition'),
+        });
+        $manager->method('getDefinitions')->willReturn([
+            'node' => $nodeDefinition,
+            'relationship' => $relationshipDefinition,
+        ]);
+
+        $serializer = new ResourceSerializer($manager);
+        $embeddingStorage = $this->createMock(EmbeddingStorageInterface::class);
+        $account = new TestMcpAccount(
+            userId: $userId,
+            permissions: $permissions,
+            roles: $roles,
+            authenticated: $authenticated,
+        );
+        $access = new EntityAccessHandler([new PermissionAwareNodeVisibilityPolicy(), new TestRelationshipViewPolicy()]);
+
+        return new McpController(
+            entityTypeManager: $manager,
+            serializer: $serializer,
+            accessHandler: $access,
+            account: $account,
+            embeddingStorage: $embeddingStorage,
+            embeddingProvider: null,
+            readCache: $cache,
+        );
+    }
+
+    /**
      * @param array<string, mixed> $response
      * @return array<string, mixed>
      */
@@ -687,6 +874,34 @@ final class TestNodeVisibilityPolicy implements AccessPolicyInterface
     }
 }
 
+final class PermissionAwareNodeVisibilityPolicy implements AccessPolicyInterface
+{
+    public function appliesTo(string $entityTypeId): bool
+    {
+        return $entityTypeId === 'node';
+    }
+
+    public function access(EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
+    {
+        if ($operation !== 'view') {
+            return AccessResult::neutral('Not used.');
+        }
+
+        if ((int) ($entity->toArray()['status'] ?? 0) === 1) {
+            return AccessResult::allowed('Published');
+        }
+
+        return $account->hasPermission('view unpublished content')
+            ? AccessResult::allowed('Unpublished access granted.')
+            : AccessResult::forbidden('Unpublished');
+    }
+
+    public function createAccess(string $entityTypeId, string $bundle, AccountInterface $account): AccessResult
+    {
+        return AccessResult::neutral('Not used.');
+    }
+}
+
 final class TestRelationshipViewPolicy implements AccessPolicyInterface
 {
     public function appliesTo(string $entityTypeId): bool
@@ -706,5 +921,75 @@ final class TestRelationshipViewPolicy implements AccessPolicyInterface
     public function createAccess(string $entityTypeId, string $bundle, AccountInterface $account): AccessResult
     {
         return AccessResult::neutral('Not used.');
+    }
+}
+
+final class TrackingMemoryCacheBackend implements TagAwareCacheInterface
+{
+    public int $getCalls = 0;
+    public int $setCalls = 0;
+
+    private MemoryBackend $inner;
+
+    public function __construct()
+    {
+        $this->inner = new MemoryBackend();
+    }
+
+    public function get(string $cid): CacheItem|false
+    {
+        $this->getCalls++;
+        return $this->inner->get($cid);
+    }
+
+    public function getMultiple(array &$cids): array
+    {
+        return $this->inner->getMultiple($cids);
+    }
+
+    public function set(string $cid, mixed $data, int $expire = self::PERMANENT, array $tags = []): void
+    {
+        $this->setCalls++;
+        $this->inner->set($cid, $data, $expire, $tags);
+    }
+
+    public function delete(string $cid): void
+    {
+        $this->inner->delete($cid);
+    }
+
+    public function deleteMultiple(array $cids): void
+    {
+        $this->inner->deleteMultiple($cids);
+    }
+
+    public function deleteAll(): void
+    {
+        $this->inner->deleteAll();
+    }
+
+    public function invalidate(string $cid): void
+    {
+        $this->inner->invalidate($cid);
+    }
+
+    public function invalidateMultiple(array $cids): void
+    {
+        $this->inner->invalidateMultiple($cids);
+    }
+
+    public function invalidateAll(): void
+    {
+        $this->inner->invalidateAll();
+    }
+
+    public function removeBin(): void
+    {
+        $this->inner->removeBin();
+    }
+
+    public function invalidateByTags(array $tags): void
+    {
+        $this->inner->invalidateByTags($tags);
     }
 }
