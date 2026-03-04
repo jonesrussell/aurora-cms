@@ -6,6 +6,7 @@ namespace Waaseyaa\Foundation\Kernel;
 
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\RequestContext;
 use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Access\Gate\EntityAccessGate;
@@ -21,6 +22,8 @@ use Waaseyaa\Api\ResourceSerializer;
 use Waaseyaa\Api\Schema\SchemaPresenter;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
 use Waaseyaa\Foundation\Middleware\HttpPipeline;
+use Waaseyaa\Media\File;
+use Waaseyaa\Media\LocalFileRepository;
 use Waaseyaa\Routing\AccessChecker;
 use Waaseyaa\Routing\RouteBuilder;
 use Waaseyaa\Routing\WaaseyaaRouter;
@@ -240,6 +243,15 @@ final class HttpKernel extends AbstractKernel
                 ->methods('GET')
                 ->build(),
         );
+
+        $router->addRoute(
+            'api.media.upload',
+            RouteBuilder::create('/api/media/upload')
+                ->controller('media.upload')
+                ->requirePermission('access media')
+                ->methods('POST')
+                ->build(),
+        );
     }
 
     private function registerBroadcastListeners(BroadcastStorage $broadcastStorage): void
@@ -383,6 +395,10 @@ final class HttpKernel extends AbstractKernel
                     exit;
                 })(),
 
+                $controller === 'media.upload' => (function () use ($httpRequest, $account, $serializer): never {
+                    $this->handleMediaUpload($httpRequest, $account, $serializer);
+                })(),
+
                 str_contains($controller, 'SchemaController') => (function () use ($account, $params, $schemaPresenter): never {
                     $schemaController = new SchemaController($this->entityTypeManager, $schemaPresenter, $this->accessHandler, $account);
                     $document = $schemaController->show($params['entity_type']);
@@ -424,6 +440,275 @@ final class HttpKernel extends AbstractKernel
                 ]],
             ]);
         }
+    }
+
+    private function handleMediaUpload(
+        HttpRequest $httpRequest,
+        AccountInterface $account,
+        ResourceSerializer $serializer,
+    ): never {
+        $contentType = strtolower((string) $httpRequest->headers->get('Content-Type', ''));
+        if (!str_starts_with($contentType, 'multipart/form-data')) {
+            $this->sendJson(415, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '415',
+                    'title' => 'Unsupported Media Type',
+                    'detail' => 'Expected multipart/form-data upload.',
+                ]],
+            ]);
+        }
+
+        $uploadedFile = $httpRequest->files->get('file');
+        if (!$uploadedFile instanceof UploadedFile) {
+            $this->sendJson(400, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '400',
+                    'title' => 'Bad Request',
+                    'detail' => 'Missing uploaded file under "file".',
+                ]],
+            ]);
+        }
+
+        if (!$uploadedFile->isValid()) {
+            $this->sendJson(400, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '400',
+                    'title' => 'Bad Request',
+                    'detail' => sprintf('Upload failed: %s', $uploadedFile->getErrorMessage()),
+                ]],
+            ]);
+        }
+
+        $maxBytes = $this->resolveUploadMaxBytes();
+        $size = (int) ($uploadedFile->getSize() ?? 0);
+        if ($size > $maxBytes) {
+            $this->sendJson(413, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '413',
+                    'title' => 'Payload Too Large',
+                    'detail' => sprintf('Uploaded file exceeds %d bytes.', $maxBytes),
+                ]],
+            ]);
+        }
+
+        $mimeType = (string) ($uploadedFile->getMimeType() ?: $uploadedFile->getClientMimeType() ?: 'application/octet-stream');
+        $allowedMimeTypes = $this->resolveAllowedUploadMimeTypes();
+        if (!$this->isAllowedMimeType($mimeType, $allowedMimeTypes)) {
+            $this->sendJson(415, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '415',
+                    'title' => 'Unsupported Media Type',
+                    'detail' => sprintf('Disallowed MIME type: %s', $mimeType),
+                ]],
+            ]);
+        }
+
+        $filesRoot = $this->resolveFilesRootDir();
+        $publicRoot = rtrim($filesRoot, '/') . '/public';
+        if (!is_dir($publicRoot) && !mkdir($publicRoot, 0755, true) && !is_dir($publicRoot)) {
+            $this->sendJson(500, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '500',
+                    'title' => 'Internal Server Error',
+                    'detail' => 'Unable to initialize upload directory.',
+                ]],
+            ]);
+        }
+
+        $originalName = (string) ($uploadedFile->getClientOriginalName() ?: $uploadedFile->getFilename() ?: 'upload.bin');
+        $safeName = $this->sanitizeUploadFilename($originalName);
+        $relativePath = date('Y/m') . '/' . uniqid('upload_', true) . '_' . $safeName;
+        $targetDir = $publicRoot . '/' . dirname($relativePath);
+        if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
+            $this->sendJson(500, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '500',
+                    'title' => 'Internal Server Error',
+                    'detail' => 'Unable to create upload target directory.',
+                ]],
+            ]);
+        }
+
+        try {
+            $uploadedFile->move($targetDir, basename($relativePath));
+        } catch (\Throwable $e) {
+            error_log(sprintf('[Waaseyaa] Upload move failed: %s', $e->getMessage()));
+            $this->sendJson(500, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '500',
+                    'title' => 'Internal Server Error',
+                    'detail' => 'Failed to persist uploaded file.',
+                ]],
+            ]);
+        }
+
+        $uri = 'public://' . str_replace('\\', '/', $relativePath);
+        $fileUrl = $this->buildPublicFileUrl($uri);
+        $ownerId = is_numeric((string) $account->id()) ? (int) $account->id() : null;
+        $createdTime = time();
+
+        $fileRepository = new LocalFileRepository($filesRoot);
+        $fileRepository->save(new File(
+            uri: $uri,
+            filename: basename($relativePath),
+            mimeType: $mimeType,
+            size: $size,
+            ownerId: $ownerId,
+            createdTime: $createdTime,
+        ));
+
+        $bundle = $httpRequest->request->get('bundle');
+        if (!is_string($bundle) || trim($bundle) === '') {
+            $bundle = str_starts_with($mimeType, 'image/') ? 'image' : 'file';
+        }
+
+        $createAccess = $this->accessHandler->checkCreateAccess('media', $bundle, $account);
+        if (!$createAccess->isAllowed()) {
+            $this->sendJson(403, [
+                'jsonapi' => ['version' => '1.1'],
+                'errors' => [[
+                    'status' => '403',
+                    'title' => 'Forbidden',
+                    'detail' => 'Access denied for creating media items.',
+                ]],
+            ]);
+        }
+
+        $mediaStorage = $this->entityTypeManager->getStorage('media');
+        $name = $httpRequest->request->get('name');
+        if (!is_string($name) || trim($name) === '') {
+            $name = pathinfo($originalName, PATHINFO_FILENAME) ?: $originalName;
+        }
+
+        $media = $mediaStorage->create([
+            'name' => $name,
+            'bundle' => $bundle,
+            'uid' => $ownerId,
+            'status' => true,
+            'created' => $createdTime,
+            'changed' => $createdTime,
+            'file_uri' => $uri,
+            'file_url' => $fileUrl,
+            'mime_type' => $mimeType,
+            'file_size' => $size,
+        ]);
+        $mediaStorage->save($media);
+
+        $resource = $serializer->serialize($media, $this->accessHandler, $account);
+        $this->sendJson(201, [
+            'jsonapi' => ['version' => '1.1'],
+            'data' => $resource->toArray(),
+            'links' => ['self' => "/api/media/{$resource->id}"],
+            'meta' => [
+                'uploaded' => true,
+                'file_url' => $fileUrl,
+            ],
+        ]);
+    }
+
+    private function resolveFilesRootDir(): string
+    {
+        $configured = $this->config['files_dir'] ?? null;
+        if (is_string($configured) && trim($configured) !== '') {
+            return $configured;
+        }
+
+        return $this->projectRoot . '/files';
+    }
+
+    private function resolveUploadMaxBytes(): int
+    {
+        $configured = $this->config['upload_max_bytes'] ?? null;
+        if (is_numeric($configured) && (int) $configured > 0) {
+            return (int) $configured;
+        }
+
+        return 10 * 1024 * 1024;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function resolveAllowedUploadMimeTypes(): array
+    {
+        $configured = $this->config['upload_allowed_mime_types'] ?? null;
+        if (is_array($configured) && $configured !== []) {
+            $values = [];
+            foreach ($configured as $value) {
+                if (is_string($value) && trim($value) !== '') {
+                    $values[] = trim($value);
+                }
+            }
+            if ($values !== []) {
+                return $values;
+            }
+        }
+
+        return [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/svg+xml',
+            'application/pdf',
+            'text/plain',
+            'application/octet-stream',
+        ];
+    }
+
+    /**
+     * @param list<string> $allowedMimeTypes
+     */
+    private function isAllowedMimeType(string $mimeType, array $allowedMimeTypes): bool
+    {
+        foreach ($allowedMimeTypes as $allowed) {
+            if ($allowed === $mimeType) {
+                return true;
+            }
+
+            if (str_ends_with($allowed, '/*')) {
+                $prefix = substr($allowed, 0, -1);
+                if (str_starts_with($mimeType, $prefix)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function sanitizeUploadFilename(string $name): string
+    {
+        $basename = basename($name);
+        $clean = preg_replace('/[^A-Za-z0-9._-]/', '_', $basename);
+        if (!is_string($clean) || $clean === '' || $clean === '.' || $clean === '..') {
+            return 'upload.bin';
+        }
+
+        return $clean;
+    }
+
+    private function buildPublicFileUrl(string $uri): string
+    {
+        $prefix = 'public://';
+        if (!str_starts_with($uri, $prefix)) {
+            return '/files/' . ltrim($uri, '/');
+        }
+
+        $path = substr($uri, strlen($prefix));
+        if (!is_string($path)) {
+            return '/files/';
+        }
+
+        return '/files/' . ltrim($path, '/');
     }
 
     private function sendJson(int $status, array $data): never

@@ -161,6 +161,41 @@ final class HttpKernelTest extends TestCase
         $this->assertNotNull($routes->get('api.openapi'));
         $this->assertNotNull($routes->get('api.entity_types'));
         $this->assertNotNull($routes->get('api.broadcast'));
+        $this->assertNotNull($routes->get('api.media.upload'));
+    }
+
+    #[Test]
+    public function allows_wildcard_upload_mime_types(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'isAllowedMimeType');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($kernel, 'image/jpeg', ['image/*']));
+        $this->assertTrue($method->invoke($kernel, 'application/pdf', ['image/*', 'application/pdf']));
+        $this->assertFalse($method->invoke($kernel, 'text/html', ['image/*', 'application/pdf']));
+    }
+
+    #[Test]
+    public function builds_public_file_url_from_public_uri(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'buildPublicFileUrl');
+        $method->setAccessible(true);
+
+        $this->assertSame('/files/images/photo.jpg', $method->invoke($kernel, 'public://images/photo.jpg'));
+        $this->assertSame('/files/tmp/doc.pdf', $method->invoke($kernel, 'tmp/doc.pdf'));
+    }
+
+    #[Test]
+    public function sanitizes_uploaded_filename(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'sanitizeUploadFilename');
+        $method->setAccessible(true);
+
+        $this->assertSame('my_photo_.jpg', $method->invoke($kernel, 'my photo?.jpg'));
+        $this->assertSame('upload.bin', $method->invoke($kernel, '../../'));
     }
 
 }

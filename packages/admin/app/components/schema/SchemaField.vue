@@ -29,8 +29,8 @@ const widgetMap: Record<string, Component> = {
   hidden: resolveComponent('WidgetsHiddenField') as Component,
   machine_name: resolveComponent('WidgetsMachineNameInput') as Component,
   password: resolveComponent('WidgetsTextInput') as Component,
-  image: resolveComponent('WidgetsTextInput') as Component,
-  file: resolveComponent('WidgetsTextInput') as Component,
+  image: resolveComponent('WidgetsFileUpload') as Component,
+  file: resolveComponent('WidgetsFileUpload') as Component,
 }
 
 const fallback = resolveComponent('WidgetsTextInput') as Component

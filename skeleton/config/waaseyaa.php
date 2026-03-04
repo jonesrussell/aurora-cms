@@ -14,6 +14,19 @@ return [
     // File storage root for LocalFileRepository (media package).
     'files_dir' => getenv('WAASEYAA_FILES_DIR') ?: __DIR__ . '/../files',
 
+    // Upload validation (POST /api/media/upload).
+    'upload_max_bytes' => 10 * 1024 * 1024, // 10 MiB
+    'upload_allowed_mime_types' => [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/svg+xml',
+        'application/pdf',
+        'text/plain',
+        'application/octet-stream',
+    ],
+
     // Allowed CORS origins for the admin SPA.
     'cors_origins' => ['http://localhost:3000', 'http://127.0.0.1:3000'],
 ];

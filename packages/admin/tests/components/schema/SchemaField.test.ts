@@ -53,6 +53,20 @@ describe('SchemaField widget dispatch', () => {
     expect(wrapper.find('.field-input--machine-name').exists()).toBe(true)
   })
 
+  it('renders a file input for x-widget: image', async () => {
+    const wrapper = await mountSuspended(SchemaField, {
+      props: { name: 'hero', modelValue: '', schema: makeSchema('image') },
+    })
+    expect(wrapper.find('input[type="file"]').exists()).toBe(true)
+  })
+
+  it('renders a file input for x-widget: file', async () => {
+    const wrapper = await mountSuspended(SchemaField, {
+      props: { name: 'attachment', modelValue: '', schema: makeSchema('file') },
+    })
+    expect(wrapper.find('input[type="file"]').exists()).toBe(true)
+  })
+
   it('passes disabled=true to widget when x-access-restricted is set', async () => {
     const wrapper = await mountSuspended(SchemaField, {
       props: {
