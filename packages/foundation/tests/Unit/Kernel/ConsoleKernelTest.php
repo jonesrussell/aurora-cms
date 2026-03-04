@@ -14,8 +14,13 @@ final class ConsoleKernelTest extends TestCase
 {
     private string $projectRoot;
 
+    /** @var list<string> */
+    private array $originalArgv;
+
     protected function setUp(): void
     {
+        $this->originalArgv = $_SERVER['argv'] ?? [];
+
         $this->projectRoot = sys_get_temp_dir() . '/waaseyaa_console_test_' . uniqid();
         mkdir($this->projectRoot . '/config', 0755, true);
         mkdir($this->projectRoot . '/storage', 0755, true);
@@ -32,6 +37,8 @@ final class ConsoleKernelTest extends TestCase
 
     protected function tearDown(): void
     {
+        $_SERVER['argv'] = $this->originalArgv;
+
         $items = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($this->projectRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST,

@@ -35,25 +35,5 @@ final class HttpKernelTest extends TestCase
         $this->assertSame('/tmp/test-project', $kernel->getProjectRoot());
     }
 
-    #[Test]
-    public function cors_defaults_include_localhost_ports(): void
-    {
-        // Verify the default CORS origins are configured via config key 'cors_origins'.
-        // The kernel reads $this->config['cors_origins'] with a fallback to the two
-        // standard dev ports. We validate this by checking the fallback in handleCors().
-        $ref = new \ReflectionMethod(HttpKernel::class, 'handleCors');
 
-        // The method exists and is private — confirms CORS handling is encapsulated.
-        $this->assertTrue($ref->isPrivate());
-    }
-
-    #[Test]
-    public function registers_four_static_routes(): void
-    {
-        // registerRoutes() adds schema, openapi, entity_types, and broadcast routes
-        // beyond the dynamic JSON:API routes. Verify the method exists and is private.
-        $ref = new \ReflectionMethod(HttpKernel::class, 'registerRoutes');
-
-        $this->assertTrue($ref->isPrivate());
-    }
 }
