@@ -33,9 +33,10 @@ final class DefaultPluginManagerTest extends TestCase
         $manager = new DefaultPluginManager($discovery);
         $definitions = $manager->getDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(3, $definitions);
         $this->assertArrayHasKey('test_plugin', $definitions);
         $this->assertArrayHasKey('another_plugin', $definitions);
+        $this->assertArrayHasKey('knowledge_tooling_example', $definitions);
     }
 
     public function testGetDefinition(): void
@@ -80,6 +81,7 @@ final class DefaultPluginManagerTest extends TestCase
 
         $this->assertTrue($manager->hasDefinition('test_plugin'));
         $this->assertTrue($manager->hasDefinition('another_plugin'));
+        $this->assertTrue($manager->hasDefinition('knowledge_tooling_example'));
         $this->assertFalse($manager->hasDefinition('nonexistent'));
     }
 

@@ -8,6 +8,7 @@ use Waaseyaa\Plugin\Attribute\WaaseyaaPlugin;
 use Waaseyaa\Plugin\Definition\PluginDefinition;
 use Waaseyaa\Plugin\Discovery\AttributeDiscovery;
 use Waaseyaa\Plugin\Tests\Fixtures\AnotherPlugin;
+use Waaseyaa\Plugin\Tests\Fixtures\KnowledgeToolingExamplePlugin;
 use Waaseyaa\Plugin\Tests\Fixtures\TestPlugin;
 use PHPUnit\Framework\TestCase;
 
@@ -29,9 +30,10 @@ final class AttributeDiscoveryTest extends TestCase
 
         $definitions = $discovery->getDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(3, $definitions);
         $this->assertArrayHasKey('test_plugin', $definitions);
         $this->assertArrayHasKey('another_plugin', $definitions);
+        $this->assertArrayHasKey('knowledge_tooling_example', $definitions);
     }
 
     public function testDefinitionsHaveCorrectData(): void
@@ -58,6 +60,13 @@ final class AttributeDiscoveryTest extends TestCase
         $this->assertSame('Another Plugin', $anotherDef->label);
         $this->assertSame(AnotherPlugin::class, $anotherDef->class);
         $this->assertSame('', $anotherDef->description);
+
+        $extensionDef = $definitions['knowledge_tooling_example'];
+        $this->assertInstanceOf(PluginDefinition::class, $extensionDef);
+        $this->assertSame('knowledge_tooling_example', $extensionDef->id);
+        $this->assertSame('Knowledge Tooling Example', $extensionDef->label);
+        $this->assertSame(KnowledgeToolingExamplePlugin::class, $extensionDef->class);
+        $this->assertStringContainsString('Reference extension plugin', $extensionDef->description);
     }
 
     public function testEmptyDirectory(): void
@@ -119,9 +128,10 @@ final class AttributeDiscoveryTest extends TestCase
 
             $definitions = $discovery->getDefinitions();
 
-            $this->assertCount(2, $definitions);
+            $this->assertCount(3, $definitions);
             $this->assertArrayHasKey('test_plugin', $definitions);
             $this->assertArrayHasKey('another_plugin', $definitions);
+            $this->assertArrayHasKey('knowledge_tooling_example', $definitions);
         } finally {
             rmdir($emptyDir);
         }
