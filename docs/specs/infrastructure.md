@@ -311,7 +311,7 @@ $query->condition('title', '%' . $escaped . '%', 'LIKE');
 
 All conditions are ANDed together. No OR support at this level.
 
-## Discovery Response Caching (v0.9)
+## Discovery Response Caching (v1.0)
 
 The HTTP kernel now maintains a dedicated `discovery` cache bin (database-backed, table `cache_discovery`) for anonymous public discovery API surfaces:
 
@@ -332,10 +332,29 @@ Runtime behavior:
 - Cache hit header: `X-Waaseyaa-Discovery-Cache: HIT`.
 - Cache miss header: `X-Waaseyaa-Discovery-Cache: MISS`.
 - Authenticated requests bypass persistence and return `Cache-Control: private, no-store`.
+- Discovery payloads carry a stable metadata envelope:
+  - `meta.contract_version = v1.0`
+  - `meta.contract_stability = stable`
+  - `meta.surface = discovery_api` (default when not supplied by the caller)
 
 Invalidation:
 
 - Discovery cache is cleared on `EntityEvents::POST_SAVE` and `EntityEvents::POST_DELETE` to preserve correctness under workflow state, relationship, and content changes.
+
+## SSR Render Cache Variant Contract (v1.0)
+
+SSR render cache keys now include deterministic variant dimensions in the language segment:
+
+- workflow dimension (`wf:<state>`) from `workflow_visibility.state`
+- graph dimension (`graph:<hash>`) derived from normalized `relationship_navigation` context
+- contract dimension (`contract:v1.0`)
+
+This stabilizes render-cache partitioning for graph-aware SSR contexts while preserving deterministic replay under equivalent context inputs.
+
+Render cache invalidation is broadened for relationship-aware pages:
+
+- entity-specific invalidation still occurs on save/delete,
+- when `node` or `relationship` entities change, type-wide node/relationship render tags are invalidated to prevent stale relationship-navigation output.
 
 ### InsertInterface
 

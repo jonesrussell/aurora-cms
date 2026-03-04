@@ -1153,14 +1153,13 @@ final class HttpKernel extends AbstractKernel
             $safeViewMode = preg_replace('/[^a-z0-9_]+/i', '', strtolower($requestedViewMode)) ?: 'full';
             $viewMode = new ViewMode($safeViewMode);
             $relationshipContext = $this->buildRelationshipRenderContext($entity);
-            $hasRelationshipContext = $relationshipContext !== [];
             $renderContext = $relationshipContext;
             $renderContext['workflow_visibility'] = $visibilityResolver->buildRenderContext($entity, $previewRequested);
+            $cacheVariantLangcode = $this->buildSsrCacheVariantLangcode($contentLangcode, $renderContext);
 
             if (
                 !$account->isAuthenticated()
                 && !$previewRequested
-                && !$hasRelationshipContext
                 && $this->renderCache !== null
                 && $entity->id() !== null
             ) {
@@ -1168,7 +1167,7 @@ final class HttpKernel extends AbstractKernel
                     $resolved->entityTypeId,
                     $entity->id(),
                     $viewMode->name,
-                    $contentLangcode,
+                    $cacheVariantLangcode,
                 );
                 if ($cached !== null) {
                     $headers = $cached->headers;
@@ -1181,7 +1180,6 @@ final class HttpKernel extends AbstractKernel
             if (
                 !$account->isAuthenticated()
                 && !$previewRequested
-                && !$hasRelationshipContext
                 && $this->renderCache !== null
                 && $entity->id() !== null
                 && $response->statusCode === 200
@@ -1190,7 +1188,7 @@ final class HttpKernel extends AbstractKernel
                     $resolved->entityTypeId,
                     $entity->id(),
                     $viewMode->name,
-                    $contentLangcode,
+                    $cacheVariantLangcode,
                     $response,
                     $cacheMaxAge,
                 );
@@ -1448,10 +1446,17 @@ final class HttpKernel extends AbstractKernel
                 return;
             }
 
+            $entityType = $event->entity->getEntityTypeId();
             $renderCache->invalidateEntity(
-                $event->entity->getEntityTypeId(),
+                $entityType,
                 $event->entity->id(),
             );
+
+            // Relationship and node updates can affect relationship-navigation SSR context across many pages.
+            if (in_array($entityType, ['relationship', 'node'], true)) {
+                $renderCache->invalidateEntity('node', null);
+                $renderCache->invalidateEntity('relationship', null);
+            }
         };
 
         $this->dispatcher->addListener(EntityEvents::POST_SAVE->value, $invalidate);
@@ -1502,6 +1507,37 @@ final class HttpKernel extends AbstractKernel
         }
 
         return 300;
+    }
+
+    /**
+     * @param array<string, mixed> $renderContext
+     */
+    private function buildSsrCacheVariantLangcode(string $langcode, array $renderContext): string
+    {
+        $workflowState = 'unknown';
+        if (is_array($renderContext['workflow_visibility'] ?? null)) {
+            $workflowStateCandidate = $renderContext['workflow_visibility']['state'] ?? null;
+            if (is_string($workflowStateCandidate) && trim($workflowStateCandidate) !== '') {
+                $workflowState = strtolower(trim($workflowStateCandidate));
+            }
+        }
+
+        $graphHash = 'none';
+        if (is_array($renderContext['relationship_navigation'] ?? null)) {
+            $graphContext = $renderContext['relationship_navigation'];
+            if ($graphContext !== []) {
+                $serialized = json_encode($this->normalizeForCacheKey($graphContext), JSON_THROW_ON_ERROR);
+                $graphHash = substr(sha1((string) $serialized), 0, 12);
+            }
+        }
+
+        return sprintf(
+            '%s|wf:%s|graph:%s|contract:%s',
+            $langcode,
+            $workflowState,
+            $graphHash,
+            self::DISCOVERY_CONTRACT_VERSION,
+        );
     }
 
     private function cacheControlHeaderForRender(AccountInterface $account, int $maxAge): string
