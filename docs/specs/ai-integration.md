@@ -535,6 +535,29 @@ Operational behavior:
 - If no embedding provider is configured, warmer returns `status=skipped_no_provider` (no writes).
 - For `node`, only `published` content is indexed; non-public states are removed from the semantic index.
 - Non-node types remain indexable by default.
+- Candidate IDs are processed in deterministic chunks (`200` IDs per storage load) to stabilize memory and I/O under larger warming sets.
+
+### Semantic Refresh Batch Contract
+
+`SemanticIndexWarmer::warmBatch()` exposes resumable semantic refresh batches for operational pipelines and long-running index rebuilds.
+
+Contract:
+
+- `contract_version: v1.0`
+- `contract_surface: semantic_index_refresh_batch`
+- stable report payload with:
+  - requested entity types
+  - `batch_size` and `batch_processed`
+  - stored/removed/missing totals for the executed batch
+  - per-type status blocks (`ok` / `missing_entity_type`)
+  - `next_cursor` (`{type_index, offset}`) when work remains, or `null` when complete
+  - measured duration
+
+Operational behavior:
+
+- Cursor input is optional and clamped to non-negative values.
+- Batch execution is deterministic over sorted entity IDs and entity-type order.
+- If no embedding provider is configured, status is `skipped_no_provider` and no writes occur.
 
 ### CLI Warm Command
 
@@ -551,6 +574,25 @@ Supported options:
 Exit semantics:
 
 - `0` when warming completed (including partial skips for missing entity types)
+- non-zero when no embedding provider is configured (`skipped_no_provider`)
+
+### CLI Refresh Command
+
+**File:** `packages/cli/src/Command/SemanticRefreshCommand.php`
+
+`semantic:refresh` is the framework-level operational entry point for resumable batch refresh runs.
+
+Supported options:
+
+- `--type|-t` one or more entity type IDs (repeatable / comma-separated)
+- `--batch-size|-b` max entities per batch execution
+- `--cursor` JSON cursor (`{"type_index":0,"offset":200}`)
+- `--until-complete` loop batches until `next_cursor=null`
+- `--json` machine-readable report output (`runs`, `final`, `reports`)
+
+Exit semantics:
+
+- `0` when refresh execution completes
 - non-zero when no embedding provider is configured (`skipped_no_provider`)
 
 ### Read-Path Baseline Drift Gate
@@ -624,3 +666,4 @@ Pipeline uses `syncStepsToValues()` to maintain a single source of truth. Called
 | `packages/ai-vector/src/Testing/FakeEmbeddingProvider.php` | `FakeEmbeddingProvider` | Deterministic test embeddings |
 | `packages/ai-vector/src/SemanticIndexWarmer.php` | `SemanticIndexWarmer` | Deterministic semantic index warming service |
 | `packages/cli/src/Command/SemanticWarmCommand.php` | `SemanticWarmCommand` | Operational CLI entry point for warmer |
+| `packages/cli/src/Command/SemanticRefreshCommand.php` | `SemanticRefreshCommand` | Operational CLI entry point for resumable refresh batches |

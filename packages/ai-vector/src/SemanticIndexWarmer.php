@@ -13,6 +13,7 @@ final class SemanticIndexWarmer
 {
     public const string CONTRACT_VERSION = 'v1.0';
     public const string CONTRACT_SURFACE = 'semantic_index_warm';
+    private const int DEFAULT_CHUNK_SIZE = 200;
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
@@ -81,42 +82,12 @@ final class SemanticIndexWarmer
             }
 
             $storage = $this->entityTypeManager->getStorage($entityTypeId);
-            $query = $storage->getQuery()->accessCheck(false);
-            if ($limit > 0) {
-                $query = $query->range(0, $limit);
-            }
-
-            $ids = $query->execute();
-            usort($ids, static fn(int|string $a, int|string $b): int => strcmp((string) $a, (string) $b));
-
-            $entities = $ids !== [] ? $storage->loadMultiple($ids) : [];
-
-            $typeProcessed = 0;
-            $typeStored = 0;
-            $typeRemoved = 0;
-            $typeMissing = 0;
-
-            foreach ($ids as $id) {
-                if (!isset($entities[$id])) {
-                    $typeMissing++;
-                    continue;
-                }
-
-                $entity = $entities[$id];
-                if (!$entity instanceof EntityInterface) {
-                    $typeMissing++;
-                    continue;
-                }
-
-                $listener->onPostSave(new EntityEvent($entity));
-                $typeProcessed++;
-
-                if ($this->isIndexable($entity)) {
-                    $typeStored++;
-                } else {
-                    $typeRemoved++;
-                }
-            }
+            $ids = $this->collectSortedIds($entityTypeId, $limit);
+            $typeStats = $this->processIdsInChunks($listener, $entityTypeId, $ids);
+            $typeProcessed = $typeStats['processed'];
+            $typeStored = $typeStats['stored'];
+            $typeRemoved = $typeStats['removed'];
+            $typeMissing = $typeStats['missing'];
 
             $report['processed_total'] += $typeProcessed;
             $report['stored_total'] += $typeStored;
@@ -138,6 +109,117 @@ final class SemanticIndexWarmer
         return $report;
     }
 
+    /**
+     * @param list<string> $entityTypeIds
+     * @param array{type_index?: int, offset?: int}|null $cursor
+     * @return array{
+     *   contract_version: string,
+     *   contract_surface: string,
+     *   status: string,
+     *   requested_entity_types: list<string>,
+     *   batch_size: int,
+     *   batch_processed: int,
+     *   stored_total: int,
+     *   removed_total: int,
+     *   missing_total: int,
+     *   duration_ms: float,
+     *   next_cursor: array{type_index: int, offset: int}|null,
+     *   by_type: array<string, array{status: string, candidates: int, processed: int, stored: int, removed: int, missing: int}>
+     * }
+     */
+    public function warmBatch(array $entityTypeIds = ['node'], int $batchSize = 200, ?array $cursor = null): array
+    {
+        $startedAt = hrtime(true);
+        $requestedEntityTypes = $this->normalizeEntityTypeIds($entityTypeIds);
+        $batchSize = max(1, $batchSize);
+
+        $report = [
+            'contract_version' => self::CONTRACT_VERSION,
+            'contract_surface' => 'semantic_index_refresh_batch',
+            'status' => 'ok',
+            'requested_entity_types' => $requestedEntityTypes,
+            'batch_size' => $batchSize,
+            'batch_processed' => 0,
+            'stored_total' => 0,
+            'removed_total' => 0,
+            'missing_total' => 0,
+            'duration_ms' => 0.0,
+            'next_cursor' => null,
+            'by_type' => [],
+        ];
+
+        if ($this->embeddingProvider === null) {
+            $report['status'] = 'skipped_no_provider';
+            $report['duration_ms'] = $this->durationMs($startedAt);
+            return $report;
+        }
+
+        $listener = new EntityEmbeddingListener(
+            queue: null,
+            storage: $this->embeddingStorage,
+            embeddingProvider: $this->embeddingProvider,
+        );
+
+        $cursorTypeIndex = max(0, (int) ($cursor['type_index'] ?? 0));
+        $cursorOffset = max(0, (int) ($cursor['offset'] ?? 0));
+
+        for ($typeIndex = $cursorTypeIndex; $typeIndex < count($requestedEntityTypes); $typeIndex++) {
+            $entityTypeId = $requestedEntityTypes[$typeIndex];
+            $offset = $typeIndex === $cursorTypeIndex ? $cursorOffset : 0;
+
+            if (!$this->entityTypeManager->hasDefinition($entityTypeId)) {
+                $report['status'] = 'completed_with_skips';
+                $report['by_type'][$entityTypeId] = [
+                    'status' => 'missing_entity_type',
+                    'candidates' => 0,
+                    'processed' => 0,
+                    'stored' => 0,
+                    'removed' => 0,
+                    'missing' => 0,
+                ];
+                continue;
+            }
+
+            $ids = $this->collectSortedIds($entityTypeId, 0);
+            $remainingCapacity = $batchSize - $report['batch_processed'];
+            if ($remainingCapacity <= 0) {
+                $report['next_cursor'] = ['type_index' => $typeIndex, 'offset' => $offset];
+                break;
+            }
+
+            $slice = array_slice($ids, $offset, $remainingCapacity);
+            $typeStats = $this->processIdsInChunks($listener, $entityTypeId, $slice);
+
+            $report['batch_processed'] += $typeStats['processed'];
+            $report['stored_total'] += $typeStats['stored'];
+            $report['removed_total'] += $typeStats['removed'];
+            $report['missing_total'] += $typeStats['missing'];
+            $report['by_type'][$entityTypeId] = [
+                'status' => 'ok',
+                'candidates' => count($slice),
+                'processed' => $typeStats['processed'],
+                'stored' => $typeStats['stored'],
+                'removed' => $typeStats['removed'],
+                'missing' => $typeStats['missing'],
+            ];
+
+            $nextOffset = $offset + count($slice);
+            if ($nextOffset < count($ids)) {
+                $report['next_cursor'] = ['type_index' => $typeIndex, 'offset' => $nextOffset];
+                break;
+            }
+
+            if ($typeIndex < (count($requestedEntityTypes) - 1) && $report['batch_processed'] >= $batchSize) {
+                $report['next_cursor'] = ['type_index' => $typeIndex + 1, 'offset' => 0];
+                break;
+            }
+        }
+
+        $report['duration_ms'] = $this->durationMs($startedAt);
+
+        return $report;
+    }
+
     private function isIndexable(EntityInterface $entity): bool
     {
         if ($entity->getEntityTypeId() !== 'node') {
@@ -145,6 +227,67 @@ final class SemanticIndexWarmer
         }
 
         return $this->workflowVisibility->isNodePublic($entity->toArray());
+    }
+
+    /**
+     * @return array{processed: int, stored: int, removed: int, missing: int}
+     */
+    private function processIdsInChunks(EntityEmbeddingListener $listener, string $entityTypeId, array $ids): array
+    {
+        $storage = $this->entityTypeManager->getStorage($entityTypeId);
+        $processed = 0;
+        $stored = 0;
+        $removed = 0;
+        $missing = 0;
+
+        foreach (array_chunk($ids, self::DEFAULT_CHUNK_SIZE) as $chunk) {
+            $entities = $chunk !== [] ? $storage->loadMultiple($chunk) : [];
+            foreach ($chunk as $id) {
+                if (!isset($entities[$id])) {
+                    $missing++;
+                    continue;
+                }
+
+                $entity = $entities[$id];
+                if (!$entity instanceof EntityInterface) {
+                    $missing++;
+                    continue;
+                }
+
+                $listener->onPostSave(new EntityEvent($entity));
+                $processed++;
+
+                if ($this->isIndexable($entity)) {
+                    $stored++;
+                } else {
+                    $removed++;
+                }
+            }
+        }
+
+        return [
+            'processed' => $processed,
+            'stored' => $stored,
+            'removed' => $removed,
+            'missing' => $missing,
+        ];
+    }
+
+    /**
+     * @return array<int|string>
+     */
+    private function collectSortedIds(string $entityTypeId, int $limit): array
+    {
+        $storage = $this->entityTypeManager->getStorage($entityTypeId);
+        $query = $storage->getQuery()->accessCheck(false);
+        if ($limit > 0) {
+            $query = $query->range(0, $limit);
+        }
+
+        $ids = $query->execute();
+        usort($ids, static fn(int|string $a, int|string $b): int => strcmp((string) $a, (string) $b));
+
+        return $ids;
     }
 
     /**

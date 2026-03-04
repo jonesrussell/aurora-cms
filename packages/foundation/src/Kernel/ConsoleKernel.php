@@ -37,6 +37,7 @@ use Waaseyaa\CLI\Command\Optimize\OptimizeConfigCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeManifestCommand;
 use Waaseyaa\CLI\Command\PermissionListCommand;
 use Waaseyaa\CLI\Command\RouteListCommand;
+use Waaseyaa\CLI\Command\SemanticRefreshCommand;
 use Waaseyaa\CLI\Command\SemanticWarmCommand;
 use Waaseyaa\CLI\Command\Telescope\TelescopeClearCommand;
 use Waaseyaa\CLI\Command\Telescope\TelescopeListCommand;
@@ -143,6 +144,7 @@ final class ConsoleKernel extends AbstractKernel
             new RouteListCommand($router),
             new PermissionListCommand($permissionHandler),
             new SemanticWarmCommand($semanticWarmer),
+            new SemanticRefreshCommand($semanticWarmer),
             new FixtureScaffoldCommand(),
             new FixturePackRefreshCommand(),
             new OptimizeCommand(),
