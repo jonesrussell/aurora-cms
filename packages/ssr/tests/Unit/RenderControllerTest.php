@@ -83,6 +83,42 @@ final class RenderControllerTest extends TestCase
     }
 
     #[Test]
+    public function renderEntityMergesAdditionalContextIntoTemplateBag(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'node.full.html.twig' => '<article>{{ relationship_navigation.counts.total }}</article>',
+        ]));
+
+        $definition = new EntityType(
+            id: 'node',
+            label: 'Node',
+            class: RenderControllerEntity::class,
+            keys: ['id' => 'id', 'label' => 'title'],
+            fieldDefinitions: ['title' => ['type' => 'string']],
+        );
+        $manager = $this->createMock(EntityTypeManagerInterface::class);
+        $manager->method('getDefinition')->willReturn($definition);
+
+        $renderer = new EntityRenderer($manager, new FieldFormatterRegistry(), new ArrayViewModeConfig([
+            'node' => [
+                'full' => [
+                    'title' => ['formatter' => 'string', 'weight' => 0],
+                ],
+            ],
+        ]));
+        $controller = new RenderController($twig, $renderer);
+
+        $response = $controller->renderEntity(
+            new RenderControllerEntity('node', ['id' => 1, 'title' => 'Rendered']),
+            ViewMode::full(),
+            ['relationship_navigation' => ['counts' => ['total' => 3]]],
+        );
+
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<article>3</article>', $response->content);
+    }
+
+    #[Test]
     public function renderNotFoundReturns404Response(): void
     {
         $twig = new Environment(new ArrayLoader([

@@ -1,0 +1,15 @@
+<section class="relationship-endpoint-navigation">
+  <h3>{{ title|default('Endpoint') }}</h3>
+  <p>
+    <a href="{{ endpoint.path|default('#') }}">
+      {{ endpoint.type|default('entity') }} {{ endpoint.id|default('') }}
+    </a>
+  </p>
+
+  {% if endpoint.browse is defined %}
+    {% include 'components/relationship-navigation.html.twig' with {
+      heading: 'Connected Graph',
+      navigation: endpoint.browse
+    } only %}
+  {% endif %}
+</section>

@@ -23,6 +23,7 @@ use Waaseyaa\Api\Schema\SchemaPresenter;
 use Waaseyaa\Cache\Backend\DatabaseBackend;
 use Waaseyaa\Cache\CacheFactory;
 use Waaseyaa\Cache\CacheConfiguration;
+use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\Event\EntityEvent;
 use Waaseyaa\Entity\Event\EntityEvents;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
@@ -50,6 +51,7 @@ use Waaseyaa\AI\Vector\EntityEmbeddingCleanupListener;
 use Waaseyaa\AI\Vector\SearchController;
 use Waaseyaa\AI\Vector\SqliteEmbeddingStorage;
 use Waaseyaa\Mcp\McpController;
+use Waaseyaa\Relationship\RelationshipTraversalService;
 use Waaseyaa\User\Middleware\BearerAuthMiddleware;
 use Waaseyaa\User\DevAdminAccount;
 use Waaseyaa\User\Middleware\SessionMiddleware;
@@ -699,8 +701,15 @@ final class HttpKernel extends AbstractKernel
             $entityRenderer = new EntityRenderer($this->entityTypeManager, $formatterRegistry, $viewModeConfig);
             $safeViewMode = preg_replace('/[^a-z0-9_]+/i', '', strtolower($requestedViewMode)) ?: 'full';
             $viewMode = new ViewMode($safeViewMode);
+            $renderContext = $this->buildRelationshipRenderContext($entity);
+            $hasRelationshipContext = $renderContext !== [];
 
-            if (!$account->isAuthenticated() && $this->renderCache !== null && $entity->id() !== null) {
+            if (
+                !$account->isAuthenticated()
+                && !$hasRelationshipContext
+                && $this->renderCache !== null
+                && $entity->id() !== null
+            ) {
                 $cached = $this->renderCache->get(
                     $resolved->entityTypeId,
                     $entity->id(),
@@ -714,8 +723,14 @@ final class HttpKernel extends AbstractKernel
                 }
             }
 
-            $response = (new RenderController($twig, $entityRenderer))->renderEntity($entity, $viewMode);
-            if (!$account->isAuthenticated() && $this->renderCache !== null && $entity->id() !== null && $response->statusCode === 200) {
+            $response = (new RenderController($twig, $entityRenderer))->renderEntity($entity, $viewMode, $renderContext);
+            if (
+                !$account->isAuthenticated()
+                && !$hasRelationshipContext
+                && $this->renderCache !== null
+                && $entity->id() !== null
+                && $response->statusCode === 200
+            ) {
                 $this->renderCache->set(
                     $resolved->entityTypeId,
                     $entity->id(),
@@ -739,6 +754,74 @@ final class HttpKernel extends AbstractKernel
                     'detail' => 'Failed to render page.',
                 ]],
             ]);
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildRelationshipRenderContext(EntityInterface $entity): array
+    {
+        if (!$this->entityTypeManager->hasDefinition('relationship') || $entity->id() === null) {
+            return [];
+        }
+
+        try {
+            $traversal = new RelationshipTraversalService($this->entityTypeManager, $this->database);
+            $entityType = $entity->getEntityTypeId();
+            $entityId = (string) $entity->id();
+
+            if ($entityType === 'node') {
+                return [
+                    'relationship_navigation' => [
+                        'entity' => $traversal->browse($entityType, $entityId, [
+                            'status' => 'published',
+                            'limit' => 12,
+                        ]),
+                    ],
+                ];
+            }
+
+            if ($entityType !== 'relationship') {
+                return [];
+            }
+
+            $values = $entity->toArray();
+            $fromType = trim((string) ($values['from_entity_type'] ?? ''));
+            $fromId = trim((string) ($values['from_entity_id'] ?? ''));
+            $toType = trim((string) ($values['to_entity_type'] ?? ''));
+            $toId = trim((string) ($values['to_entity_id'] ?? ''));
+
+            if ($fromType === '' || $fromId === '' || $toType === '' || $toId === '') {
+                return [];
+            }
+
+            return [
+                'relationship_navigation' => [
+                    'from_endpoint' => [
+                        'type' => $fromType,
+                        'id' => $fromId,
+                        'path' => sprintf('/%s/%s', $fromType, $fromId),
+                        'browse' => $traversal->browse($fromType, $fromId, [
+                            'status' => 'published',
+                            'limit' => 8,
+                        ]),
+                    ],
+                    'to_endpoint' => [
+                        'type' => $toType,
+                        'id' => $toId,
+                        'path' => sprintf('/%s/%s', $toType, $toId),
+                        'browse' => $traversal->browse($toType, $toId, [
+                            'status' => 'published',
+                            'limit' => 8,
+                        ]),
+                    ],
+                ],
+            ];
+        } catch (\Throwable $e) {
+            // Relationship navigation is additive and should not break render paths.
+            error_log(sprintf('[Waaseyaa] Relationship render context failed: %s', $e->getMessage()));
+            return [];
         }
     }
 

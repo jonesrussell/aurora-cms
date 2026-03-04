@@ -1,0 +1,42 @@
+<section class="relationship-navigation">
+  <h2>{{ heading|default('Knowledge Graph') }}</h2>
+  <p class="relationship-navigation-summary">
+    {{ navigation.counts.total|default(0) }} connection(s) for {{ navigation.source.type|default('entity') }} {{ navigation.source.id|default('') }}.
+  </p>
+
+  <div class="relationship-navigation-columns">
+    <section class="relationship-navigation-column relationship-navigation-outbound">
+      <h3>Outbound</h3>
+      {% if navigation.outbound|default([]) is not empty %}
+        <ul>
+          {% for edge in navigation.outbound %}
+            <li>
+              <a href="{{ edge.related_entity_path }}">{{ edge.related_entity_label }}</a>
+              <span class="edge-meta">({{ edge.related_entity_type }} {{ edge.related_entity_id }})</span>
+              <span class="edge-type">{{ edge.relationship_type }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No outbound relationships.</p>
+      {% endif %}
+    </section>
+
+    <section class="relationship-navigation-column relationship-navigation-inbound">
+      <h3>Inbound</h3>
+      {% if navigation.inbound|default([]) is not empty %}
+        <ul>
+          {% for edge in navigation.inbound %}
+            <li>
+              <a href="{{ edge.related_entity_path }}">{{ edge.related_entity_label }}</a>
+              <span class="edge-meta">({{ edge.related_entity_type }} {{ edge.related_entity_id }})</span>
+              <span class="edge-type">{{ edge.relationship_type }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No inbound relationships.</p>
+      {% endif %}
+    </section>
+  </div>
+</section>

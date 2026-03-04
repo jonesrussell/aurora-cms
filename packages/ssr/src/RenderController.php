@@ -46,13 +46,21 @@ final class RenderController
         ));
     }
 
-    public function renderEntity(EntityInterface $entity, ViewMode|string $viewMode = 'full'): SsrResponse
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function renderEntity(EntityInterface $entity, ViewMode|string $viewMode = 'full', array $context = []): SsrResponse
     {
         if ($this->entityRenderer === null) {
             throw new \RuntimeException('EntityRenderer is required for entity rendering.');
         }
 
         $bag = $this->entityRenderer->render($entity, $viewMode);
+        foreach ($context as $key => $value) {
+            if (is_string($key) && $key !== '') {
+                $bag[$key] = $value;
+            }
+        }
         $templates = $bag['template_suggestions'] ?? [];
         foreach ($templates as $template) {
             if (!is_string($template) || $template === '') {

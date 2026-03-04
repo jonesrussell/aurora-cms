@@ -117,6 +117,203 @@ final class RelationshipTraversalService
         return $result;
     }
 
+    /**
+     * Build a relationship navigation surface for a source entity.
+     *
+     * @param array{
+     *   relationship_types?: list<string>,
+     *   status?: 'published'|'unpublished'|'all',
+     *   at?: int|string|null,
+     *   limit?: int|null
+     * } $options
+     * @return array{
+     *   source: array{type: string, id: string},
+     *   outbound: list<array{
+     *     relationship_id: string,
+     *     relationship_type: string,
+     *     direction: 'outbound'|'inbound',
+     *     inverse: bool,
+     *     directionality: string,
+     *     related_entity_type: string,
+     *     related_entity_id: string,
+     *     related_entity_label: string,
+     *     related_entity_path: string,
+     *     status: int,
+     *     weight: float|null,
+     *     confidence: float|null,
+     *     start_date: int|null,
+     *     end_date: int|null
+     *   }>,
+     *   inbound: list<array{
+     *     relationship_id: string,
+     *     relationship_type: string,
+     *     direction: 'outbound'|'inbound',
+     *     inverse: bool,
+     *     directionality: string,
+     *     related_entity_type: string,
+     *     related_entity_id: string,
+     *     related_entity_label: string,
+     *     related_entity_path: string,
+     *     status: int,
+     *     weight: float|null,
+     *     confidence: float|null,
+     *     start_date: int|null,
+     *     end_date: int|null
+     *   }>,
+     *   counts: array{outbound: int, inbound: int, total: int}
+     * }
+     */
+    public function browse(string $entityType, int|string $entityId, array $options = []): array
+    {
+        $sourceId = (string) $entityId;
+        $normalized = [
+            'relationship_types' => $this->normalizeRelationshipTypes($options['relationship_types'] ?? []),
+            'status' => $this->normalizeStatus($options['status'] ?? 'published'),
+            'at' => $this->normalizeTemporal($options['at'] ?? null),
+            'limit' => $this->normalizeLimit($options['limit'] ?? null),
+        ];
+
+        $outboundEdges = $this->mapTraversalRelationships(
+            relationships: $this->traverse($entityType, $sourceId, $normalized + ['direction' => 'outbound']),
+            sourceEntityType: $entityType,
+            sourceEntityId: $sourceId,
+            direction: 'outbound',
+        );
+
+        $inboundEdges = $this->mapTraversalRelationships(
+            relationships: $this->traverse($entityType, $sourceId, $normalized + ['direction' => 'inbound']),
+            sourceEntityType: $entityType,
+            sourceEntityId: $sourceId,
+            direction: 'inbound',
+        );
+
+        return [
+            'source' => [
+                'type' => $entityType,
+                'id' => $sourceId,
+            ],
+            'outbound' => $outboundEdges,
+            'inbound' => $inboundEdges,
+            'counts' => [
+                'outbound' => count($outboundEdges),
+                'inbound' => count($inboundEdges),
+                'total' => count($outboundEdges) + count($inboundEdges),
+            ],
+        ];
+    }
+
+    /**
+     * @param list<Relationship> $relationships
+     * @return list<array{
+     *   relationship_id: string,
+     *   relationship_type: string,
+     *   direction: 'outbound'|'inbound',
+     *   inverse: bool,
+     *   directionality: string,
+     *   related_entity_type: string,
+     *   related_entity_id: string,
+     *   related_entity_label: string,
+     *   related_entity_path: string,
+     *   status: int,
+     *   weight: float|null,
+     *   confidence: float|null,
+     *   start_date: int|null,
+     *   end_date: int|null
+     * }>
+     */
+    private function mapTraversalRelationships(
+        array $relationships,
+        string $sourceEntityType,
+        string $sourceEntityId,
+        string $direction,
+    ): array {
+        $edges = [];
+
+        foreach ($relationships as $relationship) {
+            $fromType = (string) ($relationship->get('from_entity_type') ?? '');
+            $fromId = (string) ($relationship->get('from_entity_id') ?? '');
+            $toType = (string) ($relationship->get('to_entity_type') ?? '');
+            $toId = (string) ($relationship->get('to_entity_id') ?? '');
+            $directionality = strtolower(trim((string) ($relationship->get('directionality') ?? 'directed')));
+
+            $relatedType = '';
+            $relatedId = '';
+            $inverse = false;
+
+            if ($direction === 'outbound') {
+                if ($fromType === $sourceEntityType && $fromId === $sourceEntityId) {
+                    $relatedType = $toType;
+                    $relatedId = $toId;
+                } elseif (
+                    $directionality === 'bidirectional'
+                    && $toType === $sourceEntityType
+                    && $toId === $sourceEntityId
+                ) {
+                    $relatedType = $fromType;
+                    $relatedId = $fromId;
+                    $inverse = true;
+                }
+            } else {
+                if ($toType === $sourceEntityType && $toId === $sourceEntityId) {
+                    $relatedType = $fromType;
+                    $relatedId = $fromId;
+                } elseif (
+                    $directionality === 'bidirectional'
+                    && $fromType === $sourceEntityType
+                    && $fromId === $sourceEntityId
+                ) {
+                    $relatedType = $toType;
+                    $relatedId = $toId;
+                    $inverse = true;
+                }
+            }
+
+            if ($relatedType === '' || $relatedId === '') {
+                continue;
+            }
+
+            $relatedLabel = $this->loadEntityLabel($relatedType, $relatedId);
+            $edges[] = [
+                'relationship_id' => (string) $relationship->id(),
+                'relationship_type' => (string) ($relationship->get('relationship_type') ?? ''),
+                'direction' => $direction,
+                'inverse' => $inverse,
+                'directionality' => $directionality !== '' ? $directionality : 'directed',
+                'related_entity_type' => $relatedType,
+                'related_entity_id' => $relatedId,
+                'related_entity_label' => $relatedLabel,
+                'related_entity_path' => sprintf('/%s/%s', $relatedType, $relatedId),
+                'status' => $this->statusSortValue($relationship),
+                'weight' => is_numeric($relationship->get('weight')) ? (float) $relationship->get('weight') : null,
+                'confidence' => is_numeric($relationship->get('confidence')) ? (float) $relationship->get('confidence') : null,
+                'start_date' => $this->normalizeTemporal($relationship->get('start_date')),
+                'end_date' => $this->normalizeTemporal($relationship->get('end_date')),
+            ];
+        }
+
+        return $edges;
+    }
+
+    private function loadEntityLabel(string $entityType, string $entityId): string
+    {
+        if (!$this->entityTypeManager->hasDefinition($entityType)) {
+            return sprintf('%s:%s', $entityType, $entityId);
+        }
+
+        try {
+            $storage = $this->entityTypeManager->getStorage($entityType);
+            $resolvedId = ctype_digit($entityId) ? (int) $entityId : $entityId;
+            $entity = $storage->load($resolvedId);
+            if ($entity !== null && trim($entity->label()) !== '') {
+                return $entity->label();
+            }
+        } catch (\Throwable) {
+            // Relationship browsing is best-effort for labels.
+        }
+
+        return sprintf('%s:%s', $entityType, $entityId);
+    }
+
     private function normalizeDirection(mixed $direction): string
     {
         if (!is_string($direction)) {
