@@ -18,23 +18,23 @@ The access control system has four layers, being built bottom-up:
 | # | Feature | Status | Description |
 |---|---------|--------|-------------|
 | 1 | Session-based auth | Done | `SessionMiddleware` + `AuthorizationMiddleware` pipeline |
-| 2 | JWT / API key auth | Planned | Bearer token middleware for machine clients |
+| 2 | JWT / API key auth | Planned | Bearer token middleware for machine clients. See #28 |
 
 ## Media & Files
 
 | # | Feature | Status | Description |
 |---|---------|--------|-------------|
 | 1 | Media entity type | Done | Registered with `InMemoryFileRepository` |
-| 2 | Disk-backed file storage | Planned | `LocalFileRepository` implementation |
-| 3 | Upload endpoint | Planned | `POST /api/media/upload` with file picker widget in admin SPA |
+| 2 | Disk-backed file storage | Planned | `LocalFileRepository` implementation. See #29 |
+| 3 | Upload endpoint | Planned | `POST /api/media/upload` with file picker widget in admin SPA. See #30 |
 
 ## Admin SPA
 
 | # | Feature | Status | Description |
 |---|---------|--------|-------------|
 | 1 | Entity CRUD views | Done | List, create, edit, delete for all entity types |
-| 2 | i18n locales beyond English | Planned | Infrastructure exists (`useLanguage` composable), needs locale files |
-| 3 | Dynamic CORS origin | Planned | CORS in `index.php` hardcodes `localhost:3000`. Nuxt dev server may bind to 3001+ if port is taken. Need dynamic origin handling (e.g., `WAASEYAA_CORS_ORIGIN` env var or pattern-based localhost matching). |
+| 2 | i18n locales beyond English | Planned | Infrastructure exists (`useLanguage` composable), needs locale files. See #31 |
+| 3 | Dynamic CORS origin | Planned | CORS in `index.php` hardcodes `localhost:3000`. Nuxt dev server may bind to 3001+ if port is taken. See #32 |
 | 4 | Boolean field rendering | Done | `ResourceSerializer` casts booleans to native `true`/`false`; `SchemaList.vue` formats as ✓/—. See #18 |
 | 5 | Timestamp auto-population + formatting | Done | `SqlEntityStorage` auto-populates `created`/`changed`; `ResourceSerializer` formats as ISO 8601; `SchemaList.vue` formats with `toLocaleString()`. See #19 |
 | 6 | Boolean field defaults on create | Done | SchemaPresenter emits `default` in JSON Schema; SchemaForm initializes from defaults in create mode. See #24 |
@@ -47,8 +47,14 @@ The access control system has four layers, being built bottom-up:
 | 1 | SPA navigation hangs | Bug | PHP built-in server is single-threaded; SSE broadcast connection blocks API requests during SPA routing. Full page loads work. See #23 |
 | 2 | SSE broadcast disconnects | Bug | SSE connection drops immediately on page load, related to single-threaded server. See #25 |
 
+## CLI
+
+| # | Issue | Status | Description |
+|---|-------|--------|-------------|
+| 1 | Stale `Aurora` namespace | Bug | `bin/waaseyaa` still uses `Aurora\` namespace references — fatal error on any command. See #33 |
+
 ## Database
 
 | # | Issue | Status | Description |
 |---|-------|--------|-------------|
-| 1 | User table schema mismatch | Bug | `user` table has `id` column but entity config expects `uid` after commit 2ea5dd55. Causes 500 on `/api/user`. See #22 |
+| 1 | User table schema mismatch | Done | `user` table has `id` column but entity config expects `uid` after commit 2ea5dd55. Fixed. See #22 |
