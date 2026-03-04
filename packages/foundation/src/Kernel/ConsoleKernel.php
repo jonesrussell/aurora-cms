@@ -15,6 +15,7 @@ use Waaseyaa\CLI\Command\AboutCommand;
 use Waaseyaa\CLI\Command\CacheClearCommand;
 use Waaseyaa\CLI\Command\ConfigExportCommand;
 use Waaseyaa\CLI\Command\ConfigImportCommand;
+use Waaseyaa\CLI\Command\BundleScaffoldCommand;
 use Waaseyaa\CLI\Command\EntityCreateCommand;
 use Waaseyaa\CLI\Command\EntityListCommand;
 use Waaseyaa\CLI\Command\EntityTypeListCommand;
@@ -36,6 +37,7 @@ use Waaseyaa\CLI\Command\Optimize\OptimizeCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeConfigCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeManifestCommand;
 use Waaseyaa\CLI\Command\PermissionListCommand;
+use Waaseyaa\CLI\Command\RelationshipTypeScaffoldCommand;
 use Waaseyaa\CLI\Command\RouteListCommand;
 use Waaseyaa\CLI\Command\SemanticRefreshCommand;
 use Waaseyaa\CLI\Command\SemanticWarmCommand;
@@ -44,6 +46,7 @@ use Waaseyaa\CLI\Command\Telescope\TelescopeListCommand;
 use Waaseyaa\CLI\Command\Telescope\TelescopePruneCommand;
 use Waaseyaa\CLI\Command\UserCreateCommand;
 use Waaseyaa\CLI\Command\UserRoleCommand;
+use Waaseyaa\CLI\Command\WorkflowScaffoldCommand;
 use Waaseyaa\CLI\WaaseyaaApplication;
 use Waaseyaa\Config\Cache\ConfigCacheCompiler;
 use Waaseyaa\Config\ConfigManager;
@@ -147,6 +150,9 @@ final class ConsoleKernel extends AbstractKernel
             new SemanticRefreshCommand($semanticWarmer),
             new FixtureScaffoldCommand(),
             new FixturePackRefreshCommand(),
+            new BundleScaffoldCommand(),
+            new RelationshipTypeScaffoldCommand(),
+            new WorkflowScaffoldCommand(),
             new OptimizeCommand(),
             new OptimizeManifestCommand($manifestCompiler),
             new OptimizeConfigCommand(new ConfigCacheCompiler(
