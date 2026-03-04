@@ -186,6 +186,19 @@ final class JsonApiController
         }
 
         $attributes = $data['data']['attributes'] ?? [];
+
+        // Auto-generate machine name for config entities if ID is empty.
+        $definition = $this->entityTypeManager->getDefinition($entityTypeId);
+        $keys = $definition->getKeys();
+        if (!isset($keys['uuid'])) {
+            $idKey = $keys['id'] ?? 'id';
+            $labelKey = $keys['label'] ?? 'label';
+            if ((!isset($attributes[$idKey]) || $attributes[$idKey] === '')
+                && isset($attributes[$labelKey]) && $attributes[$labelKey] !== '') {
+                $attributes[$idKey] = self::toMachineName((string) $attributes[$labelKey]);
+            }
+        }
+
         $storage = $this->entityTypeManager->getStorage($entityTypeId);
         $entity = $storage->create($attributes);
 
@@ -396,5 +409,20 @@ final class JsonApiController
     private function errorDocument(JsonApiError $error): JsonApiDocument
     {
         return JsonApiDocument::fromErrors([$error], statusCode: (int) $error->status);
+    }
+
+    /**
+     * Convert a label to a machine name (lowercase, underscores only).
+     *
+     * Mirrors the MachineNameInput.vue frontend logic so the server
+     * can generate IDs for config entities when not provided by the client.
+     */
+    private static function toMachineName(string $value): string
+    {
+        $machine = strtolower($value);
+        $machine = preg_replace('/[^a-z0-9]+/', '_', $machine) ?? $machine;
+        $machine = trim($machine, '_');
+
+        return substr($machine, 0, 128);
     }
 }

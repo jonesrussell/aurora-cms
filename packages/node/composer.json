@@ -31,6 +31,11 @@
             "Waaseyaa\\Node\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\Node\\NodeServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

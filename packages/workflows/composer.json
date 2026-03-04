@@ -27,6 +27,11 @@
             "Waaseyaa\\Workflows\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\Workflows\\WorkflowServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

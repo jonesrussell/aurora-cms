@@ -12,6 +12,9 @@ abstract class ServiceProvider implements ServiceProviderInterface
     /** @var array<string, list<string>> */
     private array $tags = [];
 
+    /** @var list<\Waaseyaa\Entity\EntityTypeInterface> */
+    private array $entityTypes = [];
+
     abstract public function register(): void;
 
     public function boot(): void {}
@@ -42,6 +45,11 @@ abstract class ServiceProvider implements ServiceProviderInterface
         $this->tags[$tag][] = $abstract;
     }
 
+    protected function entityType(\Waaseyaa\Entity\EntityTypeInterface $entityType): void
+    {
+        $this->entityTypes[] = $entityType;
+    }
+
     /** @return array<string, array{concrete: string|callable, shared: bool}> */
     public function getBindings(): array
     {
@@ -52,5 +60,11 @@ abstract class ServiceProvider implements ServiceProviderInterface
     public function getTags(): array
     {
         return $this->tags;
+    }
+
+    /** @return list<\Waaseyaa\Entity\EntityTypeInterface> */
+    public function getEntityTypes(): array
+    {
+        return $this->entityTypes;
     }
 }

@@ -518,6 +518,103 @@ final class JsonApiControllerTest extends TestCase
         );
     }
 
+    #[Test]
+    public function storeAutoGeneratesMachineNameForConfigEntity(): void
+    {
+        // Register a config entity type (no uuid key — the defining trait).
+        $configStorage = new class('node_type') extends InMemoryEntityStorage {
+            public function create(array $values = []): \Waaseyaa\Entity\EntityInterface
+            {
+                return new TestEntity(
+                    values: $values,
+                    entityTypeId: 'node_type',
+                    entityKeys: ['id' => 'type', 'label' => 'name'],
+                );
+            }
+        };
+
+        $configManager = new EntityTypeManager(
+            new EventDispatcher(),
+            fn() => $configStorage,
+        );
+        $configManager->registerEntityType(new EntityType(
+            id: 'node_type',
+            label: 'Content Type',
+            class: TestEntity::class,
+            keys: ['id' => 'type', 'label' => 'name'],
+        ));
+
+        $configController = new JsonApiController(
+            $configManager,
+            new ResourceSerializer($configManager),
+        );
+
+        $data = [
+            'data' => [
+                'type' => 'node_type',
+                'attributes' => [
+                    'name' => 'Blog Post',
+                ],
+            ],
+        ];
+
+        $doc = $configController->store('node_type', $data);
+        $array = $doc->toArray();
+
+        $this->assertSame(201, $doc->statusCode);
+        $this->assertSame('Blog Post', $array['data']['attributes']['name']);
+        // Config entity ID is the machine name, serialized as top-level 'id'.
+        $this->assertSame('blog_post', $array['data']['id']);
+    }
+
+    #[Test]
+    public function storePreservesExplicitMachineNameForConfigEntity(): void
+    {
+        $configStorage = new class('node_type') extends InMemoryEntityStorage {
+            public function create(array $values = []): \Waaseyaa\Entity\EntityInterface
+            {
+                return new TestEntity(
+                    values: $values,
+                    entityTypeId: 'node_type',
+                    entityKeys: ['id' => 'type', 'label' => 'name'],
+                );
+            }
+        };
+
+        $configManager = new EntityTypeManager(
+            new EventDispatcher(),
+            fn() => $configStorage,
+        );
+        $configManager->registerEntityType(new EntityType(
+            id: 'node_type',
+            label: 'Content Type',
+            class: TestEntity::class,
+            keys: ['id' => 'type', 'label' => 'name'],
+        ));
+
+        $configController = new JsonApiController(
+            $configManager,
+            new ResourceSerializer($configManager),
+        );
+
+        $data = [
+            'data' => [
+                'type' => 'node_type',
+                'attributes' => [
+                    'name' => 'Blog Post',
+                    'type' => 'custom_blog',
+                ],
+            ],
+        ];
+
+        $doc = $configController->store('node_type', $data);
+        $array = $doc->toArray();
+
+        $this->assertSame(201, $doc->statusCode);
+        // Explicit machine name should be preserved, not overwritten.
+        $this->assertSame('custom_blog', $array['data']['id']);
+    }
+
     private function createMockAccount(): AccountInterface
     {
         return new class implements AccountInterface {

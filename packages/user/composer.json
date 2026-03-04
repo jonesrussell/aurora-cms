@@ -34,6 +34,11 @@
             "Waaseyaa\\User\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\User\\UserServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

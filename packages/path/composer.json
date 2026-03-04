@@ -27,6 +27,11 @@
             "Waaseyaa\\Path\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\Path\\PathServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

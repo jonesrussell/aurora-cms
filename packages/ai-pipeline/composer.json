@@ -29,6 +29,11 @@
             "Waaseyaa\\AI\\Pipeline\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\AI\\Pipeline\\AIPipelineServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

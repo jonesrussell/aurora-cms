@@ -29,6 +29,11 @@
             "Waaseyaa\\Taxonomy\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "waaseyaa": {
+            "providers": ["Waaseyaa\\Taxonomy\\TaxonomyServiceProvider"]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

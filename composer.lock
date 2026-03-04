@@ -2385,16 +2385,19 @@
         },
         {
             "name": "waaseyaa/access",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/access",
-                "reference": "23962889d3022324008b461b5839a7123b9a645d"
+                "reference": "6364121bf97e09ed560c3eaf1c6b69fabf77cf30"
             },
             "require": {
                 "php": ">=8.3",
+                "symfony/http-foundation": "^7.0",
                 "waaseyaa/entity": "@dev",
-                "waaseyaa/plugin": "@dev"
+                "waaseyaa/foundation": "@dev",
+                "waaseyaa/plugin": "@dev",
+                "waaseyaa/routing": "@dev"
             },
             "require-dev": {
                 "phpunit/phpunit": "^10.5"
@@ -2420,7 +2423,7 @@
         },
         {
             "name": "waaseyaa/ai-agent",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-agent",
@@ -2455,11 +2458,11 @@
         },
         {
             "name": "waaseyaa/ai-pipeline",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-pipeline",
-                "reference": "263bb907ee465a232e7fe0c1d0dd0f139d02c183"
+                "reference": "d4dd25f65189bf8526d690aadd905e717399ebf7"
             },
             "require": {
                 "php": ">=8.3",
@@ -2470,6 +2473,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\AI\\Pipeline\\AIPipelineServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\AI\\Pipeline\\": "src/"
@@ -2490,7 +2500,7 @@
         },
         {
             "name": "waaseyaa/ai-schema",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-schema",
@@ -2524,7 +2534,7 @@
         },
         {
             "name": "waaseyaa/ai-vector",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-vector",
@@ -2558,7 +2568,7 @@
         },
         {
             "name": "waaseyaa/api",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/api",
@@ -2595,7 +2605,7 @@
         },
         {
             "name": "waaseyaa/cache",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
@@ -2634,7 +2644,7 @@
         },
         {
             "name": "waaseyaa/cli",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/cli",
@@ -2673,7 +2683,7 @@
         },
         {
             "name": "waaseyaa/config",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/config",
@@ -2708,7 +2718,7 @@
         },
         {
             "name": "waaseyaa/database-legacy",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/database-legacy",
@@ -2741,7 +2751,7 @@
         },
         {
             "name": "waaseyaa/entity",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/entity",
@@ -2781,7 +2791,7 @@
         },
         {
             "name": "waaseyaa/entity-storage",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/entity-storage",
@@ -2819,7 +2829,7 @@
         },
         {
             "name": "waaseyaa/field",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/field",
@@ -2855,7 +2865,7 @@
         },
         {
             "name": "waaseyaa/foundation",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/foundation",
@@ -2895,7 +2905,7 @@
         },
         {
             "name": "waaseyaa/i18n",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/i18n",
@@ -2928,7 +2938,7 @@
         },
         {
             "name": "waaseyaa/mcp",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/mcp",
@@ -2965,11 +2975,11 @@
         },
         {
             "name": "waaseyaa/media",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/media",
-                "reference": "ad2c04fe297bb6e5489472d777ed9f2c9873e1a4"
+                "reference": "60ba5ac6c749e06f369b44b852c0b9159d3d4863"
             },
             "require": {
                 "php": ">=8.3",
@@ -2979,6 +2989,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Media\\MediaServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Media\\": "src/"
@@ -2999,11 +3016,11 @@
         },
         {
             "name": "waaseyaa/menu",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/menu",
-                "reference": "e98d462f2f049e531adf5f3171541c12fdfc4bb0"
+                "reference": "dc8667f8a4bc3894e4b55b1dac9142cfddea9c96"
             },
             "require": {
                 "php": ">=8.3",
@@ -3013,6 +3030,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Menu\\MenuServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Menu\\": "src/"
@@ -3033,11 +3057,11 @@
         },
         {
             "name": "waaseyaa/node",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/node",
-                "reference": "fdff4149e584502b7bcc849d63ddb7fde9ef19d6"
+                "reference": "ce55ab924f52ef62796a9b2cd7a33d4a4f9358d5"
             },
             "require": {
                 "php": ">=8.3",
@@ -3048,6 +3072,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Node\\NodeServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Node\\": "src/"
@@ -3068,11 +3099,11 @@
         },
         {
             "name": "waaseyaa/path",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/path",
-                "reference": "5716b8eb550e24919cfa8e7d94f67a91deeb8d32"
+                "reference": "2e8ee6f8352696ee9674ae1564913446e7293faf"
             },
             "require": {
                 "php": ">=8.3",
@@ -3082,6 +3113,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Path\\PathServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Path\\": "src/"
@@ -3102,7 +3140,7 @@
         },
         {
             "name": "waaseyaa/plugin",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/plugin",
@@ -3136,7 +3174,7 @@
         },
         {
             "name": "waaseyaa/queue",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
@@ -3170,7 +3208,7 @@
         },
         {
             "name": "waaseyaa/routing",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/routing",
@@ -3207,7 +3245,7 @@
         },
         {
             "name": "waaseyaa/ssr",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/ssr",
@@ -3243,7 +3281,7 @@
         },
         {
             "name": "waaseyaa/state",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/state",
@@ -3277,11 +3315,11 @@
         },
         {
             "name": "waaseyaa/taxonomy",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/taxonomy",
-                "reference": "d9eefd6e6e609b9b34d922a313260cc4b1195d16"
+                "reference": "8b9af6af93722d1e7ef594b448b0fe9539c2a5c4"
             },
             "require": {
                 "php": ">=8.3",
@@ -3292,6 +3330,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Taxonomy\\TaxonomyServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Taxonomy\\": "src/"
@@ -3312,7 +3357,7 @@
         },
         {
             "name": "waaseyaa/telescope",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/telescope",
@@ -3345,7 +3390,7 @@
         },
         {
             "name": "waaseyaa/typed-data",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/typed-data",
@@ -3379,21 +3424,30 @@
         },
         {
             "name": "waaseyaa/user",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/user",
-                "reference": "927eca4434b96ed5834114a4c793fb1cae035560"
+                "reference": "179489678486daae05566a138775d039a28ef612"
             },
             "require": {
                 "php": ">=8.3",
+                "symfony/http-foundation": "^7.0",
                 "waaseyaa/access": "@dev",
-                "waaseyaa/entity": "@dev"
+                "waaseyaa/entity": "@dev",
+                "waaseyaa/foundation": "@dev"
             },
             "require-dev": {
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\User\\UserServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\User\\": "src/"
@@ -3414,7 +3468,7 @@
         },
         {
             "name": "waaseyaa/validation",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
@@ -3450,11 +3504,11 @@
         },
         {
             "name": "waaseyaa/workflows",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/workflows",
-                "reference": "9d18d722e96069b78c5bd8d8cc691ab1380b07d6"
+                "reference": "5b8be26ca0d110b0cf0c49cb694cce137faf896e"
             },
             "require": {
                 "php": ">=8.3",
@@ -3464,6 +3518,13 @@
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
+            "extra": {
+                "waaseyaa": {
+                    "providers": [
+                        "Waaseyaa\\Workflows\\WorkflowServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Waaseyaa\\Workflows\\": "src/"
@@ -5208,7 +5269,7 @@
         },
         {
             "name": "waaseyaa/testing",
-            "version": "dev-feature/laravel-integration",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/testing",
