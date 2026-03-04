@@ -60,6 +60,10 @@ Deterministic ordering contract:
 - `start_date` ascending
 - stable tie-breaker by entity id
 
+Visibility normalization invariant:
+
+- Relationship/public discovery checks must use shared workflow/status normalization (`Waaseyaa\Workflows\WorkflowVisibility`) rather than per-surface custom logic, so `workflow_state` and fallback `status` semantics stay identical across SSR/search/MCP/relationship browse.
+
 ## Indexing Requirements
 
 Minimum indexes:

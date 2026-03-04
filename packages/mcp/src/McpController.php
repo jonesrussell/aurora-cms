@@ -18,6 +18,7 @@ use Waaseyaa\Relationship\RelationshipTraversalService;
 use Waaseyaa\Workflows\EditorialTransitionAccessResolver;
 use Waaseyaa\Workflows\EditorialWorkflowService;
 use Waaseyaa\Workflows\EditorialWorkflowStateMachine;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 final class McpController
 {
@@ -26,6 +27,7 @@ final class McpController
 
     private readonly EditorialWorkflowStateMachine $editorialStateMachine;
     private readonly EditorialTransitionAccessResolver $editorialTransitionResolver;
+    private readonly WorkflowVisibility $workflowVisibility;
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
@@ -38,6 +40,7 @@ final class McpController
     ) {
         $this->editorialStateMachine = new EditorialWorkflowStateMachine();
         $this->editorialTransitionResolver = new EditorialTransitionAccessResolver($this->editorialStateMachine);
+        $this->workflowVisibility = new WorkflowVisibility($this->editorialStateMachine);
     }
 
     /**
@@ -1012,26 +1015,7 @@ final class McpController
 
     private function isNodePublicForDiscovery(EntityInterface $entity): bool
     {
-        $values = $entity->toArray();
-        $workflowState = is_string($values['workflow_state'] ?? null)
-            ? strtolower(trim((string) $values['workflow_state']))
-            : '';
-        if ($workflowState !== '') {
-            return $workflowState === 'published';
-        }
-
-        $status = $values['status'] ?? 0;
-        if (is_bool($status)) {
-            return $status;
-        }
-        if (is_numeric($status)) {
-            return (int) $status === 1;
-        }
-        if (is_string($status)) {
-            return in_array(strtolower(trim($status)), ['1', 'true', 'published'], true);
-        }
-
-        return false;
+        return $this->workflowVisibility->isNodePublic($entity->toArray());
     }
 
     private function assertTraversalSourceVisible(string $entityType, string $entityId): void

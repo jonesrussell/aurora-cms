@@ -565,6 +565,10 @@ Deterministic baseline gate for semantic/discovery read paths:
 
 This gate is part of the v1.0 hardening verification substrate and is intended to detect both contract drift and severe read-path performance regressions.
 
+### Visibility Invariant
+
+AI search/indexing surfaces use `Waaseyaa\Workflows\WorkflowVisibility` as the canonical visibility primitive for node workflow-state gating (`published` public, non-published hidden), avoiding per-surface normalization drift.
+
 ## Tool Safety
 
 MCP tool execution has the following safety properties:

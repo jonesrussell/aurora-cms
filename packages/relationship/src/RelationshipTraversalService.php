@@ -6,12 +6,14 @@ namespace Waaseyaa\Relationship;
 
 use Waaseyaa\Database\PdoDatabase;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 final class RelationshipTraversalService
 {
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly PdoDatabase $database,
+        private readonly WorkflowVisibility $workflowVisibility = new WorkflowVisibility(),
     ) {}
 
     /**
@@ -346,40 +348,7 @@ final class RelationshipTraversalService
      */
     private function isEntityPublic(string $entityType, array $values): bool
     {
-        if ($entityType === 'node') {
-            return $this->normalizeWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0) === 'published';
-        }
-
-        if (!array_key_exists('status', $values)) {
-            return true;
-        }
-
-        return $this->normalizeStatusFlag($values['status']);
-    }
-
-    private function normalizeStatusFlag(mixed $status): bool
-    {
-        if (is_bool($status)) {
-            return $status;
-        }
-        if (is_int($status) || is_float($status)) {
-            return (int) $status === 1;
-        }
-        if (is_string($status)) {
-            $value = strtolower(trim($status));
-            return in_array($value, ['1', 'true', 'published', 'yes'], true);
-        }
-
-        return false;
-    }
-
-    private function normalizeWorkflowState(mixed $workflowState, mixed $status): string
-    {
-        if (is_string($workflowState) && trim($workflowState) !== '') {
-            return strtolower(trim($workflowState));
-        }
-
-        return $this->normalizeStatusFlag($status) ? 'published' : 'draft';
+        return $this->workflowVisibility->isEntityPublic($entityType, $values);
     }
 
     private function normalizeDirection(mixed $direction): string

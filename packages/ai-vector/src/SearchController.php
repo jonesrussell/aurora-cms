@@ -11,6 +11,7 @@ use Waaseyaa\Api\JsonApiError;
 use Waaseyaa\Api\ResourceSerializer;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 use Waaseyaa\Entity\Storage\EntityStorageInterface;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 final class SearchController
 {
@@ -28,6 +29,7 @@ final class SearchController
         private readonly ?EmbeddingProviderInterface $embeddingProvider = null,
         private readonly ?EntityAccessHandler $accessHandler = null,
         private readonly ?AccountInterface $account = null,
+        private readonly WorkflowVisibility $workflowVisibility = new WorkflowVisibility(),
     ) {}
 
     public function search(string $query, string $entityTypeId, int $limit = 10): JsonApiDocument
@@ -321,30 +323,6 @@ final class SearchController
             return true;
         }
 
-        $values = $entity->toArray();
-        $state = $this->normalizeWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0);
-
-        return $state === 'published';
-    }
-
-    private function normalizeWorkflowState(mixed $workflowState, mixed $status): string
-    {
-        if (is_string($workflowState) && trim($workflowState) !== '') {
-            return strtolower(trim($workflowState));
-        }
-        if (is_bool($status)) {
-            return $status ? 'published' : 'draft';
-        }
-        if (is_numeric($status)) {
-            return ((int) $status) === 1 ? 'published' : 'draft';
-        }
-        if (is_string($status)) {
-            $normalized = strtolower(trim($status));
-            if (in_array($normalized, ['1', 'true', 'published'], true)) {
-                return 'published';
-            }
-        }
-
-        return 'draft';
+        return $this->workflowVisibility->isNodePublic($entity->toArray());
     }
 }

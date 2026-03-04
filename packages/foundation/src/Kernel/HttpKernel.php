@@ -60,6 +60,7 @@ use Waaseyaa\User\Middleware\BearerAuthMiddleware;
 use Waaseyaa\User\DevAdminAccount;
 use Waaseyaa\User\Middleware\SessionMiddleware;
 use Waaseyaa\Workflows\EditorialVisibilityResolver;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 /**
  * HTTP front controller kernel.
@@ -1083,40 +1084,7 @@ final class HttpKernel extends AbstractKernel
      */
     private function isDiscoveryEntityPublic(string $entityType, array $values): bool
     {
-        if ($entityType === 'node') {
-            return $this->normalizeDiscoveryWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0) === 'published';
-        }
-
-        if (!array_key_exists('status', $values)) {
-            return true;
-        }
-
-        return $this->normalizeDiscoveryStatusFlag($values['status']);
-    }
-
-    private function normalizeDiscoveryStatusFlag(mixed $status): bool
-    {
-        if (is_bool($status)) {
-            return $status;
-        }
-        if (is_numeric($status)) {
-            return ((int) $status) === 1;
-        }
-        if (is_string($status)) {
-            $normalized = strtolower(trim($status));
-            return in_array($normalized, ['1', 'true', 'published', 'yes'], true);
-        }
-
-        return false;
-    }
-
-    private function normalizeDiscoveryWorkflowState(mixed $workflowState, mixed $status): string
-    {
-        if (is_string($workflowState) && trim($workflowState) !== '') {
-            return strtolower(trim($workflowState));
-        }
-
-        return $this->normalizeDiscoveryStatusFlag($status) ? 'published' : 'draft';
+        return (new WorkflowVisibility())->isEntityPublic($entityType, $values);
     }
 
     private function handleRenderPage(

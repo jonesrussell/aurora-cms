@@ -7,6 +7,7 @@ namespace Waaseyaa\AI\Vector;
 use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 final class SemanticIndexWarmer
 {
@@ -17,6 +18,7 @@ final class SemanticIndexWarmer
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EmbeddingStorageInterface $embeddingStorage,
         private readonly ?EmbeddingProviderInterface $embeddingProvider,
+        private readonly WorkflowVisibility $workflowVisibility = new WorkflowVisibility(),
     ) {}
 
     /**
@@ -142,31 +144,7 @@ final class SemanticIndexWarmer
             return true;
         }
 
-        $values = $entity->toArray();
-        $state = $this->normalizeWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0);
-
-        return $state === 'published';
-    }
-
-    private function normalizeWorkflowState(mixed $workflowState, mixed $status): string
-    {
-        if (is_string($workflowState) && trim($workflowState) !== '') {
-            return strtolower(trim($workflowState));
-        }
-        if (is_bool($status)) {
-            return $status ? 'published' : 'draft';
-        }
-        if (is_numeric($status)) {
-            return ((int) $status) === 1 ? 'published' : 'draft';
-        }
-        if (is_string($status)) {
-            $normalized = strtolower(trim($status));
-            if (in_array($normalized, ['1', 'true', 'published'], true)) {
-                return 'published';
-            }
-        }
-
-        return 'draft';
+        return $this->workflowVisibility->isNodePublic($entity->toArray());
     }
 
     /**

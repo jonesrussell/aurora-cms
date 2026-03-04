@@ -7,6 +7,7 @@ namespace Waaseyaa\AI\Vector;
 use Waaseyaa\Entity\Event\EntityEvent;
 use Waaseyaa\Queue\Message\GenericMessage;
 use Waaseyaa\Queue\QueueInterface;
+use Waaseyaa\Workflows\WorkflowVisibility;
 
 final class EntityEmbeddingListener
 {
@@ -14,6 +15,7 @@ final class EntityEmbeddingListener
         private readonly ?QueueInterface $queue = null,
         private readonly ?EmbeddingStorageInterface $storage = null,
         private readonly ?EmbeddingProviderInterface $embeddingProvider = null,
+        private readonly WorkflowVisibility $workflowVisibility = new WorkflowVisibility(),
     ) {}
 
     public function onPostSave(EntityEvent $event): void
@@ -67,10 +69,7 @@ final class EntityEmbeddingListener
             return true;
         }
 
-        $values = $event->entity->toArray();
-        $state = $this->normalizeWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0);
-
-        return $state === 'published';
+        return $this->workflowVisibility->isNodePublic($event->entity->toArray());
     }
 
     private function buildEmbeddingText(EntityEvent $event): string
@@ -105,24 +104,4 @@ final class EntityEmbeddingListener
         return implode("\n\n", $parts);
     }
 
-    private function normalizeWorkflowState(mixed $workflowState, mixed $status): string
-    {
-        if (is_string($workflowState) && trim($workflowState) !== '') {
-            return strtolower(trim($workflowState));
-        }
-        if (is_bool($status)) {
-            return $status ? 'published' : 'draft';
-        }
-        if (is_numeric($status)) {
-            return ((int) $status) === 1 ? 'published' : 'draft';
-        }
-        if (is_string($status)) {
-            $normalized = strtolower(trim($status));
-            if (in_array($normalized, ['1', 'true', 'published'], true)) {
-                return 'published';
-            }
-        }
-
-        return 'draft';
-    }
 }
