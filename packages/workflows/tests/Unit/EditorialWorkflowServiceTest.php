@@ -99,6 +99,26 @@ final class EditorialWorkflowServiceTest extends TestCase
         $service->transitionNode($node, 'published', $account);
     }
 
+    public function testTransitionThrowsForRoleDeniedEvenWithPermission(): void
+    {
+        $node = new TestFieldableNode([
+            'type' => 'article',
+            'workflow_state' => 'published',
+            'status' => 1,
+        ]);
+
+        $service = new EditorialWorkflowService(coreBundles: ['article']);
+        $account = new TestAccount(
+            id: 1,
+            permissions: ['archive article content'],
+            roles: ['reviewer'],
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Role not authorized for transition "archive"');
+        $service->transitionNode($node, 'archived', $account);
+    }
+
     public function testTransitionMetadataForCurrentStateIsDeterministic(): void
     {
         $node = new TestFieldableNode([

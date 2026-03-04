@@ -9,14 +9,19 @@ use Waaseyaa\Entity\FieldableInterface;
 
 final class EditorialWorkflowService
 {
+    private readonly EditorialTransitionAccessResolver $transitionAccessResolver;
+
     /**
      * @param list<string> $coreBundles
      */
     public function __construct(
         private readonly array $coreBundles,
         private readonly EditorialWorkflowStateMachine $stateMachine = new EditorialWorkflowStateMachine(),
+        ?EditorialTransitionAccessResolver $transitionAccessResolver = null,
         private readonly ?\Closure $clock = null,
-    ) {}
+    ) {
+        $this->transitionAccessResolver = $transitionAccessResolver ?? new EditorialTransitionAccessResolver($this->stateMachine);
+    }
 
     /**
      * @param FieldableInterface&\Waaseyaa\Entity\EntityInterface $node
@@ -37,20 +42,12 @@ final class EditorialWorkflowService
             return;
         }
 
-        $transition = $this->stateMachine->assertTransitionAllowed($from, $to);
-        $requiredPermission = $this->formatPermission($transition['permission'], $bundle);
-
-        if ($requiredPermission !== ''
-            && !$account->hasPermission('administer nodes')
-            && !$account->hasPermission($requiredPermission)) {
-            throw new \RuntimeException(sprintf(
-                'Permission denied for workflow transition %s -> %s on "%s". Required: "%s".',
-                $from,
-                $to,
-                $bundle,
-                $requiredPermission,
-            ));
+        $access = $this->transitionAccessResolver->canTransition($bundle, $from, $to, $account);
+        if ($access->isForbidden()) {
+            throw new \RuntimeException($access->reason);
         }
+        $transition = $this->transitionAccessResolver->transition($from, $to);
+        $requiredPermission = $this->transitionAccessResolver->requiredPermission($bundle, $from, $to);
 
         $node->set('workflow_state', $to);
         $node->set('status', $this->stateMachine->statusForState($to));
@@ -92,7 +89,7 @@ final class EditorialWorkflowService
                 'label' => $transition['label'],
                 'from' => $transition['from'],
                 'to' => $transition['to'],
-                'required_permission' => $this->formatPermission($transition['permission'], $bundle),
+                'required_permission' => $this->transitionAccessResolver->requiredPermission($bundle, $from, $transition['to']),
             ];
         }
 
@@ -110,11 +107,6 @@ final class EditorialWorkflowService
             workflowState: $node->get('workflow_state'),
             status: $node->get('status'),
         );
-    }
-
-    private function formatPermission(string $pattern, string $bundle): string
-    {
-        return str_replace('{bundle}', $bundle, $pattern);
     }
 
     private function timestamp(): int

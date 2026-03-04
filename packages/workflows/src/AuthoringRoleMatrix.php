@@ -33,6 +33,8 @@ final class AuthoringRoleMatrix
             $editorPermissions[] = "publish {$bundle} content";
             $editorPermissions[] = "return {$bundle} to draft";
             $editorPermissions[] = "revert {$bundle} to draft";
+            $editorPermissions[] = "archive {$bundle} content";
+            $editorPermissions[] = "restore {$bundle} content";
         }
         array_push($editorPermissions, 'create relationship content', 'edit any relationship content', 'delete any relationship content');
 
