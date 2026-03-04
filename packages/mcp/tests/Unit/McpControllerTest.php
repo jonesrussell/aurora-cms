@@ -8,10 +8,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Waaseyaa\Access\AccountInterface;
+use Waaseyaa\Access\AccessPolicyInterface;
+use Waaseyaa\Access\AccessResult;
 use Waaseyaa\Access\EntityAccessHandler;
 use Waaseyaa\AI\Vector\EmbeddingStorageInterface;
 use Waaseyaa\Api\ResourceSerializer;
+use Waaseyaa\Api\Tests\Fixtures\InMemoryEntityStorage;
 use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 use Waaseyaa\Mcp\McpController;
 
@@ -32,6 +36,10 @@ final class McpControllerTest extends TestCase
         $this->assertContains('traverse_relationships', $toolNames);
         $this->assertContains('get_related_entities', $toolNames);
         $this->assertContains('get_knowledge_graph', $toolNames);
+        $this->assertContains('editorial_transition', $toolNames);
+        $this->assertContains('editorial_validate', $toolNames);
+        $this->assertContains('editorial_publish', $toolNames);
+        $this->assertContains('editorial_archive', $toolNames);
     }
 
     #[Test]
@@ -46,7 +54,7 @@ final class McpControllerTest extends TestCase
 
         $this->assertSame('2.0', $response['jsonrpc']);
         $this->assertSame(1, $response['id']);
-        $this->assertCount(6, $response['result']['tools']);
+        $this->assertCount(10, $response['result']['tools']);
     }
 
     #[Test]
@@ -121,6 +129,133 @@ final class McpControllerTest extends TestCase
         $this->assertStringContainsString('requires non-empty "type" and "id"', $response['error']['message']);
     }
 
+    #[Test]
+    public function editorialPublishTransitionsNodeWhenAuthorized(): void
+    {
+        $controller = $this->createEditorialController(
+            permissions: ['edit any article content', 'publish article content'],
+            roles: ['reviewer'],
+            workflowState: 'review',
+            status: 0,
+        );
+
+        $response = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 19,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'editorial_publish',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]);
+
+        $payload = $this->decodeToolPayload($response);
+        $this->assertSame('published', $payload['data']['workflow_state']);
+        $this->assertSame(1, $payload['data']['status']);
+        $this->assertSame('publish', $payload['data']['workflow_last_transition']['id']);
+    }
+
+    #[Test]
+    public function editorialArchiveTransitionsNodeWhenAuthorized(): void
+    {
+        $controller = $this->createEditorialController(
+            permissions: ['edit any article content', 'archive article content'],
+            roles: ['editor'],
+            workflowState: 'published',
+            status: 1,
+        );
+
+        $response = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 20,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'editorial_archive',
+                'arguments' => ['type' => 'node', 'id' => 1],
+            ],
+        ]);
+
+        $payload = $this->decodeToolPayload($response);
+        $this->assertSame('archived', $payload['data']['workflow_state']);
+        $this->assertSame(0, $payload['data']['status']);
+        $this->assertSame('archive', $payload['data']['workflow_last_transition']['id']);
+    }
+
+    #[Test]
+    public function editorialTransitionReturnsExecutionErrorWhenUnauthorized(): void
+    {
+        $controller = $this->createEditorialController(
+            permissions: ['edit any article content'],
+            roles: ['contributor'],
+            workflowState: 'review',
+            status: 0,
+        );
+
+        $response = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 21,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'editorial_transition',
+                'arguments' => ['type' => 'node', 'id' => 1, 'to_state' => 'published'],
+            ],
+        ]);
+
+        $this->assertSame(-32000, $response['error']['code']);
+        $this->assertStringContainsString('publish article content', $response['error']['message']);
+    }
+
+    #[Test]
+    public function editorialValidateReturnsDeterministicViolationsWithoutMutatingState(): void
+    {
+        $controller = $this->createEditorialController(
+            permissions: ['edit any article content'],
+            roles: ['contributor'],
+            workflowState: 'review',
+            status: 0,
+        );
+
+        $response = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 22,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'editorial_validate',
+                'arguments' => ['type' => 'node', 'id' => 1, 'to_state' => 'published'],
+            ],
+        ]);
+
+        $payload = $this->decodeToolPayload($response);
+        $this->assertFalse($payload['data']['is_valid']);
+        $this->assertSame('review', $payload['data']['workflow_state']);
+        $this->assertSame('published', $payload['data']['requested_state']);
+        $this->assertNotEmpty($payload['data']['violations']);
+    }
+
+    #[Test]
+    public function editorialTransitionRequiresKnownTargetState(): void
+    {
+        $controller = $this->createEditorialController(
+            permissions: ['edit any article content', 'publish article content'],
+            roles: ['reviewer'],
+            workflowState: 'review',
+            status: 0,
+        );
+
+        $response = $controller->handleRpc([
+            'jsonrpc' => '2.0',
+            'id' => 23,
+            'method' => 'tools/call',
+            'params' => [
+                'name' => 'editorial_transition',
+                'arguments' => ['type' => 'node', 'id' => 1, 'to_state' => 'inbox'],
+            ],
+        ]);
+
+        $this->assertSame(-32602, $response['error']['code']);
+        $this->assertStringContainsString('Unknown editorial workflow state', $response['error']['message']);
+    }
+
     private function createController(): McpController
     {
         $manager = $this->createMock(EntityTypeManagerInterface::class);
@@ -139,12 +274,118 @@ final class McpControllerTest extends TestCase
             embeddingProvider: null,
         );
     }
+
+    /**
+     * @param list<string> $permissions
+     * @param list<string> $roles
+     */
+    private function createEditorialController(
+        array $permissions,
+        array $roles,
+        string $workflowState,
+        int $status,
+    ): McpController {
+        $nodeDefinition = new EntityType(
+            id: 'node',
+            label: 'Node',
+            class: \stdClass::class,
+            keys: ['id' => 'id', 'label' => 'title', 'bundle' => 'type'],
+            fieldDefinitions: [],
+        );
+
+        $nodeStorage = new InMemoryEntityStorage('node');
+        $entity = $nodeStorage->create([
+            'type' => 'article',
+            'title' => 'Editorial Node',
+            'status' => $status,
+            'workflow_state' => $workflowState,
+        ]);
+        $nodeStorage->save($entity);
+
+        $manager = $this->createMock(EntityTypeManagerInterface::class);
+        $manager->method('hasDefinition')->willReturnCallback(static fn(string $entityTypeId): bool => $entityTypeId === 'node');
+        $manager->method('getStorage')->willReturnCallback(static fn(string $entityTypeId) => $entityTypeId === 'node'
+            ? $nodeStorage
+            : throw new \RuntimeException('Unknown storage'));
+        $manager->method('getDefinition')->willReturnCallback(static fn(string $entityTypeId) => $entityTypeId === 'node'
+            ? $nodeDefinition
+            : throw new \RuntimeException('Unknown definition'));
+        $manager->method('getDefinitions')->willReturn(['node' => $nodeDefinition]);
+
+        $serializer = new ResourceSerializer($manager);
+        $embeddingStorage = $this->createMock(EmbeddingStorageInterface::class);
+        $account = new TestMcpAccount(
+            userId: 5,
+            permissions: $permissions,
+            roles: $roles,
+            authenticated: true,
+        );
+        $access = new EntityAccessHandler([new TestNodeUpdatePolicy()]);
+
+        return new McpController(
+            entityTypeManager: $manager,
+            serializer: $serializer,
+            accessHandler: $access,
+            account: $account,
+            embeddingStorage: $embeddingStorage,
+            embeddingProvider: null,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $response
+     * @return array<string, mixed>
+     */
+    private function decodeToolPayload(array $response): array
+    {
+        $this->assertArrayHasKey('result', $response);
+        $this->assertArrayHasKey('content', $response['result']);
+        $this->assertArrayHasKey(0, $response['result']['content']);
+        $this->assertArrayHasKey('text', $response['result']['content'][0]);
+
+        return json_decode((string) $response['result']['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
+    }
 }
 
 final class TestMcpAccount implements AccountInterface
 {
-    public function id(): int|string { return 0; }
-    public function hasPermission(string $permission): bool { return false; }
-    public function getRoles(): array { return ['anonymous']; }
-    public function isAuthenticated(): bool { return false; }
+    /**
+     * @param list<string> $permissions
+     * @param list<string> $roles
+     */
+    public function __construct(
+        private readonly int|string $userId = 0,
+        private readonly array $permissions = [],
+        private readonly array $roles = ['anonymous'],
+        private readonly bool $authenticated = false,
+    ) {}
+
+    public function id(): int|string { return $this->userId; }
+    public function hasPermission(string $permission): bool { return \in_array($permission, $this->permissions, true); }
+    public function getRoles(): array { return $this->roles; }
+    public function isAuthenticated(): bool { return $this->authenticated; }
+}
+
+final class TestNodeUpdatePolicy implements AccessPolicyInterface
+{
+    public function appliesTo(string $entityTypeId): bool
+    {
+        return $entityTypeId === 'node';
+    }
+
+    public function access(EntityInterface $entity, string $operation, AccountInterface $account): AccessResult
+    {
+        if ($operation === 'update') {
+            return $account->hasPermission('edit any article content')
+                ? AccessResult::allowed('Update access granted.')
+                : AccessResult::neutral('Update access denied.');
+        }
+
+        return AccessResult::allowed('Allowed for test operation.');
+    }
+
+    public function createAccess(string $entityTypeId, string $bundle, AccountInterface $account): AccessResult
+    {
+        return AccessResult::neutral('Not used.');
+    }
 }
