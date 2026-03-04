@@ -20,6 +20,7 @@ use Waaseyaa\CLI\Command\EntityCreateCommand;
 use Waaseyaa\CLI\Command\EntityListCommand;
 use Waaseyaa\CLI\Command\EntityTypeListCommand;
 use Waaseyaa\CLI\Command\EventListCommand;
+use Waaseyaa\CLI\Command\FixtureGenerateCommand;
 use Waaseyaa\CLI\Command\FixturePackRefreshCommand;
 use Waaseyaa\CLI\Command\FixtureScaffoldCommand;
 use Waaseyaa\CLI\Command\InstallCommand;
@@ -149,6 +150,7 @@ final class ConsoleKernel extends AbstractKernel
             new SemanticWarmCommand($semanticWarmer),
             new SemanticRefreshCommand($semanticWarmer),
             new FixtureScaffoldCommand(),
+            new FixtureGenerateCommand(),
             new FixturePackRefreshCommand(),
             new BundleScaffoldCommand(),
             new RelationshipTypeScaffoldCommand(),
