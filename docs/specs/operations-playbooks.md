@@ -87,6 +87,14 @@ Use this as the default runbook for upgrades, baseline refreshes, and verificati
    - `-32602`: invalid arguments or unknown tool/state/type.
    - `-32000`: runtime visibility/authorization/dependency failure.
 
+### Playbook E: Cross-Repo Extension Integration Harness (v1.3)
+
+1. Execute harness:
+   - `tools/integration/run-v1.3-cross-repo-harness.sh`
+2. Review artifact:
+   - `docs/plans/artifacts/v1.3-cross-repo-harness.md`
+3. Treat non-zero harness exit as a cross-repo regression gate failure.
+
 ## Onboarding Path (Contributor Quick Path)
 
 1. Read `CLAUDE.md` for architecture and gotchas.
