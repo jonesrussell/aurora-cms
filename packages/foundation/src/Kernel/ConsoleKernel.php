@@ -38,6 +38,8 @@ use Waaseyaa\CLI\Command\Optimize\OptimizeClearCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeConfigCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeManifestCommand;
+use Waaseyaa\CLI\Command\Perf\PerformanceBaselineCommand;
+use Waaseyaa\CLI\Command\Perf\PerformanceCompareCommand;
 use Waaseyaa\CLI\Command\PermissionListCommand;
 use Waaseyaa\CLI\Command\RelationshipTypeScaffoldCommand;
 use Waaseyaa\CLI\Command\RouteListCommand;
@@ -164,6 +166,8 @@ final class ConsoleKernel extends AbstractKernel
                 $this->projectRoot . '/storage/framework/config.php',
             )),
             new OptimizeClearCommand($this->projectRoot . '/storage'),
+            new PerformanceBaselineCommand(),
+            new PerformanceCompareCommand(),
             new TelescopeClearCommand(),
             new TelescopeListCommand(),
             new TelescopePruneCommand(),
