@@ -8,11 +8,13 @@
         {"type": "path", "url": "../cache"},
         {"type": "path", "url": "../plugin"},
         {"type": "path", "url": "../typed-data"},
-        {"type": "path", "url": "../config"}
+        {"type": "path", "url": "../config"},
+        {"type": "path", "url": "../queue"}
     ],
     "require": {
         "php": ">=8.3",
-        "waaseyaa/entity": "@dev"
+        "waaseyaa/entity": "@dev",
+        "waaseyaa/queue": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"
