@@ -375,4 +375,42 @@ final class HttpKernelTest extends TestCase
         $this->assertSame(['references', 'influences'], $types);
     }
 
+    #[Test]
+    public function discovery_cache_key_is_deterministic_for_equivalent_option_order(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheKey');
+        $method->setAccessible(true);
+
+        $keyA = $method->invoke($kernel, 'timeline', 'node', '1', [
+            'status' => 'published',
+            'direction' => 'both',
+            'from' => 100,
+            'to' => 200,
+            'relationship_types' => ['references', 'influences'],
+        ]);
+        $keyB = $method->invoke($kernel, 'timeline', 'node', '1', [
+            'relationship_types' => ['references', 'influences'],
+            'to' => 200,
+            'from' => 100,
+            'direction' => 'both',
+            'status' => 'published',
+        ]);
+
+        $this->assertSame($keyA, $keyB);
+    }
+
+    #[Test]
+    public function discovery_cache_key_changes_when_filter_values_change(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheKey');
+        $method->setAccessible(true);
+
+        $keyA = $method->invoke($kernel, 'hub', 'node', '1', ['status' => 'published', 'limit' => 10]);
+        $keyB = $method->invoke($kernel, 'hub', 'node', '1', ['status' => 'published', 'limit' => 20]);
+
+        $this->assertNotSame($keyA, $keyB);
+    }
+
 }

@@ -311,6 +311,32 @@ $query->condition('title', '%' . $escaped . '%', 'LIKE');
 
 All conditions are ANDed together. No OR support at this level.
 
+## Discovery Response Caching (v0.9)
+
+The HTTP kernel now maintains a dedicated `discovery` cache bin (database-backed, table `cache_discovery`) for anonymous public discovery API surfaces:
+
+- `/api/discovery/hub/{entity_type}/{id}`
+- `/api/discovery/cluster/{entity_type}/{id}`
+- `/api/discovery/timeline/{entity_type}/{id}`
+- `/api/discovery/endpoint/{entity_type}/{id}`
+
+Cache key contract:
+
+- Stable hash of `{surface, entity_type, entity_id, options}`.
+- `options` are recursively normalized with deterministic associative-key sorting.
+- Key dimensions include relationship filters, direction, temporal filters (`at/from/to`), pagination (`limit/offset`), and status mode.
+
+Runtime behavior:
+
+- Anonymous requests: cache read-through with `Cache-Control: public, max-age=120`.
+- Cache hit header: `X-Waaseyaa-Discovery-Cache: HIT`.
+- Cache miss header: `X-Waaseyaa-Discovery-Cache: MISS`.
+- Authenticated requests bypass persistence and return `Cache-Control: private, no-store`.
+
+Invalidation:
+
+- Discovery cache is cleared on `EntityEvents::POST_SAVE` and `EntityEvents::POST_DELETE` to preserve correctness under workflow state, relationship, and content changes.
+
 ### InsertInterface
 
 File: `packages/database-legacy/src/InsertInterface.php`

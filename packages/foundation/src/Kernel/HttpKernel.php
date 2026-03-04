@@ -21,6 +21,7 @@ use Waaseyaa\Api\OpenApi\OpenApiGenerator;
 use Waaseyaa\Api\ResourceSerializer;
 use Waaseyaa\Api\Schema\SchemaPresenter;
 use Waaseyaa\Cache\Backend\DatabaseBackend;
+use Waaseyaa\Cache\CacheBackendInterface;
 use Waaseyaa\Cache\CacheFactory;
 use Waaseyaa\Cache\CacheConfiguration;
 use Waaseyaa\Entity\EntityInterface;
@@ -69,6 +70,7 @@ use Waaseyaa\Workflows\EditorialVisibilityResolver;
 final class HttpKernel extends AbstractKernel
 {
     private ?RenderCache $renderCache = null;
+    private ?CacheBackendInterface $discoveryCache = null;
 
     public function handle(): never
     {
@@ -91,8 +93,14 @@ final class HttpKernel extends AbstractKernel
             $this->database->getPdo(),
             'cache_render',
         ));
+        $cacheConfig->setFactoryForBin('discovery', fn(): DatabaseBackend => new DatabaseBackend(
+            $this->database->getPdo(),
+            'cache_discovery',
+        ));
         $this->renderCache = new RenderCache((new CacheFactory($cacheConfig))->get('render'));
+        $this->discoveryCache = (new CacheFactory($cacheConfig))->get('discovery');
         $this->registerRenderCacheListeners($this->renderCache);
+        $this->registerDiscoveryCacheListeners($this->discoveryCache);
         $this->registerEmbeddingLifecycleListeners(new SqliteEmbeddingStorage($this->database->getPdo()));
 
         // Router setup.
@@ -569,7 +577,7 @@ final class HttpKernel extends AbstractKernel
                     $this->sendJson($document->statusCode, $document->toArray());
                 })(),
 
-                $controller === 'discovery.topic_hub' => (function () use ($params, $query): never {
+                $controller === 'discovery.topic_hub' => (function () use ($params, $query, $account): never {
                     $entityType = is_string($params['entity_type'] ?? null) ? trim((string) $params['entity_type']) : '';
                     $entityId = $params['id'] ?? null;
                     if ($entityType === '' || !is_scalar($entityId) || trim((string) $entityId) === '') {
@@ -584,21 +592,30 @@ final class HttpKernel extends AbstractKernel
                     }
 
                     $relationshipTypes = $this->parseRelationshipTypesQuery($query['relationship_types'] ?? null);
-                    $service = new RelationshipDiscoveryService(
-                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
-                    );
-                    $payload = $service->topicHub($entityType, (string) $entityId, [
+                    $resolvedOptions = [
                         'relationship_types' => $relationshipTypes,
                         'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
                         'at' => $query['at'] ?? null,
                         'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
                         'offset' => is_numeric($query['offset'] ?? null) ? (int) $query['offset'] : null,
-                    ]);
+                    ];
+                    $cacheKey = $this->buildDiscoveryCacheKey('hub', $entityType, (string) $entityId, $resolvedOptions);
+                    $cached = $this->getDiscoveryCachedResponse($cacheKey, $account);
+                    if ($cached !== null) {
+                        $this->sendJson(200, $cached, [
+                            'Cache-Control' => 'public, max-age=120',
+                            'X-Waaseyaa-Discovery-Cache' => 'HIT',
+                        ]);
+                    }
+                    $service = new RelationshipDiscoveryService(
+                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
+                    );
+                    $payload = $service->topicHub($entityType, (string) $entityId, $resolvedOptions);
 
-                    $this->sendJson(200, ['data' => $payload]);
+                    $this->sendDiscoveryJson(200, ['data' => $payload], $cacheKey, $account);
                 })(),
 
-                $controller === 'discovery.cluster' => (function () use ($params, $query): never {
+                $controller === 'discovery.cluster' => (function () use ($params, $query, $account): never {
                     $entityType = is_string($params['entity_type'] ?? null) ? trim((string) $params['entity_type']) : '';
                     $entityId = $params['id'] ?? null;
                     if ($entityType === '' || !is_scalar($entityId) || trim((string) $entityId) === '') {
@@ -613,21 +630,30 @@ final class HttpKernel extends AbstractKernel
                     }
 
                     $relationshipTypes = $this->parseRelationshipTypesQuery($query['relationship_types'] ?? null);
-                    $service = new RelationshipDiscoveryService(
-                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
-                    );
-                    $payload = $service->clusterPage($entityType, (string) $entityId, [
+                    $resolvedOptions = [
                         'relationship_types' => $relationshipTypes,
                         'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
                         'at' => $query['at'] ?? null,
                         'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
                         'offset' => is_numeric($query['offset'] ?? null) ? (int) $query['offset'] : null,
-                    ]);
+                    ];
+                    $cacheKey = $this->buildDiscoveryCacheKey('cluster', $entityType, (string) $entityId, $resolvedOptions);
+                    $cached = $this->getDiscoveryCachedResponse($cacheKey, $account);
+                    if ($cached !== null) {
+                        $this->sendJson(200, $cached, [
+                            'Cache-Control' => 'public, max-age=120',
+                            'X-Waaseyaa-Discovery-Cache' => 'HIT',
+                        ]);
+                    }
+                    $service = new RelationshipDiscoveryService(
+                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
+                    );
+                    $payload = $service->clusterPage($entityType, (string) $entityId, $resolvedOptions);
 
-                    $this->sendJson(200, ['data' => $payload]);
+                    $this->sendDiscoveryJson(200, ['data' => $payload], $cacheKey, $account);
                 })(),
 
-                $controller === 'discovery.timeline' => (function () use ($params, $query): never {
+                $controller === 'discovery.timeline' => (function () use ($params, $query, $account): never {
                     $entityType = is_string($params['entity_type'] ?? null) ? trim((string) $params['entity_type']) : '';
                     $entityId = $params['id'] ?? null;
                     if ($entityType === '' || !is_scalar($entityId) || trim((string) $entityId) === '') {
@@ -642,10 +668,7 @@ final class HttpKernel extends AbstractKernel
                     }
 
                     $relationshipTypes = $this->parseRelationshipTypesQuery($query['relationship_types'] ?? null);
-                    $service = new RelationshipDiscoveryService(
-                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
-                    );
-                    $payload = $service->timeline($entityType, (string) $entityId, [
+                    $resolvedOptions = [
                         'direction' => is_string($query['direction'] ?? null) ? trim((string) $query['direction']) : 'both',
                         'relationship_types' => $relationshipTypes,
                         'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
@@ -654,12 +677,24 @@ final class HttpKernel extends AbstractKernel
                         'to' => $query['to'] ?? null,
                         'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
                         'offset' => is_numeric($query['offset'] ?? null) ? (int) $query['offset'] : null,
-                    ]);
+                    ];
+                    $cacheKey = $this->buildDiscoveryCacheKey('timeline', $entityType, (string) $entityId, $resolvedOptions);
+                    $cached = $this->getDiscoveryCachedResponse($cacheKey, $account);
+                    if ($cached !== null) {
+                        $this->sendJson(200, $cached, [
+                            'Cache-Control' => 'public, max-age=120',
+                            'X-Waaseyaa-Discovery-Cache' => 'HIT',
+                        ]);
+                    }
+                    $service = new RelationshipDiscoveryService(
+                        new RelationshipTraversalService($this->entityTypeManager, $this->database),
+                    );
+                    $payload = $service->timeline($entityType, (string) $entityId, $resolvedOptions);
 
-                    $this->sendJson(200, ['data' => $payload]);
+                    $this->sendDiscoveryJson(200, ['data' => $payload], $cacheKey, $account);
                 })(),
 
-                $controller === 'discovery.endpoint' => (function () use ($params, $query): never {
+                $controller === 'discovery.endpoint' => (function () use ($params, $query, $account): never {
                     $entityType = is_string($params['entity_type'] ?? null) ? trim((string) $params['entity_type']) : '';
                     $entityId = $params['id'] ?? null;
                     if ($entityType === '' || !is_scalar($entityId) || trim((string) $entityId) === '') {
@@ -687,18 +722,27 @@ final class HttpKernel extends AbstractKernel
                     }
 
                     $relationshipTypes = $this->parseRelationshipTypesQuery($query['relationship_types'] ?? null);
+                    $resolvedOptions = [
+                        'relationship_types' => $relationshipTypes,
+                        'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
+                        'at' => $query['at'] ?? null,
+                        'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
+                    ];
+                    $cacheKey = $this->buildDiscoveryCacheKey('endpoint', $entityType, $resolvedId, $resolvedOptions);
+                    $cached = $this->getDiscoveryCachedResponse($cacheKey, $account);
+                    if ($cached !== null) {
+                        $this->sendJson(200, $cached, [
+                            'Cache-Control' => 'public, max-age=120',
+                            'X-Waaseyaa-Discovery-Cache' => 'HIT',
+                        ]);
+                    }
                     $service = new RelationshipDiscoveryService(
                         new RelationshipTraversalService($this->entityTypeManager, $this->database),
                     );
 
                     if ($entityType !== 'relationship') {
-                        $payload = $service->endpointPage($entityType, $resolvedId, [
-                            'relationship_types' => $relationshipTypes,
-                            'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
-                            'at' => $query['at'] ?? null,
-                            'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
-                        ]);
-                        $this->sendJson(200, ['data' => $payload]);
+                        $payload = $service->endpointPage($entityType, $resolvedId, $resolvedOptions);
+                        $this->sendDiscoveryJson(200, ['data' => $payload], $cacheKey, $account);
                     }
 
                     $values = $resolvedEntity->toArray();
@@ -724,12 +768,12 @@ final class HttpKernel extends AbstractKernel
                     }
 
                     $payload = $service->relationshipEntityPage($values, [
-                        'relationship_types' => $relationshipTypes,
-                        'status' => is_string($query['status'] ?? null) ? trim((string) $query['status']) : 'published',
-                        'at' => $query['at'] ?? null,
-                        'limit' => is_numeric($query['limit'] ?? null) ? (int) $query['limit'] : null,
+                        'relationship_types' => $resolvedOptions['relationship_types'],
+                        'status' => $resolvedOptions['status'],
+                        'at' => $resolvedOptions['at'],
+                        'limit' => $resolvedOptions['limit'],
                     ]);
-                    $this->sendJson(200, ['data' => $payload]);
+                    $this->sendDiscoveryJson(200, ['data' => $payload], $cacheKey, $account);
                 })(),
 
                 $controller === 'mcp.endpoint' => (function () use ($method, $httpRequest, $account, $serializer): never {
@@ -855,6 +899,76 @@ final class HttpKernel extends AbstractKernel
         }
 
         return [];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function buildDiscoveryCacheKey(string $surface, string $entityType, string $entityId, array $options): string
+    {
+        $serialized = json_encode([
+            'surface' => $surface,
+            'entity_type' => $entityType,
+            'entity_id' => $entityId,
+            'options' => $this->normalizeForCacheKey($options),
+        ], JSON_THROW_ON_ERROR);
+
+        return 'discovery:' . sha1((string) $serialized);
+    }
+
+    private function normalizeForCacheKey(mixed $value): mixed
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        if (array_is_list($value)) {
+            return array_map(fn(mixed $item): mixed => $this->normalizeForCacheKey($item), $value);
+        }
+
+        ksort($value);
+        $normalized = [];
+        foreach ($value as $key => $item) {
+            $normalized[$key] = $this->normalizeForCacheKey($item);
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function getDiscoveryCachedResponse(string $cacheKey, AccountInterface $account): ?array
+    {
+        if ($account->isAuthenticated() || $this->discoveryCache === null) {
+            return null;
+        }
+
+        $item = $this->discoveryCache->get($cacheKey);
+        if ($item === false || !is_array($item->data)) {
+            return null;
+        }
+
+        return $item->data;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    private function sendDiscoveryJson(int $status, array $payload, string $cacheKey, AccountInterface $account): never
+    {
+        $headers = [];
+        if ($account->isAuthenticated()) {
+            $headers['Cache-Control'] = 'private, no-store';
+        } else {
+            $headers['Cache-Control'] = 'public, max-age=120';
+            if ($this->discoveryCache !== null) {
+                $this->discoveryCache->set($cacheKey, $payload, time() + 120);
+                $headers['X-Waaseyaa-Discovery-Cache'] = 'MISS';
+            }
+        }
+
+        $this->sendJson($status, $payload, $headers);
     }
 
     private function isDiscoveryEndpointPairPublic(string $fromType, string $fromId, string $toType, string $toId): bool
@@ -1312,6 +1426,24 @@ final class HttpKernel extends AbstractKernel
         $this->dispatcher->addListener(EntityEvents::POST_DELETE->value, $invalidate);
     }
 
+    private function registerDiscoveryCacheListeners(CacheBackendInterface $cache): void
+    {
+        $invalidate = static function () use ($cache): void {
+            try {
+                $cache->deleteAll();
+            } catch (\Throwable $e) {
+                error_log(sprintf('[Waaseyaa] Failed to clear discovery cache: %s', $e->getMessage()));
+            }
+        };
+
+        $this->dispatcher->addListener(EntityEvents::POST_SAVE->value, static function (EntityEvent $event) use ($invalidate): void {
+            $invalidate();
+        });
+        $this->dispatcher->addListener(EntityEvents::POST_DELETE->value, static function (EntityEvent $event) use ($invalidate): void {
+            $invalidate();
+        });
+    }
+
     private function registerEmbeddingLifecycleListeners(SqliteEmbeddingStorage $embeddingStorage): void
     {
         $embeddingProvider = EmbeddingProviderFactory::fromConfig($this->config);
@@ -1618,10 +1750,19 @@ final class HttpKernel extends AbstractKernel
         return '/files/' . ltrim($path, '/');
     }
 
-    private function sendJson(int $status, array $data): never
+    /**
+     * @param array<string, string> $headers
+     */
+    private function sendJson(int $status, array $data, array $headers = []): never
     {
         http_response_code($status);
         header('Content-Type: application/vnd.api+json');
+        foreach ($headers as $name => $value) {
+            if (strtolower($name) === 'content-type') {
+                continue;
+            }
+            header($name . ': ' . $value);
+        }
         try {
             echo json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
