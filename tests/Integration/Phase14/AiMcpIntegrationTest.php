@@ -27,6 +27,7 @@ use Waaseyaa\EntityStorage\SqlEntityStorage;
 use Waaseyaa\EntityStorage\SqlSchemaHandler;
 use Waaseyaa\Mcp\McpController;
 use Waaseyaa\Queue\InMemoryQueue;
+use Waaseyaa\Tests\Support\WorkflowFixturePack;
 
 #[CoversNothing]
 final class AiMcpIntegrationTest extends TestCase
@@ -78,20 +79,11 @@ final class AiMcpIntegrationTest extends TestCase
     public function fullAiToMcpFlowWorksWithFallbackAndAccessControl(): void
     {
         $storage = $this->entityTypeManager->getStorage('node');
-        $nodeA = $storage->create([
-            'title' => 'teaching A',
-            'body' => 'water wisdom',
-            'type' => 'teaching',
-            'status' => 1,
-        ]);
+        $fixtures = WorkflowFixturePack::aiMcpNodes();
+        $nodeA = $storage->create($fixtures['teaching_published']);
         $storage->save($nodeA);
 
-        $nodeB = $storage->create([
-            'title' => 'teaching B',
-            'body' => 'fire wisdom',
-            'type' => 'teaching',
-            'status' => 0,
-        ]);
+        $nodeB = $storage->create($fixtures['teaching_draft']);
         $storage->save($nodeB);
 
         // 1) Entity save -> listener dispatches embedding job.

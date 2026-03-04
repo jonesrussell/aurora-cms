@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
 use Waaseyaa\Foundation\Kernel\HttpKernel;
+use Waaseyaa\Tests\Support\WorkflowFixturePack;
 
 #[CoversNothing]
 final class SsrHttpKernelIntegrationTest extends TestCase
@@ -185,90 +186,16 @@ TWIG,
         $kernel = $this->bootKernel();
 
         $nodeStorage = $kernel->getEntityTypeManager()->getStorage('node');
-        $node = $nodeStorage->create([
-            'title' => 'Water Is Life',
-            'type' => 'article',
-            'uid' => 7,
-            'created' => 1735689600,
-            'changed' => 1735689600,
-            'status' => 1,
-            'workflow_state' => 'published',
-        ]);
-        $nodeStorage->save($node);
-
-        $draftNode = $nodeStorage->create([
-            'title' => 'Draft Node',
-            'type' => 'article',
-            'uid' => 7,
-            'created' => 1735689600,
-            'changed' => 1735689600,
-            'status' => 0,
-            'workflow_state' => 'draft',
-        ]);
-        $nodeStorage->save($draftNode);
-
-        $reviewNode = $nodeStorage->create([
-            'title' => 'Review Node',
-            'type' => 'article',
-            'uid' => 7,
-            'created' => 1735689600,
-            'changed' => 1735689600,
-            'status' => 0,
-            'workflow_state' => 'review',
-        ]);
-        $nodeStorage->save($reviewNode);
-
-        $archivedNode = $nodeStorage->create([
-            'title' => 'Archived Node',
-            'type' => 'article',
-            'uid' => 7,
-            'created' => 1735689600,
-            'changed' => 1735689600,
-            'status' => 0,
-            'workflow_state' => 'archived',
-        ]);
-        $nodeStorage->save($archivedNode);
+        foreach (WorkflowFixturePack::editorialNodesForSsr() as $fixture) {
+            $node = $nodeStorage->create($fixture);
+            $nodeStorage->save($node);
+        }
 
         $pathAliasStorage = $kernel->getEntityTypeManager()->getStorage('path_alias');
-        $directPath = $pathAliasStorage->create([
-            'alias' => '/node/1',
-            'path' => '/node/1',
-            'langcode' => 'en',
-            'status' => 1,
-        ]);
-        $pathAliasStorage->save($directPath);
-
-        $teachingAlias = $pathAliasStorage->create([
-            'alias' => '/teaching/water-is-life',
-            'path' => '/node/1',
-            'langcode' => 'en',
-            'status' => 1,
-        ]);
-        $pathAliasStorage->save($teachingAlias);
-
-        $draftAlias = $pathAliasStorage->create([
-            'alias' => '/node/2',
-            'path' => '/node/2',
-            'langcode' => 'en',
-            'status' => 1,
-        ]);
-        $pathAliasStorage->save($draftAlias);
-
-        $reviewAlias = $pathAliasStorage->create([
-            'alias' => '/node/3',
-            'path' => '/node/3',
-            'langcode' => 'en',
-            'status' => 1,
-        ]);
-        $pathAliasStorage->save($reviewAlias);
-
-        $archivedAlias = $pathAliasStorage->create([
-            'alias' => '/node/4',
-            'path' => '/node/4',
-            'langcode' => 'en',
-            'status' => 1,
-        ]);
-        $pathAliasStorage->save($archivedAlias);
+        foreach (WorkflowFixturePack::pathAliasesForSsr() as $aliasFixture) {
+            $alias = $pathAliasStorage->create($aliasFixture);
+            $pathAliasStorage->save($alias);
+        }
     }
 
     /**
