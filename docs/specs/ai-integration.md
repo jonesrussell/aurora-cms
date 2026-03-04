@@ -259,6 +259,31 @@ public function listTools(): array;                         // {tools: [...]}
 public function callTool(string $name, array $arguments): array; // MCP result
 ```
 
+## Hybrid Search Ranking Contract
+
+The AI vector search surface is implemented by `Waaseyaa\AI\Vector\SearchController` (`packages/ai-vector/src/SearchController.php`).
+
+When an embedding provider is available, search runs in semantic mode and may apply relationship-context reranking:
+
+- Base semantic score from embedding similarity.
+- Graph context boost from published relationship adjacency.
+- Deterministic tie-break by original semantic order.
+
+When graph reranking changes order, JSON:API response meta includes:
+
+- `ranking: semantic+graph_context`
+- `ranking_weights`:
+  - `semantic` (default `1.0`)
+  - `graph_context` (default `0.001`)
+- `graph_context_counts`: per-result relationship degree used in rerank
+- `score_breakdown`: per-result deterministic explainability payload:
+  - `semantic`
+  - `graph_context`
+  - `combined`
+  - `base_rank`
+
+Workflow visibility remains enforced at search output: node entities are only returned when resolved workflow state is `published`.
+
 ## Pipeline System
 
 ### Pipeline (Config Entity)

@@ -285,7 +285,15 @@ final class SearchControllerTest extends TestCase
         $this->assertSame('2', $array['data'][0]['id']);
         $this->assertSame('1', $array['data'][1]['id']);
         $this->assertSame('semantic+graph_context', $array['meta']['ranking']);
+        $this->assertSame(1.0, $array['meta']['ranking_weights']['semantic']);
+        $this->assertSame(0.001, $array['meta']['ranking_weights']['graph_context']);
+        $this->assertSame(1, $array['meta']['graph_context_counts']['2']);
+        $this->assertSame(0, $array['meta']['graph_context_counts']['1']);
+        $this->assertSame(0.4995, $array['meta']['score_breakdown']['2']['semantic']);
+        $this->assertSame(0.001, $array['meta']['score_breakdown']['2']['graph_context']);
+        $this->assertSame(0.5005, $array['meta']['score_breakdown']['2']['combined']);
     }
+
 }
 
 final readonly class SearchEntity implements EntityInterface

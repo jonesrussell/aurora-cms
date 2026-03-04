@@ -14,6 +14,9 @@ use Waaseyaa\Entity\Storage\EntityStorageInterface;
 
 final class SearchController
 {
+    private const float DEFAULT_SEMANTIC_WEIGHT = 1.0;
+    private const float DEFAULT_GRAPH_WEIGHT = 0.001;
+
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly ResourceSerializer $serializer,
@@ -59,10 +62,14 @@ final class SearchController
         }
 
         $graphRerankApplied = false;
+        $hybridScores = [];
+        $graphContextCounts = [];
         if ($mode === 'semantic' && $ids !== []) {
             $graphRerank = $this->rerankWithRelationshipContext($entityTypeId, $ids, $semanticScores);
             $ids = $graphRerank['ids'];
             $graphRerankApplied = $graphRerank['applied'];
+            $hybridScores = $graphRerank['scores'];
+            $graphContextCounts = $graphRerank['graph_context_counts'];
         }
 
         $entities = $ids !== [] ? $storage->loadMultiple($ids) : [];
@@ -100,6 +107,12 @@ final class SearchController
         }
         if ($graphRerankApplied) {
             $meta['ranking'] = 'semantic+graph_context';
+            $meta['ranking_weights'] = [
+                'semantic' => self::DEFAULT_SEMANTIC_WEIGHT,
+                'graph_context' => self::DEFAULT_GRAPH_WEIGHT,
+            ];
+            $meta['score_breakdown'] = $hybridScores;
+            $meta['graph_context_counts'] = $graphContextCounts;
         }
 
         return JsonApiDocument::fromCollection($resources, meta: $meta);
@@ -108,12 +121,27 @@ final class SearchController
     /**
      * @param array<int|string> $ids
      * @param array<string, float> $semanticScores
-     * @return array{ids: array<int|string>, applied: bool}
+     * @return array{
+     *   ids: array<int|string>,
+     *   applied: bool,
+     *   scores: array<string, array{
+     *     semantic: float,
+     *     graph_context: float,
+     *     combined: float,
+     *     base_rank: int
+     *   }>,
+     *   graph_context_counts: array<string, int>
+     * }
      */
     private function rerankWithRelationshipContext(string $entityTypeId, array $ids, array $semanticScores): array
     {
         if (!$this->entityTypeManager->hasDefinition('relationship')) {
-            return ['ids' => $ids, 'applied' => false];
+            return [
+                'ids' => $ids,
+                'applied' => false,
+                'scores' => [],
+                'graph_context_counts' => [],
+            ];
         }
 
         $baseOrder = [];
@@ -126,12 +154,22 @@ final class SearchController
             $relationshipStorage = $this->entityTypeManager->getStorage('relationship');
             $relationshipIds = $relationshipStorage->getQuery()->accessCheck(false)->execute();
             if ($relationshipIds === []) {
-                return ['ids' => $ids, 'applied' => false];
+                return [
+                    'ids' => $ids,
+                    'applied' => false,
+                    'scores' => [],
+                    'graph_context_counts' => [],
+                ];
             }
 
             $relationshipEntities = $relationshipStorage->loadMultiple($relationshipIds);
         } catch (\Throwable) {
-            return ['ids' => $ids, 'applied' => false];
+            return [
+                'ids' => $ids,
+                'applied' => false,
+                'scores' => [],
+                'graph_context_counts' => [],
+            ];
         }
 
         $relationshipScores = [];
@@ -159,10 +197,18 @@ final class SearchController
         }
 
         $combinedScores = [];
+        $scoreBreakdown = [];
         foreach ($ids as $id) {
             $key = (string) $id;
             $semantic = $semanticScores[$key] ?? (1.0 - (($baseOrder[$key] ?? 0) * 0.0001));
-            $combinedScores[$key] = $semantic + (($relationshipScores[$key] ?? 0) * 0.001);
+            $graphContext = ($relationshipScores[$key] ?? 0) * self::DEFAULT_GRAPH_WEIGHT;
+            $combinedScores[$key] = ($semantic * self::DEFAULT_SEMANTIC_WEIGHT) + $graphContext;
+            $scoreBreakdown[$key] = [
+                'semantic' => round($semantic, 6),
+                'graph_context' => round($graphContext, 6),
+                'combined' => round($combinedScores[$key], 6),
+                'base_rank' => (int) ($baseOrder[$key] ?? PHP_INT_MAX),
+            ];
         }
 
         $reranked = $ids;
@@ -178,10 +224,20 @@ final class SearchController
         });
 
         if ($reranked === $ids) {
-            return ['ids' => $ids, 'applied' => false];
+            return [
+                'ids' => $ids,
+                'applied' => false,
+                'scores' => [],
+                'graph_context_counts' => [],
+            ];
         }
 
-        return ['ids' => $reranked, 'applied' => true];
+        return [
+            'ids' => $reranked,
+            'applied' => true,
+            'scores' => $scoreBreakdown,
+            'graph_context_counts' => $relationshipScores,
+        ];
     }
 
     /**
