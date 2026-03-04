@@ -375,6 +375,141 @@ final class PackageManifestCompilerTest extends TestCase
         $this->assertSame(['node'], $manifest->policies['Waaseyaa\\TestFixtures\\NodePolicy'] ?? null);
     }
 
+    // --- Issue #21: PSR-4 fallback edge cases ---
+
+    #[Test]
+    public function classmap_with_only_third_party_entries_triggers_psr4_fallback(): void
+    {
+        // Classmap exists but contains no Waaseyaa\ classes — should fall back to PSR-4.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [\'Symfony\\\\Component\\\\Console\\\\Application\' => \'/path/to/Application.php\'];',
+        );
+
+        // PSR-4 map with no Waaseyaa namespaces — fallback returns empty.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php return [];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $compiler = new PackageManifestCompiler($this->tempDir, $this->tempDir . '/storage');
+        $manifest = $compiler->compile();
+
+        // No Waaseyaa classes found — empty manifest is the correct result.
+        $this->assertSame([], $manifest->policies);
+        $this->assertSame([], $manifest->middleware);
+    }
+
+    #[Test]
+    public function psr4_fallback_excludes_test_namespaces(): void
+    {
+        $srcDir = $this->tempDir . '/src';
+        mkdir($srcDir, 0o755, true);
+
+        // Empty classmap triggers PSR-4 fallback.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [];',
+        );
+
+        // PSR-4 map includes both a real namespace and a Tests\ namespace pointing to
+        // the same source directory. The Tests\ entry should be skipped.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php return ['
+            . "'Waaseyaa\\\\Entity\\\\Tests\\\\' => ['" . $srcDir . "'], "
+            . "'Symfony\\\\Component\\\\' => ['/non-waaseyaa/src']"
+            . '];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $compiler = new PackageManifestCompiler($this->tempDir, $this->tempDir . '/storage');
+        $manifest = $compiler->compile();
+
+        // No classes should be scanned from the Tests\ namespace.
+        $this->assertSame([], $manifest->policies);
+    }
+
+    #[Test]
+    public function compile_handles_missing_classmap_and_psr4(): void
+    {
+        // No autoload_classmap.php and no autoload_psr4.php in vendor/composer/ —
+        // scanClasses() should return [] gracefully.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $compiler = new PackageManifestCompiler($this->tempDir, $this->tempDir . '/storage');
+        $manifest = $compiler->compile();
+
+        $this->assertSame([], $manifest->policies);
+        $this->assertSame([], $manifest->middleware);
+    }
+
+    #[Test]
+    public function psr4_fallback_handles_corrupt_psr4_map(): void
+    {
+        // Empty classmap triggers PSR-4 fallback.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [];',
+        );
+
+        // Corrupt PSR-4 map — scanPsr4Classes() must catch the error and return [].
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php throw new \RuntimeException("corrupt psr4");',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $compiler = new PackageManifestCompiler($this->tempDir, $this->tempDir . '/storage');
+        $manifest = $compiler->compile();
+
+        // Corrupt map is silently ignored — empty manifest.
+        $this->assertSame([], $manifest->policies);
+    }
+
+    #[Test]
+    public function psr4_fallback_skips_nonexistent_directories(): void
+    {
+        // Empty classmap triggers PSR-4 fallback.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_classmap.php',
+            '<?php return [];',
+        );
+
+        // PSR-4 map points to a directory that does not exist on disk.
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/autoload_psr4.php',
+            '<?php return [\'Waaseyaa\\\\Nonexistent\\\\\' => [\'' . $this->tempDir . '/nonexistent/src\']];',
+        );
+
+        file_put_contents(
+            $this->tempDir . '/vendor/composer/installed.json',
+            json_encode(['packages' => []], JSON_THROW_ON_ERROR),
+        );
+
+        $compiler = new PackageManifestCompiler($this->tempDir, $this->tempDir . '/storage');
+        $manifest = $compiler->compile();
+
+        // Non-existent directory is skipped — empty manifest.
+        $this->assertSame([], $manifest->policies);
+    }
+
     private function removeDir(string $dir): void
     {
         if (!is_dir($dir)) {

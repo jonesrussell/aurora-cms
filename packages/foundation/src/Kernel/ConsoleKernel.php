@@ -82,6 +82,7 @@ final class ConsoleKernel extends AbstractKernel
         );
 
         $app = new WaaseyaaApplication();
+        $app->setAutoExit(false);
 
         $app->registerCommands([
             new InstallCommand($this->entityTypeManager, $configManager),

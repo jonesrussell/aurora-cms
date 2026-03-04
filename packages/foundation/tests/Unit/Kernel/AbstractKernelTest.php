@@ -12,6 +12,36 @@ use Waaseyaa\Foundation\Kernel\AbstractKernel;
 #[CoversClass(AbstractKernel::class)]
 final class AbstractKernelTest extends TestCase
 {
+    private string $projectRoot;
+
+    protected function setUp(): void
+    {
+        $this->projectRoot = sys_get_temp_dir() . '/waaseyaa_kernel_test_' . uniqid();
+        mkdir($this->projectRoot . '/config', 0755, true);
+        mkdir($this->projectRoot . '/storage', 0755, true);
+
+        file_put_contents(
+            $this->projectRoot . '/config/waaseyaa.php',
+            "<?php return ['database' => ':memory:'];",
+        );
+        file_put_contents(
+            $this->projectRoot . '/config/entity-types.php',
+            '<?php return [];',
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->projectRoot, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+        rmdir($this->projectRoot);
+    }
+
     #[Test]
     public function kernel_provides_project_root(): void
     {
@@ -24,8 +54,7 @@ final class AbstractKernelTest extends TestCase
     #[Test]
     public function kernel_boots_core_services(): void
     {
-        $projectRoot = dirname(__DIR__, 5);
-        $kernel = new class($projectRoot) extends AbstractKernel {
+        $kernel = new class($this->projectRoot) extends AbstractKernel {
             public function publicBoot(): void
             {
                 $this->boot();
@@ -42,8 +71,7 @@ final class AbstractKernelTest extends TestCase
     #[Test]
     public function boot_is_idempotent(): void
     {
-        $projectRoot = dirname(__DIR__, 5);
-        $kernel = new class($projectRoot) extends AbstractKernel {
+        $kernel = new class($this->projectRoot) extends AbstractKernel {
             public int $bootCount = 0;
 
             public function publicBoot(): void
@@ -56,9 +84,7 @@ final class AbstractKernelTest extends TestCase
         $kernel->publicBoot();
         $kernel->publicBoot();
 
-        // publicBoot increments each call, but boot() guard prevents double-init
         $this->assertSame(2, $kernel->bootCount);
-        // Second boot should not throw "already registered" for entity types
         $this->assertInstanceOf(\Waaseyaa\Entity\EntityTypeManager::class, $kernel->getEntityTypeManager());
     }
 }
