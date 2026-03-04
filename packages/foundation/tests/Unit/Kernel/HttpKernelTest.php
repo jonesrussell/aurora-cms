@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
 use Waaseyaa\Foundation\Kernel\HttpKernel;
+use Waaseyaa\User\AnonymousUser;
+use Waaseyaa\User\DevAdminAccount;
 
 #[CoversClass(HttpKernel::class)]
 final class HttpKernelTest extends TestCase
@@ -199,6 +201,33 @@ final class HttpKernelTest extends TestCase
 
         $this->assertSame('my_photo_.jpg', $method->invoke($kernel, 'my photo?.jpg'));
         $this->assertSame('upload.bin', $method->invoke($kernel, '../../'));
+    }
+
+    #[Test]
+    public function resolves_render_cache_max_age_from_config_or_default(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $configProp = new \ReflectionProperty(\Waaseyaa\Foundation\Kernel\AbstractKernel::class, 'config');
+        $configProp->setAccessible(true);
+        $method = new \ReflectionMethod(HttpKernel::class, 'resolveRenderCacheMaxAge');
+        $method->setAccessible(true);
+
+        $configProp->setValue($kernel, ['ssr' => ['cache_max_age' => 600]]);
+        $this->assertSame(600, $method->invoke($kernel));
+
+        $configProp->setValue($kernel, []);
+        $this->assertSame(300, $method->invoke($kernel));
+    }
+
+    #[Test]
+    public function render_cache_control_header_depends_on_authentication(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'cacheControlHeaderForRender');
+        $method->setAccessible(true);
+
+        $this->assertSame('public, max-age=120', $method->invoke($kernel, new AnonymousUser(), 120));
+        $this->assertSame('private, no-store', $method->invoke($kernel, new DevAdminAccount(), 120));
     }
 
 }

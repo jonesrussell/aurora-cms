@@ -20,6 +20,9 @@ use Waaseyaa\Api\JsonApiRouteProvider;
 use Waaseyaa\Api\OpenApi\OpenApiGenerator;
 use Waaseyaa\Api\ResourceSerializer;
 use Waaseyaa\Api\Schema\SchemaPresenter;
+use Waaseyaa\Cache\CacheFactory;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
 use Waaseyaa\Foundation\Middleware\HttpPipeline;
 use Waaseyaa\Media\File;
@@ -32,6 +35,7 @@ use Waaseyaa\SSR\ArrayViewModeConfig;
 use Waaseyaa\SSR\EntityRenderer;
 use Waaseyaa\SSR\FieldFormatterRegistry;
 use Waaseyaa\SSR\RenderController;
+use Waaseyaa\SSR\RenderCache;
 use Waaseyaa\SSR\SsrServiceProvider;
 use Waaseyaa\SSR\ViewMode;
 use Waaseyaa\User\Middleware\BearerAuthMiddleware;
@@ -47,6 +51,8 @@ use Waaseyaa\User\Middleware\SessionMiddleware;
  */
 final class HttpKernel extends AbstractKernel
 {
+    private ?RenderCache $renderCache = null;
+
     public function handle(): never
     {
         $this->boot();
@@ -63,6 +69,8 @@ final class HttpKernel extends AbstractKernel
         // Broadcast storage for SSE.
         $broadcastStorage = new BroadcastStorage($this->database);
         $this->registerBroadcastListeners($broadcastStorage);
+        $this->renderCache = new RenderCache((new CacheFactory())->get('render'));
+        $this->registerRenderCacheListeners($this->renderCache);
 
         // Router setup.
         $context = new RequestContext('', $method);
@@ -434,8 +442,8 @@ final class HttpKernel extends AbstractKernel
                     $this->handleMediaUpload($httpRequest, $account, $serializer);
                 })(),
 
-                $controller === 'render.page' => (function () use ($params): never {
-                    $this->handleRenderPage((string) ($params['path'] ?? '/'));
+                $controller === 'render.page' => (function () use ($params, $account): never {
+                    $this->handleRenderPage((string) ($params['path'] ?? '/'), $account);
                 })(),
 
                 str_contains($controller, 'SchemaController') => (function () use ($account, $params, $schemaPresenter): never {
@@ -481,7 +489,7 @@ final class HttpKernel extends AbstractKernel
         }
     }
 
-    private function handleRenderPage(string $path): never
+    private function handleRenderPage(string $path, AccountInterface $account): never
     {
         $twig = SsrServiceProvider::getTwigEnvironment();
         if ($twig === null) {
@@ -501,10 +509,15 @@ final class HttpKernel extends AbstractKernel
         }
 
         try {
+            $cacheMaxAge = $this->resolveRenderCacheMaxAge();
+            $cacheControlHeader = $this->cacheControlHeaderForRender($account, $cacheMaxAge);
+
             $normalizedPath = $path;
             if ($normalizedPath === '' || $normalizedPath === '/') {
                 $response = (new RenderController($twig))->renderPath('/');
-                $this->sendHtml($response->statusCode, $response->content, $response->headers);
+                $headers = $response->headers;
+                $headers['Cache-Control'] = $cacheControlHeader;
+                $this->sendHtml($response->statusCode, $response->content, $headers);
             }
             if (!str_starts_with($normalizedPath, '/')) {
                 $normalizedPath = '/' . $normalizedPath;
@@ -514,14 +527,18 @@ final class HttpKernel extends AbstractKernel
             $resolved = $aliasResolver->resolve($normalizedPath);
             if ($resolved === null) {
                 $response = (new RenderController($twig))->renderNotFound($normalizedPath);
-                $this->sendHtml($response->statusCode, $response->content, $response->headers);
+                $headers = $response->headers;
+                $headers['Cache-Control'] = $cacheControlHeader;
+                $this->sendHtml($response->statusCode, $response->content, $headers);
             }
 
             $targetStorage = $this->entityTypeManager->getStorage($resolved->entityTypeId);
             $entity = $targetStorage->load($resolved->entityId);
             if ($entity === null) {
                 $response = (new RenderController($twig))->renderNotFound($normalizedPath);
-                $this->sendHtml($response->statusCode, $response->content, $response->headers);
+                $headers = $response->headers;
+                $headers['Cache-Control'] = $cacheControlHeader;
+                $this->sendHtml($response->statusCode, $response->content, $headers);
             }
 
             $formatterRegistry = SsrServiceProvider::getFormatterRegistry()
@@ -530,8 +547,37 @@ final class HttpKernel extends AbstractKernel
                 is_array($this->config['view_modes'] ?? null) ? $this->config['view_modes'] : [],
             );
             $entityRenderer = new EntityRenderer($this->entityTypeManager, $formatterRegistry, $viewModeConfig);
-            $response = (new RenderController($twig, $entityRenderer))->renderEntity($entity, ViewMode::full());
-            $this->sendHtml($response->statusCode, $response->content, $response->headers);
+            $viewMode = ViewMode::full();
+
+            if (!$account->isAuthenticated() && $this->renderCache !== null && $entity->id() !== null) {
+                $cached = $this->renderCache->get(
+                    $resolved->entityTypeId,
+                    $entity->id(),
+                    $viewMode->id(),
+                    $entity->language(),
+                );
+                if ($cached !== null) {
+                    $headers = $cached->headers;
+                    $headers['Cache-Control'] = $cacheControlHeader;
+                    $this->sendHtml($cached->statusCode, $cached->content, $headers);
+                }
+            }
+
+            $response = (new RenderController($twig, $entityRenderer))->renderEntity($entity, $viewMode);
+            if (!$account->isAuthenticated() && $this->renderCache !== null && $entity->id() !== null && $response->statusCode === 200) {
+                $this->renderCache->set(
+                    $resolved->entityTypeId,
+                    $entity->id(),
+                    $viewMode->id(),
+                    $entity->language(),
+                    $response,
+                    $cacheMaxAge,
+                );
+            }
+
+            $headers = $response->headers;
+            $headers['Cache-Control'] = $cacheControlHeader;
+            $this->sendHtml($response->statusCode, $response->content, $headers);
         } catch (\Throwable $e) {
             error_log(sprintf('[Waaseyaa] Render pipeline failed: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
             $this->sendJson(500, [
@@ -543,6 +589,42 @@ final class HttpKernel extends AbstractKernel
                 ]],
             ]);
         }
+    }
+
+    private function registerRenderCacheListeners(RenderCache $renderCache): void
+    {
+        $invalidate = function (object $event) use ($renderCache): void {
+            if (!$event instanceof EntityEvent) {
+                return;
+            }
+
+            $renderCache->invalidateEntity(
+                $event->entity->getEntityTypeId(),
+                $event->entity->id(),
+            );
+        };
+
+        $this->dispatcher->addListener(EntityEvents::POST_SAVE->value, $invalidate);
+        $this->dispatcher->addListener(EntityEvents::POST_DELETE->value, $invalidate);
+    }
+
+    private function resolveRenderCacheMaxAge(): int
+    {
+        $ssrConfig = $this->config['ssr'] ?? null;
+        if (is_array($ssrConfig) && isset($ssrConfig['cache_max_age']) && is_numeric($ssrConfig['cache_max_age'])) {
+            return max(0, (int) $ssrConfig['cache_max_age']);
+        }
+
+        return 300;
+    }
+
+    private function cacheControlHeaderForRender(AccountInterface $account, int $maxAge): string
+    {
+        if ($account->isAuthenticated()) {
+            return 'private, no-store';
+        }
+
+        return 'public, max-age=' . max(0, $maxAge);
     }
 
     private function handleMediaUpload(

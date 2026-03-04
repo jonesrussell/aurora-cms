@@ -40,5 +40,6 @@ return [
     // Theme packages expose extra.waaseyaa.theme in composer.json.
     'ssr' => [
         'theme' => getenv('WAASEYAA_SSR_THEME') ?: '',
+        'cache_max_age' => (int) (getenv('WAASEYAA_SSR_CACHE_MAX_AGE') ?: 300),
     ],
 ];

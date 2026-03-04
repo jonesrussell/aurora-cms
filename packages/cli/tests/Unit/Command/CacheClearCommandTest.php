@@ -6,6 +6,7 @@ namespace Waaseyaa\CLI\Tests\Unit\Command;
 
 use Waaseyaa\Cache\CacheBackendInterface;
 use Waaseyaa\Cache\CacheFactoryInterface;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 use Waaseyaa\CLI\Command\CacheClearCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -56,5 +57,26 @@ class CacheClearCommandTest extends TestCase
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $this->assertStringContainsString('Cache bin "render" cleared.', $tester->getDisplay());
+    }
+
+    #[Test]
+    public function it_invalidates_by_tags_for_tag_aware_bins(): void
+    {
+        $mockBackend = $this->createMock(TagAwareCacheInterface::class);
+        $mockBackend->expects($this->exactly(4))
+            ->method('invalidateByTags')
+            ->with(['render']);
+
+        $mockFactory = $this->createMock(CacheFactoryInterface::class);
+        $mockFactory->method('get')->willReturn($mockBackend);
+
+        $app = new Application();
+        $app->add(new CacheClearCommand($mockFactory));
+        $command = $app->find('cache:clear');
+        $tester = new CommandTester($command);
+        $tester->execute(['--tags' => 'render']);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertStringContainsString('invalidated by tags: render', $tester->getDisplay());
     }
 }
