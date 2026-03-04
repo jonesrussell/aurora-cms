@@ -1,7 +1,7 @@
 export interface EntityTypeInfo {
   id: string
   label: string
-  keys?: Record<string, string>
+  keys: Record<string, string>
 }
 
 interface NavGroupDefinition {
