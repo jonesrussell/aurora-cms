@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Waaseyaa\Tests\Support;
 
 /**
- * Deterministic workflow fixture corpus for v0.8 lifecycle tests.
+ * Deterministic workflow + discovery fixture corpus for v0.8/v0.9 tests.
  */
 final class WorkflowFixturePack
 {
@@ -91,6 +91,220 @@ final class WorkflowFixturePack
                 'workflow_state' => 'draft',
             ],
         ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function discoveryNodes(): array
+    {
+        return [
+            'anchor_water' => [
+                'title' => 'Water Teaching Anchor',
+                'body' => 'anchor water context',
+                'type' => 'teaching',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP,
+                'changed' => self::FIXED_TIMESTAMP,
+                'status' => 1,
+                'workflow_state' => 'published',
+            ],
+            'river_memory' => [
+                'title' => 'River Memory',
+                'body' => 'water lineage and kinship',
+                'type' => 'story',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP + 60,
+                'changed' => self::FIXED_TIMESTAMP + 60,
+                'status' => 1,
+                'workflow_state' => 'published',
+            ],
+            'salmon_cycle' => [
+                'title' => 'Salmon Cycle',
+                'body' => 'water migration and seasonal return',
+                'type' => 'teaching',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP + 120,
+                'changed' => self::FIXED_TIMESTAMP + 120,
+                'status' => 1,
+                'workflow_state' => 'published',
+            ],
+            'seasonal_calendar' => [
+                'title' => 'Seasonal Calendar',
+                'body' => 'timeline of spring and autumn gatherings',
+                'type' => 'guide',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP + 180,
+                'changed' => self::FIXED_TIMESTAMP + 180,
+                'status' => 1,
+                'workflow_state' => 'published',
+            ],
+            'governance_draft' => [
+                'title' => 'Governance Draft',
+                'body' => 'internal draft guidance',
+                'type' => 'article',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP + 240,
+                'changed' => self::FIXED_TIMESTAMP + 240,
+                'status' => 0,
+                'workflow_state' => 'draft',
+            ],
+            'archive_song' => [
+                'title' => 'Archive Song',
+                'body' => 'archived ceremonial text',
+                'type' => 'story',
+                'uid' => 9,
+                'created' => self::FIXED_TIMESTAMP + 300,
+                'changed' => self::FIXED_TIMESTAMP + 300,
+                'status' => 0,
+                'workflow_state' => 'archived',
+            ],
+        ];
+    }
+
+    /**
+     * Deterministic relationship edges keyed by source/target fixture IDs.
+     *
+     * @return list<array{
+     *   key: string,
+     *   relationship_type: string,
+     *   from: string,
+     *   to: string,
+     *   status: int,
+     *   start_date: int,
+     *   end_date: ?int
+     * }>
+     */
+    public static function discoveryRelationships(): array
+    {
+        return [
+            [
+                'key' => 'anchor_to_river_related',
+                'relationship_type' => 'related',
+                'from' => 'anchor_water',
+                'to' => 'river_memory',
+                'status' => 1,
+                'start_date' => self::FIXED_TIMESTAMP - 86400,
+                'end_date' => null,
+            ],
+            [
+                'key' => 'anchor_to_salmon_related',
+                'relationship_type' => 'related',
+                'from' => 'anchor_water',
+                'to' => 'salmon_cycle',
+                'status' => 1,
+                'start_date' => self::FIXED_TIMESTAMP - 43200,
+                'end_date' => null,
+            ],
+            [
+                'key' => 'anchor_to_calendar_temporal',
+                'relationship_type' => 'temporal',
+                'from' => 'anchor_water',
+                'to' => 'seasonal_calendar',
+                'status' => 1,
+                'start_date' => self::FIXED_TIMESTAMP - 3600,
+                'end_date' => self::FIXED_TIMESTAMP + 3600,
+            ],
+            [
+                'key' => 'salmon_to_anchor_supports',
+                'relationship_type' => 'supports',
+                'from' => 'salmon_cycle',
+                'to' => 'anchor_water',
+                'status' => 1,
+                'start_date' => self::FIXED_TIMESTAMP - 7200,
+                'end_date' => null,
+            ],
+            [
+                'key' => 'anchor_to_draft_private',
+                'relationship_type' => 'related',
+                'from' => 'anchor_water',
+                'to' => 'governance_draft',
+                'status' => 0,
+                'start_date' => self::FIXED_TIMESTAMP - 1000,
+                'end_date' => null,
+            ],
+            [
+                'key' => 'river_to_archived_related',
+                'relationship_type' => 'related',
+                'from' => 'river_memory',
+                'to' => 'archive_song',
+                'status' => 1,
+                'start_date' => self::FIXED_TIMESTAMP - 2000,
+                'end_date' => null,
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array{
+     *   name: string,
+     *   query: string,
+     *   expected_visible_keys: list<string>
+     * }>
+     */
+    public static function discoverySearchScenarios(): array
+    {
+        return [
+            [
+                'name' => 'water query keeps public keyword matches and excludes draft and archived',
+                'query' => 'water',
+                'expected_visible_keys' => ['anchor_water'],
+            ],
+            [
+                'name' => 'seasonal query returns calendar',
+                'query' => 'seasonal',
+                'expected_visible_keys' => ['seasonal_calendar'],
+            ],
+        ];
+    }
+
+    /**
+     * @return array{
+     *   timestamp: int,
+     *   ssr_nodes: array<string, array<string, mixed>>,
+     *   ssr_aliases: list<array{alias: string, path: string, langcode: string, status: int}>,
+     *   ai_mcp_nodes: array<string, array<string, mixed>>,
+     *   discovery_nodes: array<string, array<string, mixed>>,
+     *   discovery_relationships: list<array{
+     *     key: string,
+     *     relationship_type: string,
+     *     from: string,
+     *     to: string,
+     *     status: int,
+     *     start_date: int,
+     *     end_date: ?int
+     *   }>,
+     *   discovery_search: list<array{name: string, query: string, expected_visible_keys: list<string>}>,
+     *   transition_access: list<array{
+     *     name: string,
+     *     bundle: string,
+     *     from: string,
+     *     to: string,
+     *     permissions: list<string>,
+     *     roles: list<string>,
+     *     expected_allowed: bool
+     *   }>,
+     *   invalid_transitions: list<array{name: string, from: string, to: string}>
+     * }
+     */
+    public static function corpusSnapshot(): array
+    {
+        return [
+            'timestamp' => self::FIXED_TIMESTAMP,
+            'ssr_nodes' => self::editorialNodesForSsr(),
+            'ssr_aliases' => self::pathAliasesForSsr(),
+            'ai_mcp_nodes' => self::aiMcpNodes(),
+            'discovery_nodes' => self::discoveryNodes(),
+            'discovery_relationships' => self::discoveryRelationships(),
+            'discovery_search' => self::discoverySearchScenarios(),
+            'transition_access' => self::transitionAccessScenarios(),
+            'invalid_transitions' => self::invalidTransitionScenarios(),
+        ];
+    }
+
+    public static function corpusHash(): string
+    {
+        return sha1((string) json_encode(self::corpusSnapshot(), JSON_THROW_ON_ERROR));
     }
 
     /**

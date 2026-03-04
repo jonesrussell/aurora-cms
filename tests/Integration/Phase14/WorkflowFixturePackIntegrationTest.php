@@ -15,13 +15,16 @@ use Waaseyaa\Workflows\EditorialWorkflowStateMachine;
 #[CoversNothing]
 final class WorkflowFixturePackIntegrationTest extends TestCase
 {
+    private const string EXPECTED_CORPUS_HASH = '9ffd9dc6c2a2bf529a08c4640b3ab80de7870064';
+
     #[Test]
     public function fixtureCorpusIsDeterministicAcrossCalls(): void
     {
-        $firstHash = $this->fixtureHash();
-        $secondHash = $this->fixtureHash();
+        $firstHash = WorkflowFixturePack::corpusHash();
+        $secondHash = WorkflowFixturePack::corpusHash();
 
         $this->assertSame($firstHash, $secondHash);
+        $this->assertSame(self::EXPECTED_CORPUS_HASH, $firstHash);
     }
 
     #[Test]
@@ -62,18 +65,30 @@ final class WorkflowFixturePackIntegrationTest extends TestCase
         }
     }
 
-    private function fixtureHash(): string
+    #[Test]
+    public function discoveryFixturesIncludeMixedWorkflowTemporalAndCrossBundleSignals(): void
     {
-        $serialized = json_encode([
-            'timestamp' => WorkflowFixturePack::FIXED_TIMESTAMP,
-            'ssr_nodes' => WorkflowFixturePack::editorialNodesForSsr(),
-            'ssr_aliases' => WorkflowFixturePack::pathAliasesForSsr(),
-            'ai_mcp_nodes' => WorkflowFixturePack::aiMcpNodes(),
-            'transition_access' => WorkflowFixturePack::transitionAccessScenarios(),
-            'invalid_transitions' => WorkflowFixturePack::invalidTransitionScenarios(),
-        ], JSON_THROW_ON_ERROR);
+        $nodes = WorkflowFixturePack::discoveryNodes();
+        $this->assertArrayHasKey('anchor_water', $nodes);
+        $this->assertArrayHasKey('governance_draft', $nodes);
+        $this->assertArrayHasKey('archive_song', $nodes);
+        $this->assertSame('published', $nodes['anchor_water']['workflow_state']);
+        $this->assertSame('draft', $nodes['governance_draft']['workflow_state']);
+        $this->assertSame('archived', $nodes['archive_song']['workflow_state']);
+        $this->assertSame('story', $nodes['river_memory']['type']);
+        $this->assertSame('guide', $nodes['seasonal_calendar']['type']);
 
-        return sha1($serialized);
+        $relationships = WorkflowFixturePack::discoveryRelationships();
+        $this->assertCount(6, $relationships);
+        $this->assertSame('temporal', $relationships[2]['relationship_type']);
+        $this->assertNotNull($relationships[2]['end_date']);
+        $this->assertSame('related', $relationships[4]['relationship_type']);
+        $this->assertSame(0, $relationships[4]['status']);
+
+        $searchScenarios = WorkflowFixturePack::discoverySearchScenarios();
+        $this->assertCount(2, $searchScenarios);
+        $this->assertSame('water', $searchScenarios[0]['query']);
+        $this->assertContains('anchor_water', $searchScenarios[0]['expected_visible_keys']);
     }
 }
 

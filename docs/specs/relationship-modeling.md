@@ -129,3 +129,14 @@ Fixture corpus must include:
 - self-link edge case (allowed or forbidden by type)
 - temporal-bounded relationship
 - unpublished relationship
+- mixed workflow node states (published/draft/archived) to verify visibility enforcement
+- cross-bundle related targets for hub/cluster aggregation
+
+v0.9 adds shared framework fixtures in `tests/Support/WorkflowFixturePack.php`:
+
+- `discoveryNodes()` for public/non-public node mixes with fixed timestamps.
+- `discoveryRelationships()` for temporal + status-varied graph edges.
+- `discoverySearchScenarios()` for stable query expectations.
+- `corpusSnapshot()` and `corpusHash()` for deterministic hash regression gates.
+
+Downstream integration suites consume this shared corpus directly (SSR/search/MCP/discovery) to avoid drift across package-level tests.
