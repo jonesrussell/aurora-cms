@@ -37,3 +37,18 @@ The access control system has four layers, being built bottom-up:
 | 3 | Dynamic CORS origin | Planned | CORS in `index.php` hardcodes `localhost:3000`. Nuxt dev server may bind to 3001+ if port is taken. Need dynamic origin handling (e.g., `WAASEYAA_CORS_ORIGIN` env var or pattern-based localhost matching). |
 | 4 | Boolean field rendering | Bug | Boolean fields return as `1`/`0` integers instead of `true`/`false`. Causes Vue prop warnings in checkbox widgets. See #18 |
 | 5 | Timestamp auto-population + formatting | Bug | `created`/`changed` not set on save. Datetime widget shows raw `0` instead of formatted dates. See #19 |
+| 6 | Boolean field defaults on create | Bug | Create form defaults all boolean fields to checked (Promoted, Sticky should be unchecked). See #24 |
+| 7 | Entity list headings show machine names | Enhancement | Page headings show `node_type` instead of "Content Type". Should use entity type labels. See #26 |
+
+## Dev Server
+
+| # | Issue | Status | Description |
+|---|-------|--------|-------------|
+| 1 | SPA navigation hangs | Bug | PHP built-in server is single-threaded; SSE broadcast connection blocks API requests during SPA routing. Full page loads work. See #23 |
+| 2 | SSE broadcast disconnects | Bug | SSE connection drops immediately on page load, related to single-threaded server. See #25 |
+
+## Database
+
+| # | Issue | Status | Description |
+|---|-------|--------|-------------|
+| 1 | User table schema mismatch | Bug | `user` table has `id` column but entity config expects `uid` after commit 2ea5dd55. Causes 500 on `/api/user`. See #22 |
