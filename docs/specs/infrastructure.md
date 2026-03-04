@@ -339,7 +339,12 @@ Runtime behavior:
 
 Invalidation:
 
-- Discovery cache is cleared on `EntityEvents::POST_SAVE` and `EntityEvents::POST_DELETE` to preserve correctness under workflow state, relationship, and content changes.
+- Preferred path (tag-aware backends): targeted `invalidateByTags()` on save/delete using tags such as:
+  - `discovery`
+  - `discovery:entity:{type}`
+  - `discovery:entity:{type}:{id}`
+  - plus broad discovery-surface tags for relationship/node graph-impact changes
+- Fallback path (non tag-aware backends): `deleteAll()` for correctness.
 
 ## SSR Render Cache Variant Contract (v1.0)
 

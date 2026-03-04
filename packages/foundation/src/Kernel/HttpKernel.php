@@ -24,6 +24,7 @@ use Waaseyaa\Cache\Backend\DatabaseBackend;
 use Waaseyaa\Cache\CacheBackendInterface;
 use Waaseyaa\Cache\CacheFactory;
 use Waaseyaa\Cache\CacheConfiguration;
+use Waaseyaa\Cache\TagAwareCacheInterface;
 use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\Event\EntityEvent;
 use Waaseyaa\Entity\Event\EntityEvents;
@@ -967,7 +968,12 @@ final class HttpKernel extends AbstractKernel
         } else {
             $headers['Cache-Control'] = 'public, max-age=120';
             if ($this->discoveryCache !== null) {
-                $this->discoveryCache->set($cacheKey, $payload, time() + 120);
+                $this->discoveryCache->set(
+                    $cacheKey,
+                    $payload,
+                    time() + 120,
+                    $this->buildDiscoveryCacheTags($payload),
+                );
                 $headers['X-Waaseyaa-Discovery-Cache'] = 'MISS';
             }
         }
@@ -991,6 +997,52 @@ final class HttpKernel extends AbstractKernel
         }
 
         return $payload;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return list<string>
+     */
+    private function buildDiscoveryCacheTags(array $payload): array
+    {
+        $tags = [
+            'discovery',
+            'discovery:contract:' . self::DISCOVERY_CONTRACT_VERSION,
+        ];
+
+        $meta = is_array($payload['meta'] ?? null) ? $payload['meta'] : [];
+        $surface = is_string($meta['surface'] ?? null) ? trim((string) $meta['surface']) : '';
+        if ($surface !== '') {
+            $tags[] = 'discovery:surface:' . strtolower($surface);
+        }
+
+        $data = is_array($payload['data'] ?? null) ? $payload['data'] : [];
+        $source = is_array($data['source'] ?? null) ? $data['source'] : [];
+        if ($source === [] && is_array($data['data'] ?? null)) {
+            $source = is_array($data['data']['source'] ?? null) ? $data['data']['source'] : [];
+        }
+        if ($source !== []) {
+            $sourceType = is_string($source['type'] ?? null) ? strtolower(trim((string) $source['type'])) : '';
+            $sourceId = is_scalar($source['id'] ?? null) ? trim((string) $source['id']) : '';
+            if ($sourceType !== '') {
+                $tags[] = 'discovery:entity:' . $sourceType;
+            }
+            if ($sourceType !== '' && $sourceId !== '') {
+                $tags[] = sprintf('discovery:entity:%s:%s', $sourceType, $sourceId);
+            }
+        }
+
+        $filters = is_array($meta['filters'] ?? null) ? $meta['filters'] : [];
+        $status = is_string($filters['status'] ?? null) ? strtolower(trim((string) $filters['status'])) : '';
+        if ($status !== '') {
+            $tags[] = 'discovery:status:' . $status;
+        }
+        $direction = is_string($filters['direction'] ?? null) ? strtolower(trim((string) $filters['direction'])) : '';
+        if ($direction !== '') {
+            $tags[] = 'discovery:direction:' . $direction;
+        }
+
+        return array_values(array_unique($tags));
     }
 
     private function isDiscoveryEndpointPairPublic(string $fromType, string $fromId, string $toType, string $toId): bool
@@ -1465,8 +1517,28 @@ final class HttpKernel extends AbstractKernel
 
     private function registerDiscoveryCacheListeners(CacheBackendInterface $cache): void
     {
-        $invalidate = static function () use ($cache): void {
+        $invalidate = static function (EntityEvent $event) use ($cache): void {
             try {
+                if ($cache instanceof TagAwareCacheInterface) {
+                    $entityType = strtolower($event->entity->getEntityTypeId());
+                    $entityId = $event->entity->id();
+                    $tags = [
+                        'discovery',
+                        'discovery:entity:' . $entityType,
+                    ];
+                    if ($entityId !== null && $entityId !== '') {
+                        $tags[] = sprintf('discovery:entity:%s:%s', $entityType, (string) $entityId);
+                    }
+
+                    // Relationship and node updates can influence many discovery reads.
+                    if (in_array($entityType, ['relationship', 'node'], true)) {
+                        $tags[] = 'discovery:surface:discovery_api';
+                    }
+
+                    $cache->invalidateByTags(array_values(array_unique($tags)));
+                    return;
+                }
+
                 $cache->deleteAll();
             } catch (\Throwable $e) {
                 error_log(sprintf('[Waaseyaa] Failed to clear discovery cache: %s', $e->getMessage()));
@@ -1474,10 +1546,10 @@ final class HttpKernel extends AbstractKernel
         };
 
         $this->dispatcher->addListener(EntityEvents::POST_SAVE->value, static function (EntityEvent $event) use ($invalidate): void {
-            $invalidate();
+            $invalidate($event);
         });
         $this->dispatcher->addListener(EntityEvents::POST_DELETE->value, static function (EntityEvent $event) use ($invalidate): void {
-            $invalidate();
+            $invalidate($event);
         });
     }
 

@@ -7,7 +7,14 @@ namespace Waaseyaa\Foundation\Tests\Unit\Kernel;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use Waaseyaa\Cache\CacheBackendInterface;
+use Waaseyaa\Cache\CacheItem;
+use Waaseyaa\Cache\TagAwareCacheInterface;
+use Waaseyaa\Entity\EntityInterface;
+use Waaseyaa\Entity\Event\EntityEvent;
+use Waaseyaa\Entity\Event\EntityEvents;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
 use Waaseyaa\Foundation\Kernel\HttpKernel;
 use Waaseyaa\User\AnonymousUser;
@@ -446,6 +453,84 @@ final class HttpKernelTest extends TestCase
     }
 
     #[Test]
+    public function discovery_cache_tags_include_surface_entity_and_filters(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheTags');
+        $method->setAccessible(true);
+
+        $tags = $method->invoke($kernel, [
+            'data' => [
+                'data' => [
+                    'source' => ['type' => 'node', 'id' => '42'],
+                ],
+            ],
+            'meta' => [
+                'surface' => 'discovery_api',
+                'filters' => ['status' => 'published', 'direction' => 'both'],
+            ],
+        ]);
+
+        $this->assertContains('discovery', $tags);
+        $this->assertContains('discovery:contract:v1.0', $tags);
+        $this->assertContains('discovery:surface:discovery_api', $tags);
+        $this->assertContains('discovery:entity:node', $tags);
+        $this->assertContains('discovery:entity:node:42', $tags);
+        $this->assertContains('discovery:status:published', $tags);
+        $this->assertContains('discovery:direction:both', $tags);
+    }
+
+    #[Test]
+    public function discovery_cache_listener_uses_tag_invalidation_when_available(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $dispatcher = new EventDispatcher();
+
+        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
+        $dispatcherProp->setAccessible(true);
+        $dispatcherProp->setValue($kernel, $dispatcher);
+
+        $cache = new TestTagAwareCacheBackend();
+        $method = new \ReflectionMethod(HttpKernel::class, 'registerDiscoveryCacheListeners');
+        $method->setAccessible(true);
+        $method->invoke($kernel, $cache);
+
+        $dispatcher->dispatch(
+            new EntityEvent(new TestKernelEntity(9, 'node')),
+            EntityEvents::POST_SAVE->value,
+        );
+
+        $this->assertSame(0, $cache->deleteAllCalls);
+        $this->assertNotEmpty($cache->invalidatedTags);
+        $this->assertContains('discovery', $cache->invalidatedTags);
+        $this->assertContains('discovery:entity:node', $cache->invalidatedTags);
+        $this->assertContains('discovery:entity:node:9', $cache->invalidatedTags);
+    }
+
+    #[Test]
+    public function discovery_cache_listener_falls_back_to_delete_all_for_non_tag_backend(): void
+    {
+        $kernel = new HttpKernel('/tmp/test-project');
+        $dispatcher = new EventDispatcher();
+
+        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
+        $dispatcherProp->setAccessible(true);
+        $dispatcherProp->setValue($kernel, $dispatcher);
+
+        $cache = new TestNonTagCacheBackend();
+        $method = new \ReflectionMethod(HttpKernel::class, 'registerDiscoveryCacheListeners');
+        $method->setAccessible(true);
+        $method->invoke($kernel, $cache);
+
+        $dispatcher->dispatch(
+            new EntityEvent(new TestKernelEntity(5, 'node')),
+            EntityEvents::POST_DELETE->value,
+        );
+
+        $this->assertSame(1, $cache->deleteAllCalls);
+    }
+
+    #[Test]
     public function ssr_cache_variant_langcode_is_deterministic_for_equivalent_context_order(): void
     {
         $kernel = new HttpKernel('/tmp/test-project');
@@ -502,4 +587,60 @@ final class HttpKernelTest extends TestCase
         $this->assertNotSame($published, $differentGraph);
     }
 
+}
+
+final class TestKernelEntity implements EntityInterface
+{
+    public function __construct(
+        private readonly int|string|null $entityId,
+        private readonly string $entityTypeId,
+    ) {}
+
+    public function id(): int|string|null { return $this->entityId; }
+    public function uuid(): string { return ''; }
+    public function label(): string { return 'test'; }
+    public function getEntityTypeId(): string { return $this->entityTypeId; }
+    public function bundle(): string { return 'default'; }
+    public function isNew(): bool { return false; }
+    public function toArray(): array { return ['id' => $this->entityId]; }
+    public function language(): string { return 'en'; }
+}
+
+final class TestTagAwareCacheBackend implements TagAwareCacheInterface
+{
+    /** @var list<string> */
+    public array $invalidatedTags = [];
+    public int $deleteAllCalls = 0;
+
+    public function get(string $cid): CacheItem|false { return false; }
+    public function getMultiple(array &$cids): array { return []; }
+    public function set(string $cid, mixed $data, int $expire = self::PERMANENT, array $tags = []): void {}
+    public function delete(string $cid): void {}
+    public function deleteMultiple(array $cids): void {}
+    public function deleteAll(): void { $this->deleteAllCalls++; }
+    public function invalidate(string $cid): void {}
+    public function invalidateMultiple(array $cids): void {}
+    public function invalidateAll(): void {}
+    public function removeBin(): void {}
+
+    public function invalidateByTags(array $tags): void
+    {
+        $this->invalidatedTags = array_values(array_unique(array_merge($this->invalidatedTags, $tags)));
+    }
+}
+
+final class TestNonTagCacheBackend implements CacheBackendInterface
+{
+    public int $deleteAllCalls = 0;
+
+    public function get(string $cid): CacheItem|false { return false; }
+    public function getMultiple(array &$cids): array { return []; }
+    public function set(string $cid, mixed $data, int $expire = self::PERMANENT, array $tags = []): void {}
+    public function delete(string $cid): void {}
+    public function deleteMultiple(array $cids): void {}
+    public function deleteAll(): void { $this->deleteAllCalls++; }
+    public function invalidate(string $cid): void {}
+    public function invalidateMultiple(array $cids): void {}
+    public function invalidateAll(): void {}
+    public function removeBin(): void {}
 }
