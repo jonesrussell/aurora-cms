@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { useLanguage } from '~/composables/useLanguage'
+import { useSchema } from '~/composables/useSchema'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useLanguage()
 
 const entityType = computed(() => route.params.entityType as string)
+const { schema, fetch: fetchSchema } = useSchema(entityType.value)
+onMounted(() => fetchSchema())
+const entityLabel = computed(() => schema.value?.title ?? entityType.value)
 const successMessage = ref('')
 const errorMessage = ref('')
 
@@ -24,7 +28,7 @@ function onError(message: string) {
 <template>
   <div>
     <div class="page-header">
-      <h1>{{ t('create') }} {{ entityType }}</h1>
+      <h1>{{ t('create') }} {{ entityLabel }}</h1>
       <NuxtLink :to="`/${entityType}`" class="btn">
         {{ t('back_to_list') }}
       </NuxtLink>
