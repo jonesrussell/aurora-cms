@@ -170,7 +170,7 @@ final class DiscoveryFixtureConsumersIntegrationTest extends TestCase
             ],
         ]);
         $payload = json_decode((string) $rpc['result']['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame('v0.9', $payload['meta']['contract_version']);
+        $this->assertSame('v1.0', $payload['meta']['contract_version']);
         $this->assertSame(4, $payload['data']['graph_context']['counts']['total']);
         $this->assertNotEmpty($payload['data']['recommendations']);
         $this->assertSame('published_only', $payload['data']['recommendations'][0]['explanation']['visibility_contract']);
