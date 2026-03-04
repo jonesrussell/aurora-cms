@@ -48,6 +48,7 @@ use Waaseyaa\SSR\SsrServiceProvider;
 use Waaseyaa\SSR\ViewMode;
 use Waaseyaa\AI\Vector\EmbeddingProviderFactory;
 use Waaseyaa\AI\Vector\EntityEmbeddingCleanupListener;
+use Waaseyaa\AI\Vector\EntityEmbeddingListener;
 use Waaseyaa\AI\Vector\SearchController;
 use Waaseyaa\AI\Vector\SqliteEmbeddingStorage;
 use Waaseyaa\Mcp\McpController;
@@ -1014,7 +1015,16 @@ final class HttpKernel extends AbstractKernel
 
     private function registerEmbeddingLifecycleListeners(SqliteEmbeddingStorage $embeddingStorage): void
     {
+        $embeddingProvider = EmbeddingProviderFactory::fromConfig($this->config);
+        $embeddingListener = new EntityEmbeddingListener(
+            storage: $embeddingStorage,
+            embeddingProvider: $embeddingProvider,
+        );
         $cleanupListener = new EntityEmbeddingCleanupListener($embeddingStorage);
+        $this->dispatcher->addListener(
+            EntityEvents::POST_SAVE->value,
+            [$embeddingListener, 'onPostSave'],
+        );
         $this->dispatcher->addListener(
             EntityEvents::POST_DELETE->value,
             [$cleanupListener, 'onPostDelete'],

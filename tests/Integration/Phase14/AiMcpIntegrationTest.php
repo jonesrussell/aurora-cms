@@ -99,7 +99,7 @@ final class AiMcpIntegrationTest extends TestCase
         $listener->onPostSave(new \Waaseyaa\Entity\Event\EntityEvent($nodeA));
         $listener->onPostSave(new \Waaseyaa\Entity\Event\EntityEvent($nodeB));
         $messages = $this->queue->getMessages();
-        $this->assertCount(2, $messages);
+        $this->assertCount(1, $messages);
 
         // 2) Embedding pipeline stores vectors.
         $pipeline = new EmbeddingPipeline(

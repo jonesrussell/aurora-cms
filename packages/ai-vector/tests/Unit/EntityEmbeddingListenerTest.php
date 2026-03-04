@@ -7,6 +7,8 @@ namespace Waaseyaa\AI\Vector\Tests\Unit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Waaseyaa\AI\Vector\EmbeddingProviderInterface;
+use Waaseyaa\AI\Vector\EmbeddingStorageInterface;
 use Waaseyaa\AI\Vector\EntityEmbeddingListener;
 use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\Event\EntityEvent;
@@ -34,7 +36,11 @@ final class EntityEmbeddingListenerTest extends TestCase
             }));
 
         $listener = new EntityEmbeddingListener($queue);
-        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(42, 'node')));
+        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(
+            id: 42,
+            entityTypeId: 'node',
+            values: ['status' => 1, 'workflow_state' => 'published', 'title' => 'Published node'],
+        )));
     }
 
     #[Test]
@@ -44,7 +50,76 @@ final class EntityEmbeddingListenerTest extends TestCase
         $queue->expects($this->never())->method('dispatch');
 
         $listener = new EntityEmbeddingListener($queue);
-        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(null, 'node')));
+        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(
+            id: null,
+            entityTypeId: 'node',
+            values: ['status' => 1, 'workflow_state' => 'published'],
+        )));
+    }
+
+    #[Test]
+    public function doesNotDispatchForUnpublishedNodeState(): void
+    {
+        $queue = $this->createMock(QueueInterface::class);
+        $queue->expects($this->never())->method('dispatch');
+
+        $listener = new EntityEmbeddingListener($queue);
+        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(
+            id: 42,
+            entityTypeId: 'node',
+            values: ['status' => 0, 'workflow_state' => 'draft'],
+        )));
+    }
+
+    #[Test]
+    public function removesEmbeddingForUnpublishedNodeWhenStorageAvailable(): void
+    {
+        $storage = $this->createMock(EmbeddingStorageInterface::class);
+        $storage->expects($this->once())
+            ->method('delete')
+            ->with('node', '42');
+
+        $listener = new EntityEmbeddingListener(
+            queue: null,
+            storage: $storage,
+            embeddingProvider: null,
+        );
+        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(
+            id: 42,
+            entityTypeId: 'node',
+            values: ['status' => 0, 'workflow_state' => 'archived'],
+        )));
+    }
+
+    #[Test]
+    public function storesEmbeddingForPublishedNodeWhenProviderAndStorageAvailable(): void
+    {
+        $provider = $this->createMock(EmbeddingProviderInterface::class);
+        $provider->expects($this->once())
+            ->method('embed')
+            ->with($this->stringContains('Vector Title'))
+            ->willReturn([0.1, 0.2, 0.3]);
+
+        $storage = $this->createMock(EmbeddingStorageInterface::class);
+        $storage->expects($this->once())
+            ->method('store')
+            ->with('node', '42', [0.1, 0.2, 0.3]);
+
+        $listener = new EntityEmbeddingListener(
+            queue: null,
+            storage: $storage,
+            embeddingProvider: $provider,
+        );
+        $listener->onPostSave(new EntityEvent(new TestEmbeddingEntity(
+            id: 42,
+            entityTypeId: 'node',
+            values: [
+                'status' => 1,
+                'workflow_state' => 'published',
+                'title' => 'Vector Title',
+                'body' => 'Vector Body',
+            ],
+        )));
     }
 }
 
@@ -53,6 +128,7 @@ final readonly class TestEmbeddingEntity implements EntityInterface
     public function __construct(
         private int|string|null $id,
         private string $entityTypeId,
+        private array $values = [],
     ) {}
 
     public function id(): int|string|null { return $this->id; }
@@ -61,6 +137,6 @@ final readonly class TestEmbeddingEntity implements EntityInterface
     public function getEntityTypeId(): string { return $this->entityTypeId; }
     public function bundle(): string { return 'default'; }
     public function isNew(): bool { return false; }
-    public function toArray(): array { return []; }
+    public function toArray(): array { return $this->values; }
     public function language(): string { return 'en'; }
 }

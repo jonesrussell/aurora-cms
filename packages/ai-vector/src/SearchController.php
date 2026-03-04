@@ -74,6 +74,11 @@ final class SearchController
             }
         }
 
+        $orderedEntities = array_values(array_filter(
+            $orderedEntities,
+            fn($entity) => $this->isEntitySearchVisible($entity),
+        ));
+
         if ($this->accessHandler !== null && $this->account !== null) {
             $orderedEntities = array_values(array_filter(
                 $orderedEntities,
@@ -240,5 +245,42 @@ final class SearchController
         }
 
         return $candidateIds;
+    }
+
+    private function isEntitySearchVisible(mixed $entity): bool
+    {
+        if (!$entity instanceof \Waaseyaa\Entity\EntityInterface) {
+            return false;
+        }
+
+        if ($entity->getEntityTypeId() !== 'node') {
+            return true;
+        }
+
+        $values = $entity->toArray();
+        $state = $this->normalizeWorkflowState($values['workflow_state'] ?? null, $values['status'] ?? 0);
+
+        return $state === 'published';
+    }
+
+    private function normalizeWorkflowState(mixed $workflowState, mixed $status): string
+    {
+        if (is_string($workflowState) && trim($workflowState) !== '') {
+            return strtolower(trim($workflowState));
+        }
+        if (is_bool($status)) {
+            return $status ? 'published' : 'draft';
+        }
+        if (is_numeric($status)) {
+            return ((int) $status) === 1 ? 'published' : 'draft';
+        }
+        if (is_string($status)) {
+            $normalized = strtolower(trim($status));
+            if (in_array($normalized, ['1', 'true', 'published'], true)) {
+                return 'published';
+            }
+        }
+
+        return 'draft';
     }
 }

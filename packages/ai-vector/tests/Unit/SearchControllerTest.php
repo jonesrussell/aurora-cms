@@ -305,6 +305,13 @@ final readonly class SearchEntity implements EntityInterface
     public function getEntityTypeId(): string { return $this->entityTypeId; }
     public function bundle(): string { return 'default'; }
     public function isNew(): bool { return false; }
-    public function toArray(): array { return $this->values + ['id' => $this->id]; }
+    public function toArray(): array
+    {
+        if ($this->entityTypeId === 'node') {
+            return $this->values + ['id' => $this->id, 'status' => 1, 'workflow_state' => 'published'];
+        }
+
+        return $this->values + ['id' => $this->id];
+    }
     public function language(): string { return 'en'; }
 }
