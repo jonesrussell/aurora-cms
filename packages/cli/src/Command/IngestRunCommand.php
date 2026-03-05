@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Waaseyaa\CLI\Ingestion\IngestionEnvelopeNormalizer;
+use Waaseyaa\CLI\Ingestion\AuthoringAssistBuilder;
 use Waaseyaa\CLI\Ingestion\RelationshipInferenceEngine;
 use Waaseyaa\CLI\Ingestion\SchemaDiagnosticEmitter;
 use Waaseyaa\CLI\Ingestion\SchemaValidator;
@@ -38,6 +39,7 @@ final class IngestRunCommand extends Command
             ->addOption('policy', null, InputOption::VALUE_REQUIRED, 'Ingestion policy: atomic_fail_fast|validate_only', 'atomic_fail_fast')
             ->addOption('source', null, InputOption::VALUE_REQUIRED, 'Source identifier for audit metadata', 'manual://default')
             ->addOption('infer-relationships', null, InputOption::VALUE_NONE, 'Infer candidate relationships from ingested text (review-safe defaults)')
+            ->addOption('authoring-assist', null, InputOption::VALUE_NONE, 'Emit deterministic AI-assisted authoring suggestions')
             ->addOption('refresh-baseline', null, InputOption::VALUE_REQUIRED, 'Optional baseline snapshot JSON path for refresh change detection')
             ->addOption('refresh-snapshot-output', null, InputOption::VALUE_REQUIRED, 'Optional output path for current refresh snapshot JSON')
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Optional mapped output file (.json)')
@@ -74,6 +76,7 @@ final class IngestRunCommand extends Command
         $policy = strtolower(trim((string) $input->getOption('policy')));
         $source = trim((string) $input->getOption('source'));
         $inferRelationships = (bool) $input->getOption('infer-relationships');
+        $authoringAssistEnabled = (bool) $input->getOption('authoring-assist');
         if ($source === '') {
             $output->writeln('<error>--source must be non-empty.</error>');
             return Command::INVALID;
@@ -171,6 +174,17 @@ final class IngestRunCommand extends Command
         $diagnostics['refresh'] = $refreshPlan['diagnostics'];
         $diagnostics['refresh_summary'] = $refreshPlan['summary'];
 
+        $assistPayload = null;
+        if ($authoringAssistEnabled && $diagnostics['schema'] === [] && $diagnostics['errors'] === []) {
+            $assistPayload = (new AuthoringAssistBuilder())->build(
+                envelope: $normalizedEnvelope['envelope'],
+                nodes: $mappedCandidate['nodes'],
+                relationships: $mappedCandidate['relationships'],
+                validationDiagnostics: $diagnostics['validation'],
+                refreshSummary: $diagnostics['refresh_summary'],
+            );
+        }
+
         $mapped = ['nodes' => [], 'relationships' => []];
         $canEmitMapped = $policy !== 'validate_only'
             && $diagnostics['schema'] === []
@@ -189,6 +203,7 @@ final class IngestRunCommand extends Command
                 'batch_id' => $normalizedEnvelope['envelope']['batch_id'] ?? $batchId,
                 'policy' => $normalizedEnvelope['envelope']['policy'] ?? $policy,
                 'inference_enabled' => $inferRelationships,
+                'authoring_assist_enabled' => $authoringAssistEnabled,
                 'node_count' => count($mapped['nodes']),
                 'relationship_count' => count($mapped['relationships']),
                 'inferred_relationship_count' => count($diagnostics['inference']),
@@ -203,6 +218,16 @@ final class IngestRunCommand extends Command
             'relationships' => $mapped['relationships'],
             'diagnostics' => $diagnostics,
         ];
+        if ($authoringAssistEnabled) {
+            $result['assist'] = $assistPayload ?? [
+                'suggestions' => [],
+                'summary' => [
+                    'suggestion_count' => 0,
+                    'average_confidence' => 0.0,
+                ],
+                'diagnostics' => [],
+            ];
+        }
 
         $encoded = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL;
 

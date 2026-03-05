@@ -445,4 +445,59 @@ TXT);
         $this->assertSame('refresh.policy_change', $decoded['diagnostics']['refresh'][0]['code']);
         $this->assertFileExists($snapshotOutputPath);
     }
+
+    #[Test]
+    public function it_emits_authoring_assist_payload_with_frozen_contract_shape(): void
+    {
+        $inputPath = $this->tempDir . '/authoring-assist.json';
+        file_put_contents($inputPath, json_encode([
+            'items' => [
+                [
+                    'key' => 'seasonal_water',
+                    'title' => 'Seasonal Water',
+                    'workflow_state' => 'published',
+                    'source_uri' => 'item://seasonal_water',
+                    'ingested_at' => 1735689600,
+                    'body' => 'Seasonal water ceremony teachings preserve memory and stewardship continuity.',
+                ],
+                [
+                    'key' => 'memory_stewardship',
+                    'title' => 'Memory Stewardship',
+                    'workflow_state' => 'published',
+                    'source_uri' => 'item://memory_stewardship',
+                    'ingested_at' => 1735689601,
+                    'body' => 'Memory stewardship teachings support seasonal ceremony and community continuity.',
+                ],
+            ],
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+
+        $app = new Application();
+        $app->add(new IngestRunCommand());
+        $tester = new CommandTester($app->find('ingest:run'));
+        $mappedPath = $this->tempDir . '/mapped-authoring-assist.json';
+        $tester->execute([
+            '--input' => $inputPath,
+            '--format' => 'structured',
+            '--source' => 'dataset://assist',
+            '--infer-relationships' => true,
+            '--authoring-assist' => true,
+            '--output' => $mappedPath,
+        ]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $decoded = json_decode((string) file_get_contents($mappedPath), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertTrue($decoded['meta']['authoring_assist_enabled']);
+        $this->assertArrayHasKey('assist', $decoded);
+        $this->assertSame(2, $decoded['assist']['summary']['suggestion_count']);
+        $this->assertGreaterThan(0.0, $decoded['assist']['summary']['average_confidence']);
+        $this->assertSame([], $decoded['assist']['diagnostics']);
+        $this->assertSame(
+            ['suggestion_id', 'title', 'body', 'confidence', 'source_item_index', 'tags', 'provenance', 'explainability'],
+            array_keys($decoded['assist']['suggestions'][0]),
+        );
+        $this->assertSame(
+            ['primary_cue', 'supporting_cues', 'inference_edges_used', 'validation_signals'],
+            array_keys($decoded['assist']['suggestions'][0]['explainability']),
+        );
+    }
 }
