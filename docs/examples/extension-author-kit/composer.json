@@ -1,0 +1,16 @@
+{
+  "name": "vendor/story-graph-extension",
+  "description": "Example external extension module for Waaseyaa",
+  "type": "library",
+  "require": {
+    "php": "^8.3",
+    "waaseyaa/plugin": "@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vendor\\StoryGraphExtension\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

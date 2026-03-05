@@ -109,6 +109,8 @@ Use this as the default runbook for upgrades, baseline refreshes, and verificati
    - focused tests,
    - a `docs/plans/` report,
    - GitHub issue closure evidence.
+5. For external module work, follow:
+   - `docs/specs/extension-author-onboarding.md`
 
 ## Audit Trail
 
