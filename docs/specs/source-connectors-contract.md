@@ -37,6 +37,11 @@ For every transport, connectors must:
 
 ## Fixtures
 - Provide per-transport fixtures under `tests/fixtures/connectors/<transport>.json` encoding normalized provenance + payload to anchor tests.
+- Canonical fixture files:
+  - `tests/fixtures/connectors/dataset.json`
+  - `tests/fixtures/connectors/api.json`
+  - `tests/fixtures/connectors/file.json`
+  - `tests/fixtures/connectors/crawl.json`
 - Tests assert:
   - canonical provenance block remains unchanged
   - diagnostics emitted deterministically when expected
