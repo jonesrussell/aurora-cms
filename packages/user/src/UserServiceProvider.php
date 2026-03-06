@@ -16,6 +16,7 @@ final class UserServiceProvider extends ServiceProvider
             label: 'User',
             class: User::class,
             keys: ['id' => 'uid', 'uuid' => 'uuid', 'label' => 'name'],
+            group: 'people',
             fieldDefinitions: [
                 'mail' => [
                     'type' => 'email',

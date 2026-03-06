@@ -16,6 +16,7 @@ final class WorkflowServiceProvider extends ServiceProvider
             label: 'Workflow',
             class: Workflow::class,
             keys: ['id' => 'id', 'label' => 'label'],
+            group: 'workflows',
         ));
     }
 }

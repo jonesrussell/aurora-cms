@@ -35,6 +35,7 @@ final readonly class EntityType implements EntityTypeInterface
         private ?string $bundleEntityType = null,
         private array $constraints = [],
         private array $fieldDefinitions = [],
+        private ?string $group = null,
     ) {}
 
     public function id(): string
@@ -89,5 +90,10 @@ final readonly class EntityType implements EntityTypeInterface
     public function getFieldDefinitions(): array
     {
         return $this->fieldDefinitions;
+    }
+
+    public function getGroup(): ?string
+    {
+        return $this->group;
     }
 }

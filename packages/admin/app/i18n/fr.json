@@ -40,5 +40,9 @@
   "nav_group_structure": "Structure",
   "nav_group_workflows": "Flux de travail",
   "nav_group_ai": "IA",
+  "nav_group_events": "Événements",
+  "nav_group_community": "Communauté",
+  "nav_group_knowledge": "Savoirs culturels",
+  "nav_group_language": "Langue",
   "nav_group_other": "Autre"
 }

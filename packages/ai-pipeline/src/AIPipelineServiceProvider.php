@@ -16,6 +16,7 @@ final class AIPipelineServiceProvider extends ServiceProvider
             label: 'Pipeline',
             class: Pipeline::class,
             keys: ['id' => 'id', 'label' => 'label'],
+            group: 'ai',
         ));
     }
 }

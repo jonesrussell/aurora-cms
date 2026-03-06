@@ -488,6 +488,7 @@ final class HttpKernel extends AbstractKernel
                             'keys' => $def->getKeys(),
                             'translatable' => $def->isTranslatable(),
                             'revisionable' => $def->isRevisionable(),
+                            'group' => $def->getGroup(),
                         ];
                     }
                     $this->sendJson(200, ['data' => $types]);

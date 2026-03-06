@@ -51,6 +51,7 @@ class EntityTypeTest extends TestCase
         $this->assertFalse($type->isTranslatable());
         $this->assertNull($type->getBundleEntityType());
         $this->assertSame([], $type->getConstraints());
+        $this->assertNull($type->getGroup());
     }
 
     public function testAllProperties(): void
@@ -79,6 +80,19 @@ class EntityTypeTest extends TestCase
         $this->assertTrue($type->isTranslatable());
         $this->assertSame('node_type', $type->getBundleEntityType());
         $this->assertSame($constraints, $type->getConstraints());
+        $this->assertNull($type->getGroup());
+    }
+
+    public function testGroupProperty(): void
+    {
+        $type = new EntityType(
+            id: 'event',
+            label: 'Event',
+            class: 'Waaseyaa\\Entity\\Tests\\Unit\\TestEntity',
+            group: 'events',
+        );
+
+        $this->assertSame('events', $type->getGroup());
     }
 
     public function testFieldDefinitionsDefaultsToEmptyArray(): void

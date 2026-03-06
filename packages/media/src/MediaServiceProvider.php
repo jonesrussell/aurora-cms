@@ -16,6 +16,7 @@ final class MediaServiceProvider extends ServiceProvider
             label: 'Media',
             class: Media::class,
             keys: ['id' => 'mid', 'uuid' => 'uuid', 'label' => 'name', 'bundle' => 'bundle'],
+            group: 'media',
         ));
 
         $this->entityType(new EntityType(
@@ -23,6 +24,7 @@ final class MediaServiceProvider extends ServiceProvider
             label: 'Media Type',
             class: MediaType::class,
             keys: ['id' => 'id', 'label' => 'label'],
+            group: 'media',
         ));
     }
 }

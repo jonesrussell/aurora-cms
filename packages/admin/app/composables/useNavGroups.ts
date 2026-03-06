@@ -2,15 +2,10 @@ export interface EntityTypeInfo {
   id: string
   label: string
   keys: Record<string, string>
+  group?: string | null
 }
 
 type NonEmptyArray<T> = [T, ...T[]]
-
-interface NavGroupDefinition {
-  key: string
-  labelKey: string
-  entityTypeIds: string[]
-}
 
 export interface ResolvedNavGroup {
   key: string
@@ -18,43 +13,56 @@ export interface ResolvedNavGroup {
   entityTypes: NonEmptyArray<EntityTypeInfo>
 }
 
-const navGroupDefinitions: NavGroupDefinition[] = [
-  { key: 'people', labelKey: 'nav_group_people', entityTypeIds: ['user'] },
-  { key: 'content', labelKey: 'nav_group_content', entityTypeIds: ['node', 'node_type'] },
-  { key: 'taxonomy', labelKey: 'nav_group_taxonomy', entityTypeIds: ['taxonomy_term', 'taxonomy_vocabulary'] },
-  { key: 'media', labelKey: 'nav_group_media', entityTypeIds: ['media', 'media_type'] },
-  { key: 'structure', labelKey: 'nav_group_structure', entityTypeIds: ['path_alias', 'menu', 'menu_link'] },
-  { key: 'workflows', labelKey: 'nav_group_workflows', entityTypeIds: ['workflow'] },
-  { key: 'ai', labelKey: 'nav_group_ai', entityTypeIds: ['pipeline'] },
+const groupOrder: string[] = [
+  'people',
+  'content',
+  'taxonomy',
+  'media',
+  'structure',
+  'workflows',
+  'ai',
 ]
 
 export function groupEntityTypes(entityTypes: EntityTypeInfo[]): ResolvedNavGroup[] {
-  const claimed = new Set<string>()
-  const groups: ResolvedNavGroup[] = []
+  const grouped = new Map<string, EntityTypeInfo[]>()
+  const ungrouped: EntityTypeInfo[] = []
 
-  for (const def of navGroupDefinitions) {
-    const matched = def.entityTypeIds
-      .map((id) => entityTypes.find((et) => et.id === id))
-      .filter((et): et is EntityTypeInfo => et !== undefined)
-
-    if (matched.length > 0) {
-      groups.push({
-        key: def.key,
-        labelKey: def.labelKey,
-        entityTypes: matched as NonEmptyArray<EntityTypeInfo>,
-      })
-      for (const et of matched) {
-        claimed.add(et.id)
-      }
+  for (const et of entityTypes) {
+    if (et.group) {
+      const list = grouped.get(et.group) ?? []
+      list.push(et)
+      grouped.set(et.group, list)
+    } else {
+      ungrouped.push(et)
     }
   }
 
-  const unclaimed = entityTypes.filter((et) => !claimed.has(et.id))
-  if (unclaimed.length > 0) {
+  // Sort groups: known order first, then unknown groups alphabetically
+  const sortedKeys = [...grouped.keys()].sort((a, b) => {
+    const ai = groupOrder.indexOf(a)
+    const bi = groupOrder.indexOf(b)
+    if (ai !== -1 && bi !== -1) return ai - bi
+    if (ai !== -1) return -1
+    if (bi !== -1) return 1
+    return a.localeCompare(b)
+  })
+
+  const groups: ResolvedNavGroup[] = []
+
+  for (const key of sortedKeys) {
+    const types = grouped.get(key)!
+    groups.push({
+      key,
+      labelKey: `nav_group_${key}`,
+      entityTypes: types as NonEmptyArray<EntityTypeInfo>,
+    })
+  }
+
+  if (ungrouped.length > 0) {
     groups.push({
       key: 'other',
       labelKey: 'nav_group_other',
-      entityTypes: unclaimed as NonEmptyArray<EntityTypeInfo>,
+      entityTypes: ungrouped as NonEmptyArray<EntityTypeInfo>,
     })
   }
 

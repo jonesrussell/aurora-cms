@@ -16,6 +16,7 @@ final class PathServiceProvider extends ServiceProvider
             label: 'Path Alias',
             class: PathAlias::class,
             keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'alias', 'langcode' => 'langcode'],
+            group: 'structure',
             fieldDefinitions: [
                 'path' => [
                     'type' => 'string',

@@ -40,5 +40,9 @@
   "nav_group_structure": "Structure",
   "nav_group_workflows": "Workflows",
   "nav_group_ai": "AI",
+  "nav_group_events": "Events",
+  "nav_group_community": "Community",
+  "nav_group_knowledge": "Cultural Knowledge",
+  "nav_group_language": "Language",
   "nav_group_other": "Other"
 }

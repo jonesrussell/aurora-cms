@@ -16,6 +16,7 @@ final class TaxonomyServiceProvider extends ServiceProvider
             label: 'Taxonomy Term',
             class: Term::class,
             keys: ['id' => 'tid', 'uuid' => 'uuid', 'label' => 'name', 'bundle' => 'vid'],
+            group: 'taxonomy',
             fieldDefinitions: [
                 'description' => [
                     'type' => 'text',
@@ -50,6 +51,7 @@ final class TaxonomyServiceProvider extends ServiceProvider
             label: 'Vocabulary',
             class: Vocabulary::class,
             keys: ['id' => 'vid', 'label' => 'name'],
+            group: 'taxonomy',
             fieldDefinitions: [
                 'description' => [
                     'type' => 'text',

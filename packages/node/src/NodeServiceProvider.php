@@ -16,6 +16,7 @@ final class NodeServiceProvider extends ServiceProvider
             label: 'Content',
             class: Node::class,
             keys: ['id' => 'nid', 'uuid' => 'uuid', 'label' => 'title', 'bundle' => 'type'],
+            group: 'content',
             fieldDefinitions: [
                 'status' => [
                     'type' => 'boolean',
@@ -65,6 +66,7 @@ final class NodeServiceProvider extends ServiceProvider
             label: 'Content Type',
             class: NodeType::class,
             keys: ['id' => 'type', 'label' => 'name'],
+            group: 'content',
         ));
     }
 }

@@ -16,6 +16,7 @@ final class MenuServiceProvider extends ServiceProvider
             label: 'Menu',
             class: Menu::class,
             keys: ['id' => 'id', 'label' => 'label'],
+            group: 'structure',
         ));
 
         $this->entityType(new EntityType(
@@ -23,6 +24,7 @@ final class MenuServiceProvider extends ServiceProvider
             label: 'Menu Link',
             class: MenuLink::class,
             keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'title', 'bundle' => 'menu_name'],
+            group: 'structure',
         ));
     }
 }

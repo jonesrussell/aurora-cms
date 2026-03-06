@@ -29,4 +29,7 @@ interface EntityTypeInterface
 
     /** @return array<string, array<string, mixed>> Field definitions keyed by field name. */
     public function getFieldDefinitions(): array;
+
+    /** @return string|null Admin sidebar group key (e.g. 'content', 'taxonomy'). */
+    public function getGroup(): ?string;
 }
