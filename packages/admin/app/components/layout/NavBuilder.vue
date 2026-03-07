@@ -2,7 +2,7 @@
 import { useLanguage } from '~/composables/useLanguage'
 import { groupEntityTypes, type EntityTypeInfo } from '~/composables/useNavGroups'
 
-const { t } = useLanguage()
+const { t, entityLabel } = useLanguage()
 
 const entityTypes = ref<EntityTypeInfo[]>([])
 const loadError = ref(false)
@@ -39,7 +39,7 @@ const navGroups = computed(() => groupEntityTypes(entityTypes.value))
         :to="`/${et.id}`"
         class="nav-item"
       >
-        {{ et.label }}
+        {{ entityLabel(et.id, et.label) }}
       </NuxtLink>
     </template>
   </nav>

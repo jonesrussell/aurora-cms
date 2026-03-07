@@ -44,8 +44,16 @@ export function useLanguage() {
     }
   }
 
+  // Translate an entity type label. Looks up 'entity_type_{id}' in i18n messages
+  // and falls back to the API-provided label string when no translation exists.
+  function entityLabel(id: string, fallback: string): string {
+    const key = `entity_type_${id}`
+    const msg = messages[currentLocale.value]?.[key]
+    return msg !== undefined ? msg : fallback
+  }
+
   const locale = computed(() => currentLocale.value)
   const locales = computed(() => Object.keys(messages) as Locale[])
 
-  return { t, locale, locales, setLocale }
+  return { t, entityLabel, locale, locales, setLocale }
 }
