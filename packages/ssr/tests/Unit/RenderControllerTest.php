@@ -119,6 +119,84 @@ final class RenderControllerTest extends TestCase
     }
 
     #[Test]
+    public function tryRenderPathTemplateResolvesValidSingleSegment(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'language.html.twig' => '<main>{{ path }}</main>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->tryRenderPathTemplate('/language');
+
+        $this->assertNotNull($response);
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<main>/language</main>', $response->content);
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateResolvesMultiSegmentViaFirstSegment(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'events.html.twig' => '<main>{{ path }}</main>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->tryRenderPathTemplate('/events/my-event-slug');
+
+        $this->assertNotNull($response);
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<main>/events/my-event-slug</main>', $response->content);
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateReturnsNullForRootPath(): void
+    {
+        $twig = new Environment(new ArrayLoader(['page.html.twig' => '<main></main>']));
+        $controller = new RenderController($twig);
+
+        $this->assertNull($controller->tryRenderPathTemplate('/'));
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateReturnsNullForEmptyPath(): void
+    {
+        $twig = new Environment(new ArrayLoader([]));
+        $controller = new RenderController($twig);
+
+        $this->assertNull($controller->tryRenderPathTemplate(''));
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateReturnsNullForPathTraversalAttempt(): void
+    {
+        $twig = new Environment(new ArrayLoader([]));
+        $controller = new RenderController($twig);
+
+        $this->assertNull($controller->tryRenderPathTemplate('/../admin'));
+        $this->assertNull($controller->tryRenderPathTemplate('/admin/../secret'));
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateReturnsNullForSegmentWithSpecialChars(): void
+    {
+        $twig = new Environment(new ArrayLoader([]));
+        $controller = new RenderController($twig);
+
+        $this->assertNull($controller->tryRenderPathTemplate('/invalid segment'));
+        $this->assertNull($controller->tryRenderPathTemplate('/foo@bar'));
+        $this->assertNull($controller->tryRenderPathTemplate('/-leading-hyphen'));
+    }
+
+    #[Test]
+    public function tryRenderPathTemplateReturnsNullWhenTemplateNotFound(): void
+    {
+        $twig = new Environment(new ArrayLoader([]));
+        $controller = new RenderController($twig);
+
+        $this->assertNull($controller->tryRenderPathTemplate('/nonexistent'));
+    }
+
+    #[Test]
     public function renderNotFoundReturns404Response(): void
     {
         $twig = new Environment(new ArrayLoader([

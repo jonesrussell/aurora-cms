@@ -31,10 +31,10 @@ final class RenderController
         ];
 
         // Try path-specific template first (e.g., /language → language.html.twig).
-        $segment = trim($normalizedPath, '/');
         $templates = [];
-        if ($segment !== '' && preg_match('/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i', $segment)) {
-            $templates[] = $segment . '.html.twig';
+        $pathTemplate = $this->pathSegmentToTemplate(trim($normalizedPath, '/'));
+        if ($pathTemplate !== null) {
+            $templates[] = $pathTemplate;
         }
         $templates[] = 'page.html.twig';
         $templates[] = 'ssr/page.html.twig';
@@ -100,25 +100,24 @@ final class RenderController
             return null;
         }
 
-        // Try exact single-segment match first, then first segment of multi-segment paths.
-        $segments = [];
-        if (preg_match('/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i', $trimmed)) {
-            $segments[] = $trimmed;
-        } elseif (str_contains($trimmed, '/')) {
-            $firstSegment = explode('/', $trimmed, 2)[0];
-            if (preg_match('/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i', $firstSegment)) {
-                $segments[] = $firstSegment;
-            }
-        }
-
         $context = [
             'title' => 'Waaseyaa',
             'path' => $normalizedPath,
         ];
 
-        foreach ($segments as $segment) {
+        // Try exact single-segment match first, then first segment of multi-segment paths.
+        $candidates = [$trimmed];
+        if (str_contains($trimmed, '/')) {
+            $candidates[] = explode('/', $trimmed, 2)[0];
+        }
+
+        foreach ($candidates as $candidate) {
+            $template = $this->pathSegmentToTemplate($candidate);
+            if ($template === null) {
+                continue;
+            }
             try {
-                $html = $this->twig->render($segment . '.html.twig', $context);
+                $html = $this->twig->render($template, $context);
                 return new SsrResponse(content: $html);
             } catch (LoaderError) {
                 continue;
@@ -126,6 +125,19 @@ final class RenderController
         }
 
         return null;
+    }
+
+    /**
+     * Validate a path segment and return its template filename, or null if invalid.
+     * Valid segments are lowercase alphanumeric with optional hyphens (no leading/trailing hyphens).
+     */
+    private function pathSegmentToTemplate(string $segment): ?string
+    {
+        if ($segment === '' || !preg_match('/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i', $segment)) {
+            return null;
+        }
+
+        return $segment . '.html.twig';
     }
 
     public function renderNotFound(string $path): SsrResponse
