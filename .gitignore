@@ -23,6 +23,11 @@ packages/admin/node_modules/
 # Storage (compiled artifacts)
 storage/
 
+# Environment
+.env
+.env.*
+!.env.example
+
 # Worktrees
 .worktrees/
 
