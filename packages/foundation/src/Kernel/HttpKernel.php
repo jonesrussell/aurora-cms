@@ -392,6 +392,11 @@ final class HttpKernel extends AbstractKernel
                 ->build(),
         );
 
+        // App routes — registered before SSR catchall so they take priority.
+        foreach ($this->providers as $provider) {
+            $provider->routes($router);
+        }
+
         $router->addRoute(
             'public.home',
             RouteBuilder::create('/')
