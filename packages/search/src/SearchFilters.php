@@ -15,6 +15,7 @@ final readonly class SearchFilters
         public string $contentType = '',
         public array $sourceNames = [],
         public int $minQuality = 0,
+        // Reserved for future sorting support.
         public string $sortField = 'relevance',
         public string $sortOrder = 'desc',
     ) {}
