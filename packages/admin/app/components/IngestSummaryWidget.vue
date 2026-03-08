@@ -15,6 +15,8 @@ const total = computed(() => Object.values(counts.value).reduce((a, b) => a + b,
 const loading = ref(true)
 const error = ref(false)
 
+const hidden = ref(false)
+
 async function fetchCounts() {
   try {
     const result = await list('ingest_log', { page: { limit: 1000 } })
@@ -31,8 +33,14 @@ async function fetchCounts() {
       }
     }
     counts.value = fresh
-  } catch {
-    error.value = true
+  } catch (e: any) {
+    // Hide widget silently when entity type is not registered (404).
+    const statusCode = e?.response?.status ?? e?.statusCode ?? 0
+    if (statusCode === 404) {
+      hidden.value = true
+    } else {
+      error.value = true
+    }
   } finally {
     loading.value = false
   }
@@ -42,7 +50,7 @@ onMounted(fetchCounts)
 </script>
 
 <template>
-  <div class="ingest-widget">
+  <div v-if="!hidden" class="ingest-widget">
     <h2 class="ingest-widget-title">{{ t('ingest_widget_title') }}</h2>
 
     <div v-if="loading" class="ingest-widget-loading">{{ t('loading') }}</div>

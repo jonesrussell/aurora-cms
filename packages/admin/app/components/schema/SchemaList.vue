@@ -88,6 +88,16 @@ async function deleteEntity(entity: JsonApiResource) {
   }
 }
 
+function getCellValue(entity: JsonApiResource, fieldName: string, fieldSchema: Record<string, unknown>): unknown {
+  const value = entity.attributes[fieldName]
+  // machine_name fields may be excluded from attributes by the serializer (id key);
+  // fall back to the resource-level id.
+  if ((value === null || value === undefined || value === '') && fieldSchema['x-widget'] === 'machine_name') {
+    return entity.id
+  }
+  return value
+}
+
 function formatCellValue(value: unknown, fieldSchema: Record<string, unknown>): string {
   if (value === null || value === undefined) return ''
 
@@ -107,6 +117,15 @@ function formatCellValue(value: unknown, fieldSchema: Record<string, unknown>): 
   }
 
   return String(value)
+}
+
+function getEntityLabel(entity: JsonApiResource): string {
+  // Find the label field from columns (x-label: "Title" or the label key).
+  for (const [fieldName] of columns.value) {
+    const val = entity.attributes[fieldName]
+    if (typeof val === 'string' && val !== '') return val
+  }
+  return entity.id
 }
 
 onMounted(async () => {
@@ -156,7 +175,7 @@ watch(messages, (msgs) => {
           </tr>
           <tr v-for="entity in entities" :key="entity.id">
             <td v-for="[fieldName, fieldSchema] in columns" :key="fieldName">
-              {{ formatCellValue(entity.attributes[fieldName], fieldSchema) }}
+              {{ formatCellValue(getCellValue(entity, fieldName, fieldSchema), fieldSchema) }}
             </td>
             <td class="actions">
               <NuxtLink :to="`/${entityType}/${entity.id}`" class="btn btn-sm">
@@ -164,7 +183,7 @@ watch(messages, (msgs) => {
               </NuxtLink>
               <button
                 class="btn btn-sm btn-danger"
-                :aria-label="t('delete') + ': ' + (entity.attributes[columns[0]?.[0]] ?? entity.id)"
+                :aria-label="t('delete') + ': ' + getEntityLabel(entity)"
                 @click="deleteEntity(entity)"
               >
                 {{ t('delete') }}
@@ -175,14 +194,16 @@ watch(messages, (msgs) => {
       </table>
 
       <div class="pagination">
-        <span>{{ t('showing') }} {{ offset + 1 }}–{{ Math.min(offset + limit, total) }} {{ t('of') }} {{ total }}</span>
-        <button :disabled="offset === 0" class="btn btn-sm" @click="prevPage">{{ t('previous') }}</button>
-        <button :disabled="offset + limit >= total" class="btn btn-sm" @click="nextPage">{{ t('next') }}</button>
+        <template v-if="total > 0">
+          <span>{{ t('showing') }} {{ offset + 1 }}–{{ Math.min(offset + limit, total) }} {{ t('of') }} {{ total }}</span>
+          <button :disabled="offset === 0" class="btn btn-sm" @click="prevPage">{{ t('previous') }}</button>
+          <button :disabled="offset + limit >= total" class="btn btn-sm" @click="nextPage">{{ t('next') }}</button>
+        </template>
         <span v-if="connected" class="sse-status" :title="t('realtime_connected')">&#9679;</span>
         <button v-else-if="sseError" class="btn btn-sm" @click="reconnect">{{ sseError }}</button>
       </div>
 
-      <div class="sr-only" role="status" aria-live="polite">
+      <div v-if="total > 0" class="sr-only" role="status" aria-live="polite">
         {{ t('showing') }} {{ offset + 1 }}–{{ Math.min(offset + limit, total) }} {{ t('of') }} {{ total }}
       </div>
     </template>

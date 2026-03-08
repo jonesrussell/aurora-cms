@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SchemaProperty } from '~/composables/useSchema'
 
-defineProps<{
+const props = defineProps<{
   modelValue: string
   label?: string
   description?: string
@@ -11,6 +11,14 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+
+// datetime-local inputs require YYYY-MM-DDTHH:MM:SS without timezone offset.
+// The API returns ISO 8601 with offset (e.g. "2026-03-08T15:52:48+00:00").
+const localValue = computed(() => {
+  if (!props.modelValue) return ''
+  // Strip timezone offset or trailing Z, keep only YYYY-MM-DDTHH:MM:SS
+  return props.modelValue.replace(/([+-]\d{2}:\d{2}|Z)$/, '').slice(0, 19)
+})
 </script>
 
 <template>
@@ -21,7 +29,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
     </label>
     <input
       type="datetime-local"
-      :value="modelValue"
+      :value="localValue"
       :required="required"
       :disabled="disabled"
       class="field-input"
