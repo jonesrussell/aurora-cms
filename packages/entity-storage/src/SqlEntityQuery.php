@@ -29,6 +29,9 @@ final class SqlEntityQuery implements EntityQueryInterface
     private ?int $rangeLimit = null;
     private bool $isCount = false;
 
+    /** @var array<string, bool> */
+    private array $columnCache = [];
+
     public function __construct(
         private readonly EntityTypeInterface $entityType,
         private readonly DatabaseInterface $database,
@@ -103,6 +106,25 @@ final class SqlEntityQuery implements EntityQueryInterface
     }
 
     /**
+     * Resolve a field name to its SQL expression.
+     *
+     * Fields that exist as table columns are returned as-is. Fields stored
+     * in the _data JSON blob are wrapped in json_extract().
+     */
+    private function resolveField(string $field): string
+    {
+        if (!isset($this->columnCache[$field])) {
+            $this->columnCache[$field] = $this->database->schema()->fieldExists($this->tableName, $field);
+        }
+
+        if ($this->columnCache[$field]) {
+            return $field;
+        }
+
+        return "json_extract(_data, '\$." . $field . "')";
+    }
+
+    /**
      * Execute the query and return entity IDs.
      *
      * When count() has been called, returns a single-element array with the count.
@@ -122,25 +144,26 @@ final class SqlEntityQuery implements EntityQueryInterface
         // Apply conditions.
         foreach ($this->conditions as $condition) {
             $operator = strtoupper($condition['operator']);
+            $field = $this->resolveField($condition['field']);
 
             if ($operator === 'IS NULL') {
-                $select->isNull($condition['field']);
+                $select->isNull($field);
             } elseif ($operator === 'IS NOT NULL') {
-                $select->isNotNull($condition['field']);
+                $select->isNotNull($field);
             } elseif ($operator === 'CONTAINS') {
                 $escaped = str_replace(['%', '_'], ['\\%', '\\_'], (string) $condition['value']);
-                $select->condition($condition['field'], '%' . $escaped . '%', 'LIKE');
+                $select->condition($field, '%' . $escaped . '%', 'LIKE');
             } elseif ($operator === 'STARTS_WITH') {
                 $escaped = str_replace(['%', '_'], ['\\%', '\\_'], (string) $condition['value']);
-                $select->condition($condition['field'], $escaped . '%', 'LIKE');
+                $select->condition($field, $escaped . '%', 'LIKE');
             } else {
-                $select->condition($condition['field'], $condition['value'], $condition['operator']);
+                $select->condition($field, $condition['value'], $condition['operator']);
             }
         }
 
         // Apply sorts.
         foreach ($this->sorts as $sort) {
-            $select->orderBy($sort['field'], $sort['direction']);
+            $select->orderBy($this->resolveField($sort['field']), $sort['direction']);
         }
 
         // Apply range.
