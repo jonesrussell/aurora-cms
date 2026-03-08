@@ -25,6 +25,10 @@ final class SessionMiddleware implements HttpMiddlewareInterface
 
     public function process(Request $request, HttpHandlerInterface $next): Response
     {
+        if (session_status() !== \PHP_SESSION_ACTIVE && !$request->attributes->has('_session')) {
+            session_start();
+        }
+
         $existingAccount = $request->attributes->get('_account');
         if ($existingAccount instanceof AccountInterface) {
             return $next->handle($request);
