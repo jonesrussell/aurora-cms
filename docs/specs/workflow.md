@@ -18,7 +18,7 @@ The Waaseyaa Framework and Minoo (the flagship consumer app) version independent
 | v0.9 | Tenant onboarding & security defaults — namespace rules, onboarding guardrails, security CI gates | Open (3 issues) |
 | v0.10 | Admin SPA polish, bug fixes, smoke test coverage | Closed |
 | v0.11 | Ingestion pipeline defaults — envelope schema, validation, error format, logging, CI enforcement | Closed |
-| v0.12 | Operator diagnostics & health — CLI health commands, runtime diagnostics, schema drift detection, ingestion health | Active |
+| v0.12 | Operator diagnostics & health — CLI health commands, runtime diagnostics, schema drift detection, ingestion health | Closed |
 | v1.0 | Platform contracts locked. Ingestion, schema registry, ACL, versioning, and CI — stable and semver-committed | Future |
 
 **Update this table whenever milestones are added, closed, or redescribed.**
