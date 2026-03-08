@@ -222,6 +222,85 @@ final class DefaultsSchemaRegistryTest extends TestCase
         $this->assertSame('core.note', $entries[1]->id);
     }
 
+    #[Test]
+    public function schemaKindDefaultsToEntityWhenMissing(): void
+    {
+        $this->writeSchema('core.note', [
+            '$schema' => 'http://json-schema.org/draft-07/schema#',
+            'x-waaseyaa' => [
+                'entity_type'   => 'core.note',
+                'version'       => '0.1.0',
+                'compatibility' => 'liberal',
+            ],
+        ]);
+
+        $entry = (new DefaultsSchemaRegistry($this->defaultsDir))->list()[0];
+
+        $this->assertSame('entity', $entry->schemaKind);
+    }
+
+    #[Test]
+    public function stabilityDefaultsToStableWhenMissing(): void
+    {
+        $this->writeSchema('core.note', [
+            '$schema' => 'http://json-schema.org/draft-07/schema#',
+            'x-waaseyaa' => [
+                'entity_type'   => 'core.note',
+                'version'       => '0.1.0',
+                'compatibility' => 'liberal',
+            ],
+        ]);
+
+        $entry = (new DefaultsSchemaRegistry($this->defaultsDir))->list()[0];
+
+        $this->assertSame('stable', $entry->stability);
+    }
+
+    #[Test]
+    public function schemaKindAndStabilityReadFromExtension(): void
+    {
+        $this->writeSchema('ingestion.envelope', [
+            '$schema' => 'http://json-schema.org/draft-07/schema#',
+            'title'   => 'Ingestion Envelope',
+            'x-waaseyaa' => [
+                'entity_type'   => 'ingestion.envelope',
+                'schema_kind'   => 'ingestion_envelope',
+                'version'       => '0.1.0',
+                'compatibility' => 'liberal',
+                'stability'     => 'experimental',
+            ],
+        ]);
+
+        $entry = (new DefaultsSchemaRegistry($this->defaultsDir))->get('ingestion.envelope');
+
+        $this->assertNotNull($entry);
+        $this->assertSame('ingestion.envelope', $entry->id);
+        $this->assertSame('ingestion_envelope', $entry->schemaKind);
+        $this->assertSame('experimental', $entry->stability);
+        $this->assertSame('0.1.0', $entry->version);
+        $this->assertSame('liberal', $entry->compatibility);
+    }
+
+    #[Test]
+    public function toArrayIncludesSchemaKindAndStability(): void
+    {
+        $this->writeSchema('ingestion.envelope', [
+            '$schema' => 'http://json-schema.org/draft-07/schema#',
+            'x-waaseyaa' => [
+                'entity_type'   => 'ingestion.envelope',
+                'schema_kind'   => 'ingestion_envelope',
+                'version'       => '0.1.0',
+                'compatibility' => 'liberal',
+                'stability'     => 'experimental',
+            ],
+        ]);
+
+        $arr = (new DefaultsSchemaRegistry($this->defaultsDir))->get('ingestion.envelope')->toArray();
+
+        $this->assertSame('ingestion_envelope', $arr['schema_kind']);
+        $this->assertSame('experimental', $arr['stability']);
+    }
+
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------

@@ -8,9 +8,13 @@ namespace Waaseyaa\Foundation\Schema;
  * Loads schema entries from *.schema.json files in a defaults directory.
  *
  * Each schema file must contain an `x-waaseyaa` extension object with:
- *   - `entity_type` (string) — the schema's canonical ID
- *   - `version`     (string) — semver string
+ *   - `entity_type`   (string) — the schema's canonical ID
+ *   - `version`       (string) — semver string
  *   - `compatibility` (string) — 'liberal' (pre-v1) or 'strict' (post-v1)
+ *
+ * Optional `x-waaseyaa` fields:
+ *   - `schema_kind` (string) — 'entity' (default), 'ingestion_envelope', etc.
+ *   - `stability`   (string) — 'stable' (default), 'experimental', 'deprecated'
  */
 final class DefaultsSchemaRegistry implements SchemaRegistryInterface
 {
@@ -90,11 +94,16 @@ final class DefaultsSchemaRegistry implements SchemaRegistryInterface
             return null;
         }
 
+        $schemaKind = (string) ($ext['schema_kind'] ?? 'entity');
+        $stability  = (string) ($ext['stability'] ?? 'stable');
+
         return new SchemaEntry(
             id:            $id,
             version:       $version,
             compatibility: $compatibility,
             schemaPath:    $file,
+            schemaKind:    $schemaKind,
+            stability:     $stability,
         );
     }
 }

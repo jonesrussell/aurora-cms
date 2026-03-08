@@ -59,6 +59,39 @@ final class SchemaRegistryIntegrationTest extends TestCase
     }
 
     #[Test]
+    public function registryLoadsIngestionEnvelopeSchema(): void
+    {
+        $entry = $this->registry->get('ingestion.envelope');
+
+        $this->assertNotNull($entry);
+        $this->assertSame('ingestion.envelope', $entry->id);
+        $this->assertSame('ingestion_envelope', $entry->schemaKind);
+        $this->assertSame('experimental', $entry->stability);
+        $this->assertSame('liberal', $entry->compatibility);
+        $this->assertNotEmpty($entry->version);
+        $this->assertFileExists($entry->schemaPath);
+    }
+
+    #[Test]
+    public function registryListContainsIngestionEnvelope(): void
+    {
+        $entries = $this->registry->list();
+
+        $ids = array_map(static fn($e) => $e->id, $entries);
+        $this->assertContains('ingestion.envelope', $ids);
+    }
+
+    #[Test]
+    public function coreNoteSchemaDefaultsToEntityKindAndStableStability(): void
+    {
+        $entry = $this->registry->get('core.note');
+
+        $this->assertNotNull($entry);
+        $this->assertSame('entity', $entry->schemaKind);
+        $this->assertSame('stable', $entry->stability);
+    }
+
+    #[Test]
     public function cliSchemaListOutputsCoreNote(): void
     {
         $app = new Application();
@@ -71,6 +104,9 @@ final class SchemaRegistryIntegrationTest extends TestCase
         $output = $tester->getDisplay();
         $this->assertStringContainsString('core.note', $output);
         $this->assertStringContainsString('liberal', $output);
+        $this->assertStringContainsString('ingestion.envelope', $output);
+        $this->assertStringContainsString('ingestion_envelope', $output);
+        $this->assertStringContainsString('experimental', $output);
         $this->assertSame(0, $tester->getStatusCode());
     }
 }

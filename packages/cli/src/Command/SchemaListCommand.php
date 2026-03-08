@@ -34,13 +34,15 @@ final class SchemaListCommand extends Command
         }
 
         $table = new Table($output);
-        $table->setHeaders(['Entity Type', 'Version', 'Compatibility', 'Schema Path']);
+        $table->setHeaders(['ID', 'Kind', 'Version', 'Compatibility', 'Stability', 'Schema Path']);
 
         foreach ($entries as $entry) {
             $table->addRow([
                 $entry->id,
+                $entry->schemaKind,
                 $entry->version,
                 $entry->compatibility,
+                $entry->stability,
                 $entry->schemaPath,
             ]);
         }

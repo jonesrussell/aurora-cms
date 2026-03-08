@@ -11,9 +11,11 @@ final readonly class SchemaEntry
         public string $version,
         public string $compatibility,
         public string $schemaPath,
+        public string $schemaKind = 'entity',
+        public string $stability = 'stable',
     ) {}
 
-    /** @return array{id: string, version: string, compatibility: string, schema_path: string} */
+    /** @return array{id: string, version: string, compatibility: string, schema_path: string, schema_kind: string, stability: string} */
     public function toArray(): array
     {
         return [
@@ -21,6 +23,8 @@ final readonly class SchemaEntry
             'version'       => $this->version,
             'compatibility' => $this->compatibility,
             'schema_path'   => $this->schemaPath,
+            'schema_kind'   => $this->schemaKind,
+            'stability'     => $this->stability,
         ];
     }
 }

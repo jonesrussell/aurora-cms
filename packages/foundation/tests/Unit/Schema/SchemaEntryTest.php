@@ -27,6 +27,8 @@ final class SchemaEntryTest extends TestCase
             'version'       => '0.1.0',
             'compatibility' => 'liberal',
             'schema_path'   => '/defaults/core.note.schema.json',
+            'schema_kind'   => 'entity',
+            'stability'     => 'stable',
         ], $entry->toArray());
     }
 }

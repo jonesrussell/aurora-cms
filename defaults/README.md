@@ -16,6 +16,7 @@ schemas, and configuration.
 |---|---|
 | `core.note.yaml` | Built-in minimal content type: a simple note with title and body |
 | `core.note.schema.json` | JSON Schema (draft-07) for the `core.note` entity payload |
+| `ingestion.envelope.schema.json` | Canonical ingestion envelope schema (v0.1.0) |
 
 ## Namespace
 
