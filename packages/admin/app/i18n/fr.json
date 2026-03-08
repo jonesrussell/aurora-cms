@@ -51,5 +51,36 @@
   "ingest_status_approved": "Approuvé",
   "ingest_status_rejected": "Rejeté",
   "ingest_status_failed": "Échoué",
-  "nav_group_other": "Autre"
+  "nav_group_other": "Autre",
+
+  "entity_type_user": "Utilisateur",
+  "entity_type_node": "Contenu",
+  "entity_type_node_type": "Type de contenu",
+  "entity_type_taxonomy_term": "Terme de taxonomie",
+  "entity_type_taxonomy_vocabulary": "Vocabulaire",
+  "entity_type_media": "Média",
+  "entity_type_media_type": "Type de média",
+  "entity_type_menu": "Menu",
+  "entity_type_menu_link": "Lien de menu",
+  "entity_type_path_alias": "Alias de chemin",
+  "entity_type_workflow": "Flux de travail",
+  "entity_type_pipeline": "Pipeline",
+
+  "field_title": "Titre",
+  "field_machine_name": "Nom machine",
+  "field_published": "Publié",
+  "field_description": "Description",
+  "field_weight": "Poids",
+  "field_email": "Adresse courriel",
+  "field_active": "Actif",
+  "field_member_since": "Membre depuis",
+  "field_promoted": "Promu en page d'accueil",
+  "field_sticky": "Épinglé en haut des listes",
+  "field_author": "Auteur",
+  "field_authored_on": "Date de création",
+  "field_last_updated": "Dernière mise à jour",
+  "field_system_path": "Chemin système",
+
+  "create_entity": "Créer {type}",
+  "edit_entity": "Modifier {type}"
 }

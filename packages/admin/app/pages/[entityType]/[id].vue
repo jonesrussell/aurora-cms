@@ -3,14 +3,14 @@ import { useLanguage } from '~/composables/useLanguage'
 import { useSchema } from '~/composables/useSchema'
 
 const route = useRoute()
-const { t } = useLanguage()
+const { t, entityLabel: translateEntityLabel } = useLanguage()
 
 const entityType = computed(() => route.params.entityType as string)
 const { schema, fetch: fetchSchema } = useSchema(entityType.value)
 onMounted(() => fetchSchema())
-const entityLabel = computed(() => schema.value?.title ?? entityType.value)
+const entityLabel = computed(() => translateEntityLabel(entityType.value, schema.value?.title ?? entityType.value))
 const config = useRuntimeConfig()
-useHead({ title: computed(() => `${t('edit')} ${entityLabel.value} | ${config.public.appName}`) })
+useHead({ title: computed(() => `${t('edit_entity', { type: entityLabel.value })} | ${config.public.appName}`) })
 const entityId = computed(() => route.params.id as string)
 const successMessage = ref('')
 const errorMessage = ref('')
@@ -28,7 +28,7 @@ function onError(message: string) {
 <template>
   <div>
     <div class="page-header">
-      <h1>{{ t('edit') }} {{ entityLabel }} #{{ entityId }}</h1>
+      <h1>{{ t('edit_entity', { type: entityLabel }) }} #{{ entityId }}</h1>
       <NuxtLink :to="`/${entityType}`" class="btn">
         {{ t('back_to_list') }}
       </NuxtLink>

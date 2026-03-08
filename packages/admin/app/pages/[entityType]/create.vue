@@ -4,14 +4,14 @@ import { useSchema } from '~/composables/useSchema'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useLanguage()
+const { t, entityLabel: translateEntityLabel } = useLanguage()
 
 const entityType = computed(() => route.params.entityType as string)
 const { schema, fetch: fetchSchema } = useSchema(entityType.value)
 onMounted(() => fetchSchema())
-const entityLabel = computed(() => schema.value?.title ?? entityType.value)
+const entityLabel = computed(() => translateEntityLabel(entityType.value, schema.value?.title ?? entityType.value))
 const config = useRuntimeConfig()
-useHead({ title: computed(() => `${t('create')} ${entityLabel.value} | ${config.public.appName}`) })
+useHead({ title: computed(() => `${t('create_entity', { type: entityLabel.value })} | ${config.public.appName}`) })
 const successMessage = ref('')
 const errorMessage = ref('')
 
@@ -30,7 +30,7 @@ function onError(message: string) {
 <template>
   <div>
     <div class="page-header">
-      <h1>{{ t('create') }} {{ entityLabel }}</h1>
+      <h1>{{ t('create_entity', { type: entityLabel }) }}</h1>
       <NuxtLink :to="`/${entityType}`" class="btn">
         {{ t('back_to_list') }}
       </NuxtLink>

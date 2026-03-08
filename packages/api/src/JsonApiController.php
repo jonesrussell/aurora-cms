@@ -74,6 +74,8 @@ final class JsonApiController
                 $entities,
                 fn($entity) => $this->accessHandler->check($entity, 'view', $this->account)->isAllowed(),
             );
+            // Recount after access filtering so meta.total matches the visible set.
+            $total = count($entities);
         }
 
         $resources = $this->serializer->serializeCollection($entities, $this->accessHandler, $this->account);

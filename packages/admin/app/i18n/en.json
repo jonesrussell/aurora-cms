@@ -51,5 +51,36 @@
   "ingest_status_approved": "Approved",
   "ingest_status_rejected": "Rejected",
   "ingest_status_failed": "Failed",
-  "nav_group_other": "Other"
+  "nav_group_other": "Other",
+
+  "entity_type_user": "User",
+  "entity_type_node": "Content",
+  "entity_type_node_type": "Content Type",
+  "entity_type_taxonomy_term": "Taxonomy Term",
+  "entity_type_taxonomy_vocabulary": "Vocabulary",
+  "entity_type_media": "Media",
+  "entity_type_media_type": "Media Type",
+  "entity_type_menu": "Menu",
+  "entity_type_menu_link": "Menu Link",
+  "entity_type_path_alias": "Path Alias",
+  "entity_type_workflow": "Workflow",
+  "entity_type_pipeline": "Pipeline",
+
+  "field_title": "Title",
+  "field_machine_name": "Machine name",
+  "field_published": "Published",
+  "field_description": "Description",
+  "field_weight": "Weight",
+  "field_email": "Email address",
+  "field_active": "Active",
+  "field_member_since": "Member since",
+  "field_promoted": "Promoted to front page",
+  "field_sticky": "Sticky at top of lists",
+  "field_author": "Author",
+  "field_authored_on": "Authored on",
+  "field_last_updated": "Last updated",
+  "field_system_path": "System path",
+
+  "create_entity": "Create {type}",
+  "edit_entity": "Edit {type}"
 }
