@@ -295,6 +295,100 @@ final class SqlStorageDriverTest extends TestCase
     }
 
     #[Test]
+    public function findByQueriesFieldsInDataJsonBlob(): void
+    {
+        $this->driver->write('test_entity', '1', [
+            'id' => 1,
+            'uuid' => 'uuid-1',
+            'label' => 'Active Item',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['status' => 'active', 'tenant_id' => 'tenant-a']),
+        ]);
+        $this->driver->write('test_entity', '2', [
+            'id' => 2,
+            'uuid' => 'uuid-2',
+            'label' => 'Inactive Item',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['status' => 'inactive', 'tenant_id' => 'tenant-b']),
+        ]);
+        $this->driver->write('test_entity', '3', [
+            'id' => 3,
+            'uuid' => 'uuid-3',
+            'label' => 'Another Active',
+            'bundle' => 'page',
+            'langcode' => 'en',
+            '_data' => json_encode(['status' => 'active', 'tenant_id' => 'tenant-a']),
+        ]);
+
+        // Query by a field stored in _data JSON blob.
+        $results = $this->driver->findBy('test_entity', ['status' => 'active']);
+        $this->assertCount(2, $results);
+        $labels = array_column($results, 'label');
+        $this->assertContains('Active Item', $labels);
+        $this->assertContains('Another Active', $labels);
+
+        // Query by multiple _data fields.
+        $results = $this->driver->findBy('test_entity', ['status' => 'active', 'tenant_id' => 'tenant-a']);
+        $this->assertCount(2, $results);
+
+        // Mix of real column and _data field.
+        $results = $this->driver->findBy('test_entity', ['bundle' => 'article', 'status' => 'active']);
+        $this->assertCount(1, $results);
+        $this->assertSame('Active Item', $results[0]['label']);
+    }
+
+    #[Test]
+    public function countQueriesFieldsInDataJsonBlob(): void
+    {
+        $this->driver->write('test_entity', '1', [
+            'id' => 1,
+            'uuid' => 'uuid-1',
+            'label' => 'One',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['status' => 'active']),
+        ]);
+        $this->driver->write('test_entity', '2', [
+            'id' => 2,
+            'uuid' => 'uuid-2',
+            'label' => 'Two',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['status' => 'inactive']),
+        ]);
+
+        $this->assertSame(1, $this->driver->count('test_entity', ['status' => 'active']));
+    }
+
+    #[Test]
+    public function findByOrdersByFieldInDataJsonBlob(): void
+    {
+        $this->driver->write('test_entity', '1', [
+            'id' => 1,
+            'uuid' => 'uuid-1',
+            'label' => 'First',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['priority' => 'b']),
+        ]);
+        $this->driver->write('test_entity', '2', [
+            'id' => 2,
+            'uuid' => 'uuid-2',
+            'label' => 'Second',
+            'bundle' => 'article',
+            'langcode' => 'en',
+            '_data' => json_encode(['priority' => 'a']),
+        ]);
+
+        $results = $this->driver->findBy('test_entity', [], ['priority' => 'ASC']);
+
+        $this->assertSame('Second', $results[0]['label']);
+        $this->assertSame('First', $results[1]['label']);
+    }
+
+    #[Test]
     public function readWithTranslationTable(): void
     {
         $entityType = new EntityType(
