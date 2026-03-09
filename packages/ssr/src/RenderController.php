@@ -32,6 +32,9 @@ final class RenderController
 
         // Try path-specific template first (e.g., /language → language.html.twig).
         $templates = [];
+        if ($normalizedPath === '/') {
+            $templates[] = 'home.html.twig';
+        }
         $pathTemplate = $this->pathSegmentToTemplate(trim($normalizedPath, '/'));
         if ($pathTemplate !== null) {
             $templates[] = $pathTemplate;

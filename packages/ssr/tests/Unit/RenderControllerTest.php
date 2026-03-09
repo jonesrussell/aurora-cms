@@ -48,6 +48,50 @@ final class RenderControllerTest extends TestCase
     }
 
     #[Test]
+    public function renderPathTriesHomeTemplateForRootPath(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'home.html.twig' => '<main>Welcome Home</main>',
+            'page.html.twig' => '<main>Generic Page</main>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->renderPath('/');
+
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<main>Welcome Home</main>', $response->content);
+    }
+
+    #[Test]
+    public function renderPathDoesNotTryHomeTemplateForNonRootPath(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'home.html.twig' => '<main>Welcome Home</main>',
+            'page.html.twig' => '<main>{{ path }}</main>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->renderPath('/about');
+
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<main>/about</main>', $response->content);
+    }
+
+    #[Test]
+    public function renderPathFallsFromHomeToPageTemplate(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            'page.html.twig' => '<main>Fallback {{ path }}</main>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->renderPath('/');
+
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame('<main>Fallback /</main>', $response->content);
+    }
+
+    #[Test]
     public function renderEntityUsesTemplateSuggestions(): void
     {
         $twig = new Environment(new ArrayLoader([
