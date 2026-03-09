@@ -390,6 +390,7 @@ final class HttpKernel extends AbstractKernel
             RouteBuilder::create('/mcp')
                 ->controller('mcp.endpoint')
                 ->allowAll()
+                ->jsonApi()
                 ->methods('GET', 'POST')
                 ->build(),
         );
@@ -463,13 +464,13 @@ final class HttpKernel extends AbstractKernel
         $serializer = new ResourceSerializer($this->entityTypeManager);
         $schemaPresenter = new SchemaPresenter();
 
-        // JSON body parsing only applies to JSON API controllers.
-        // SSR app controllers (identified by '::' in the controller name) receive
-        // form-encoded POST data via $httpRequest->request and must not be subjected
-        // to JSON parsing, which would reject application/x-www-form-urlencoded bodies.
+        // JSON body parsing only applies to routes explicitly marked as JSON:API
+        // via the _json_api route option. SSR and form-based routes receive
+        // form-encoded POST data and must not be subjected to JSON parsing.
         $body = null;
-        $isAppController = str_contains($controller, '::') || $controller === 'render.page';
-        if (!$isAppController && in_array($method, ['POST', 'PATCH'], true)) {
+        $matchedRoute = $httpRequest->attributes->get('_route_object');
+        $isJsonApi = $matchedRoute !== null && $matchedRoute->getOption('_json_api') === true;
+        if ($isJsonApi && in_array($method, ['POST', 'PATCH'], true)) {
             $raw = $httpRequest->getContent();
             if ($raw !== '') {
                 try {

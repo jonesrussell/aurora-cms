@@ -72,6 +72,7 @@ final class JsonApiRouteProvider
                 ->controller("Waaseyaa\\Api\\JsonApiController::store")
                 ->methods('POST')
                 ->requireAuthentication()
+                ->jsonApi()
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
         );
@@ -83,6 +84,7 @@ final class JsonApiRouteProvider
                 ->controller("Waaseyaa\\Api\\JsonApiController::update")
                 ->methods('PATCH')
                 ->requireAuthentication()
+                ->jsonApi()
                 ->default('_entity_type', $entityTypeId)
                 ->build(),
         );
