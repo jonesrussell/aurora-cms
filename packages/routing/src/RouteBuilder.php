@@ -127,6 +127,15 @@ final class RouteBuilder
     }
 
     /**
+     * Mark route as a JSON:API route (enables JSON body parsing on POST/PATCH).
+     */
+    public function jsonApi(): self
+    {
+        $this->options['_json_api'] = true;
+        return $this;
+    }
+
+    /**
      * Add a regex requirement for a route parameter.
      */
     public function requirement(string $key, string $regex): self
