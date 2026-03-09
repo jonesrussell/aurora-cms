@@ -1252,6 +1252,13 @@ final class HttpKernel extends AbstractKernel
         $instance = new $class($this->entityTypeManager, $twig);
         $response = $instance->{$method}($params, $query, $account, $httpRequest);
 
+        if ($response instanceof HttpResponse) {
+            $cacheMaxAge = $this->resolveRenderCacheMaxAge();
+            $response->headers->set('Cache-Control', $this->cacheControlHeaderForRender($account, $cacheMaxAge));
+            $response->send();
+            exit;
+        }
+
         $cacheMaxAge = $this->resolveRenderCacheMaxAge();
         $headers = $response->headers;
         $headers['Cache-Control'] = $this->cacheControlHeaderForRender($account, $cacheMaxAge);
