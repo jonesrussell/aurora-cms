@@ -1113,8 +1113,11 @@ final class HttpKernel extends AbstractKernel
                 $this->sendHtml($response->statusCode, $response->content, $headers);
             }
 
-            $aliasResolver = new PathAliasResolver($this->entityTypeManager->getStorage('path_alias'));
-            $resolved = $aliasResolver->resolve($aliasLookupPath, $contentLangcode);
+            $resolved = null;
+            if (class_exists(PathAliasResolver::class) && $this->entityTypeManager->hasDefinition('path_alias')) {
+                $aliasResolver = new PathAliasResolver($this->entityTypeManager->getStorage('path_alias'));
+                $resolved = $aliasResolver->resolve($aliasLookupPath, $contentLangcode);
+            }
             if ($resolved === null) {
                 $renderController = new RenderController($twig);
                 $pathResponse = $renderController->tryRenderPathTemplate($aliasLookupPath);
@@ -1236,9 +1239,10 @@ final class HttpKernel extends AbstractKernel
     /**
      * Dispatch an app-level controller registered via ServiceProvider::routes().
      *
-     * Controllers use Class::method format. The class receives EntityTypeManager
-     * and Twig Environment via constructor; the method receives route params,
-     * query params, and account.
+     * Controllers use Class::method format. Constructor dependencies are
+     * resolved via reflection — supported types: EntityTypeManager,
+     * \Twig\Environment, HttpRequest, AccountInterface.
+     * The method receives ($params, $query, $account, $httpRequest).
      */
     private function dispatchAppController(
         string $controller,
@@ -1254,7 +1258,7 @@ final class HttpKernel extends AbstractKernel
             $twig = SsrServiceProvider::createTwigEnvironment($this->projectRoot, $this->config);
         }
 
-        $instance = new $class($this->entityTypeManager, $twig);
+        $instance = $this->resolveControllerInstance($class, $twig, $account, $httpRequest);
         $response = $instance->{$method}($params, $query, $account, $httpRequest);
 
         if ($response instanceof HttpResponse) {
@@ -1268,6 +1272,68 @@ final class HttpKernel extends AbstractKernel
         $headers = $response->headers;
         $headers['Cache-Control'] = $this->cacheControlHeaderForRender($account, $cacheMaxAge);
         $this->sendHtml($response->statusCode, $response->content, $headers);
+    }
+
+    /**
+     * Resolve a controller instance by inspecting constructor parameter types.
+     *
+     * Falls back to the legacy (EntityTypeManager, $twig) contract when
+     * reflection is unavailable or the constructor has no type hints.
+     */
+    private function resolveControllerInstance(
+        string $class,
+        \Twig\Environment $twig,
+        AccountInterface $account,
+        HttpRequest $httpRequest,
+    ): object {
+        $ref = new \ReflectionClass($class);
+        $constructor = $ref->getConstructor();
+
+        if ($constructor === null || $constructor->getNumberOfParameters() === 0) {
+            return new $class();
+        }
+
+        $serviceMap = [
+            \Waaseyaa\Entity\EntityTypeManager::class => $this->entityTypeManager,
+            \Twig\Environment::class => $twig,
+            HttpRequest::class => $httpRequest,
+            AccountInterface::class => $account,
+        ];
+
+        $args = [];
+        foreach ($constructor->getParameters() as $param) {
+            $type = $param->getType();
+            $matched = false;
+
+            if ($type instanceof \ReflectionNamedType && !$type->isBuiltin()) {
+                $typeName = $type->getName();
+                foreach ($serviceMap as $serviceType => $serviceInstance) {
+                    if ($typeName === $serviceType || is_a($serviceInstance, $typeName)) {
+                        $args[] = $serviceInstance;
+                        $matched = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$matched) {
+                if ($param->isDefaultValueAvailable()) {
+                    $args[] = $param->getDefaultValue();
+                } elseif ($param->allowsNull()) {
+                    $args[] = null;
+                } else {
+                    error_log(sprintf(
+                        '[Waaseyaa] Cannot resolve constructor parameter $%s (%s) for controller %s',
+                        $param->getName(),
+                        $type instanceof \ReflectionNamedType ? $type->getName() : 'mixed',
+                        $class,
+                    ));
+                    $args[] = null;
+                }
+            }
+        }
+
+        return $ref->newInstanceArgs($args);
     }
 
     private function isPreviewRequested(HttpRequest $request): bool

@@ -130,7 +130,7 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
             ->countQuery();
 
         foreach ($criteria as $field => $value) {
-            $query->condition($field, $value);
+            $query->condition($this->resolveField($db, $entityType, $field), $value);
         }
 
         $result = $query->execute();
@@ -155,12 +155,12 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
             ->fields($entityType);
 
         foreach ($criteria as $field => $value) {
-            $query->condition($field, $value);
+            $query->condition($this->resolveField($db, $entityType, $field), $value);
         }
 
         if ($orderBy !== null) {
             foreach ($orderBy as $field => $direction) {
-                $query->orderBy($field, strtoupper($direction));
+                $query->orderBy($this->resolveField($db, $entityType, $field), strtoupper($direction));
             }
         }
 
@@ -229,6 +229,21 @@ final class SqlStorageDriver implements EntityStorageDriverInterface
         $merged = array_merge($base, $translation);
 
         return $merged;
+    }
+
+    /**
+     * Resolve a field name to a SQL expression.
+     *
+     * Real table columns are returned as-is. Fields stored in the _data
+     * JSON blob are wrapped in json_extract().
+     */
+    private function resolveField(DatabaseInterface $db, string $entityType, string $field): string
+    {
+        if ($db->schema()->fieldExists($entityType, $field)) {
+            return $field;
+        }
+
+        return "json_extract(_data, '\$." . $field . "')";
     }
 
     private function getDatabase(): DatabaseInterface
