@@ -328,6 +328,7 @@ final class HttpKernel extends AbstractKernel
             'api.entity_types.disable',
             RouteBuilder::create('/api/entity-types/{entity_type}/disable')
                 ->controller('entity_type.disable')
+                ->requireRole('admin')
                 ->methods('POST')
                 ->build(),
         );
@@ -336,6 +337,7 @@ final class HttpKernel extends AbstractKernel
             'api.entity_types.enable',
             RouteBuilder::create('/api/entity-types/{entity_type}/enable')
                 ->controller('entity_type.enable')
+                ->requireRole('admin')
                 ->methods('POST')
                 ->build(),
         );
