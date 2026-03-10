@@ -40,6 +40,7 @@ use Waaseyaa\CLI\Command\Make\MakeProviderCommand;
 use Waaseyaa\CLI\Command\Make\MakeTestCommand;
 use Waaseyaa\CLI\Command\MakeEntityTypeCommand;
 use Waaseyaa\CLI\Command\MakePluginCommand;
+use Waaseyaa\CLI\Command\MigrateDefaultsCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeClearCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeCommand;
 use Waaseyaa\CLI\Command\Optimize\OptimizeConfigCommand;
@@ -152,6 +153,12 @@ final class ConsoleKernel extends AbstractKernel
             new UserCreateCommand($this->entityTypeManager),
             new UserRoleCommand($this->entityTypeManager),
             new MakePluginCommand(),
+            new MigrateDefaultsCommand(
+                $this->entityTypeManager,
+                $this->lifecycleManager,
+                $this->entityAuditLogger,
+                $this->projectRoot,
+            ),
             new MakeEntityTypeCommand(),
             new MakeEntityCommand(),
             new MakeJobCommand(),

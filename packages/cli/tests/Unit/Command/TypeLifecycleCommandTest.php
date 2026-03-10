@@ -64,7 +64,7 @@ final class TypeLifecycleCommandTest extends TestCase
     #[Test]
     public function disableSucceedsForKnownType(): void
     {
-        $tester = $this->runCommand('type:disable', ['type' => 'article']);
+        $tester = $this->runCommand('type:disable', ['type' => 'article', '--yes' => true]);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $this->assertStringContainsString('Disabled', $tester->getDisplay());
@@ -85,7 +85,7 @@ final class TypeLifecycleCommandTest extends TestCase
     {
         $this->lifecycle->disable('article', 'test');
 
-        $tester = $this->runCommand('type:disable', ['type' => 'note']);
+        $tester = $this->runCommand('type:disable', ['type' => 'note', '--yes' => true]);
 
         $this->assertSame(Command::FAILURE, $tester->getStatusCode());
         $this->assertStringContainsString('DEFAULT_TYPE_DISABLED', $tester->getDisplay());
@@ -97,7 +97,7 @@ final class TypeLifecycleCommandTest extends TestCase
     {
         $this->lifecycle->disable('note', 'test');
 
-        $tester = $this->runCommand('type:disable', ['type' => 'note']);
+        $tester = $this->runCommand('type:disable', ['type' => 'note', '--yes' => true]);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $this->assertStringContainsString('already disabled', $tester->getDisplay());
@@ -106,12 +106,13 @@ final class TypeLifecycleCommandTest extends TestCase
     #[Test]
     public function disableWritesAuditEntry(): void
     {
-        $this->runCommand('type:disable', ['type' => 'note', '--actor' => 'test-actor']);
+        $this->runCommand('type:disable', ['type' => 'note', '--actor' => 'test-actor', '--tenant' => 'acme', '--yes' => true]);
 
-        $entries = $this->lifecycle->readAuditLog('note');
+        $entries = $this->lifecycle->readAuditLog('note', 'acme');
         $this->assertCount(1, $entries);
         $this->assertSame('disabled', $entries[0]['action']);
         $this->assertSame('test-actor', $entries[0]['actor_id']);
+        $this->assertSame('acme', $entries[0]['tenant_id']);
     }
 
     // -----------------------------------------------------------------------
@@ -121,13 +122,13 @@ final class TypeLifecycleCommandTest extends TestCase
     #[Test]
     public function enableSucceedsForDisabledType(): void
     {
-        $this->lifecycle->disable('note', 'test');
+        $this->lifecycle->disable('note', 'test', 'acme');
 
-        $tester = $this->runCommand('type:enable', ['type' => 'note']);
+        $tester = $this->runCommand('type:enable', ['type' => 'note', '--tenant' => 'acme']);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $this->assertStringContainsString('Enabled', $tester->getDisplay());
-        $this->assertFalse($this->lifecycle->isDisabled('note'));
+        $this->assertFalse($this->lifecycle->isDisabled('note', 'acme'));
     }
 
     #[Test]
@@ -150,10 +151,10 @@ final class TypeLifecycleCommandTest extends TestCase
     #[Test]
     public function enableWritesAuditEntry(): void
     {
-        $this->lifecycle->disable('note', 'setup');
-        $this->runCommand('type:enable', ['type' => 'note', '--actor' => 're-enabler']);
+        $this->lifecycle->disable('note', 'setup', 'acme');
+        $this->runCommand('type:enable', ['type' => 'note', '--actor' => 're-enabler', '--tenant' => 'acme']);
 
-        $entries = $this->lifecycle->readAuditLog('note');
+        $entries = $this->lifecycle->readAuditLog('note', 'acme');
         $this->assertCount(2, $entries);
         $this->assertSame('enabled', $entries[1]['action']);
         $this->assertSame('re-enabler', $entries[1]['actor_id']);
