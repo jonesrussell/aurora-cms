@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Waaseyaa\Entity\Audit\EntityAuditLogger;
+use Waaseyaa\Entity\EntityTypeIdNormalizer;
 use Waaseyaa\Entity\EntityTypeLifecycleManager;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 
@@ -29,6 +30,7 @@ final class MigrateDefaultsCommand extends Command
         private readonly EntityTypeLifecycleManager $lifecycleManager,
         private readonly ?EntityAuditLogger $entityAuditLogger,
         private readonly string $projectRoot,
+        private readonly ?EntityTypeIdNormalizer $typeIdNormalizer = null,
     ) {
         parent::__construct();
     }
@@ -68,7 +70,9 @@ final class MigrateDefaultsCommand extends Command
         }
 
         $rawEnableType = (string) ($input->getOption('enable') ?? '');
-        $enableType = $rawEnableType !== '' ? $this->normalizeTypeId($rawEnableType) : '';
+        $enableType = $rawEnableType !== '' && $this->typeIdNormalizer !== null
+            ? $this->typeIdNormalizer->normalize($rawEnableType)
+            : $rawEnableType;
         if ($enableType !== '' && !$this->entityTypeManager->hasDefinition($enableType)) {
             $output->writeln(sprintf('<error>Unknown entity type: "%s"</error>', $rawEnableType));
 
@@ -316,20 +320,4 @@ final class MigrateDefaultsCommand extends Command
         return $this->projectRoot . self::MIGRATION_LOG;
     }
 
-    private function normalizeTypeId(string $typeId): string
-    {
-        $typeId = trim($typeId);
-        if ($typeId === 'core.note' && $this->entityTypeManager->hasDefinition('note')) {
-            return 'note';
-        }
-
-        if (str_starts_with($typeId, 'core.')) {
-            $stripped = substr($typeId, 5);
-            if ($stripped !== '' && $this->entityTypeManager->hasDefinition($stripped)) {
-                return $stripped;
-            }
-        }
-
-        return $typeId;
-    }
 }

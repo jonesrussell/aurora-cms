@@ -135,7 +135,6 @@ final class EntityTypeLifecycleManager
     // Private helpers
     // -----------------------------------------------------------------------
 
-    /** @param string[] $disabled */
     /**
      * @param string[] $disabled
      */

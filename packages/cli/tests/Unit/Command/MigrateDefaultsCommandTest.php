@@ -92,6 +92,24 @@ final class MigrateDefaultsCommandTest extends TestCase
         $this->assertTrue($this->lifecycle->isDisabled('note', 'acme'));
     }
 
+    #[Test]
+    public function dryRunDoesNotMutateState(): void
+    {
+        $this->lifecycle->disable('note', 'setup', 'acme');
+        $this->lifecycle->disable('article', 'setup', 'acme');
+
+        $tester = $this->runCommand([
+            '--tenant' => ['acme'],
+            '--enable' => 'note',
+            '--yes' => true,
+            '--dry-run' => true,
+        ]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertStringContainsString('[dry-run]', $tester->getDisplay());
+        $this->assertTrue($this->lifecycle->isDisabled('note', 'acme'));
+    }
+
     /**
      * @param array<string, mixed> $input
      */

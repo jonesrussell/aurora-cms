@@ -93,6 +93,18 @@ final class TypeLifecycleCommandTest extends TestCase
     }
 
     #[Test]
+    public function disableWithForceAllowsDisablingLastType(): void
+    {
+        $this->lifecycle->disable('article', 'test');
+
+        $tester = $this->runCommand('type:disable', ['type' => 'note', '--yes' => true, '--force' => true]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertTrue($this->lifecycle->isDisabled('note'));
+        $this->assertStringContainsString('DEFAULT_TYPE_DISABLED', $tester->getDisplay());
+    }
+
+    #[Test]
     public function disableIsIdempotentForAlreadyDisabledType(): void
     {
         $this->lifecycle->disable('note', 'test');

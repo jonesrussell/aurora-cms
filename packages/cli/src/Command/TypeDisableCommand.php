@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Waaseyaa\Entity\EntityTypeIdNormalizer;
 use Waaseyaa\Entity\EntityTypeLifecycleManager;
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 
@@ -23,6 +24,7 @@ final class TypeDisableCommand extends Command
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityTypeLifecycleManager $lifecycleManager,
+        private readonly ?EntityTypeIdNormalizer $typeIdNormalizer = null,
     ) {
         parent::__construct();
     }
@@ -41,7 +43,7 @@ final class TypeDisableCommand extends Command
     {
         /** @var string $rawTypeId */
         $rawTypeId = $input->getArgument('type');
-        $typeId = $this->normalizeTypeId($rawTypeId);
+        $typeId = $this->typeIdNormalizer !== null ? $this->typeIdNormalizer->normalize($rawTypeId) : $rawTypeId;
         /** @var string $actor */
         $actor = $input->getOption('actor') ?? 'cli';
         /** @var string $tenantId */
@@ -109,20 +111,4 @@ final class TypeDisableCommand extends Command
         return self::SUCCESS;
     }
 
-    private function normalizeTypeId(string $typeId): string
-    {
-        $typeId = trim($typeId);
-        if ($typeId === 'core.note' && $this->entityTypeManager->hasDefinition('note')) {
-            return 'note';
-        }
-
-        if (str_starts_with($typeId, 'core.')) {
-            $stripped = substr($typeId, 5);
-            if ($stripped !== '' && $this->entityTypeManager->hasDefinition($stripped)) {
-                return $stripped;
-            }
-        }
-
-        return $typeId;
-    }
 }
