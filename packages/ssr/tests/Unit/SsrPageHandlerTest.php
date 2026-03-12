@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Database\PdoDatabase;
 use Waaseyaa\Entity\EntityTypeManager;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\SSR\SsrPageHandler;
 
 #[CoversClass(SsrPageHandler::class)]

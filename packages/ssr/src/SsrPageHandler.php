@@ -11,7 +11,7 @@ use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Database\PdoDatabase;
 use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\EntityTypeManager;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\I18n\Language;
 use Waaseyaa\I18n\LanguageManager;
 use Waaseyaa\Path\PathAliasResolver;

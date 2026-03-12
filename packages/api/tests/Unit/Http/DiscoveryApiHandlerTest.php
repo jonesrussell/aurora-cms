@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Waaseyaa\Foundation\Tests\Unit\Http;
+namespace Waaseyaa\Api\Tests\Unit\Http;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\Entity\EntityTypeManager;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
 use Waaseyaa\User\AnonymousUser;
 
 #[CoversClass(DiscoveryApiHandler::class)]

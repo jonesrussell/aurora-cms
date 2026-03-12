@@ -17,7 +17,7 @@ use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Cache\CacheFactory;
 use Waaseyaa\Cache\CacheConfiguration;
 use Waaseyaa\Foundation\Http\CorsHandler;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\Foundation\Http\ControllerDispatcher;
 use Waaseyaa\SSR\SsrPageHandler;
 use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;

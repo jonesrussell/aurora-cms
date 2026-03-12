@@ -14,7 +14,7 @@ use Waaseyaa\Database\PdoDatabase;
 use Waaseyaa\Entity\EntityTypeLifecycleManager;
 use Waaseyaa\Entity\EntityTypeManager;
 use Waaseyaa\Foundation\Http\ControllerDispatcher;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\SSR\SsrPageHandler;
 
 #[CoversClass(ControllerDispatcher::class)]

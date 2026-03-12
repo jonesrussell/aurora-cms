@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Waaseyaa\Foundation\Http;
+namespace Waaseyaa\Api\Http;
 
 use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Cache\CacheBackendInterface;

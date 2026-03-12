@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Waaseyaa\Access\AccountInterface;
 use Waaseyaa\Access\EntityAccessHandler;
 use Waaseyaa\Api\Controller\BroadcastController;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\Api\Controller\BroadcastStorage;
 use Waaseyaa\Api\Controller\SchemaController;
 use Waaseyaa\Api\JsonApiController;

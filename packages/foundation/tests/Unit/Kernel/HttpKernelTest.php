@@ -19,7 +19,7 @@ use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Database\PdoDatabase;
 use Waaseyaa\Entity\EntityTypeManager;
 use Waaseyaa\Foundation\Http\CorsHandler;
-use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
+use Waaseyaa\Api\Http\DiscoveryApiHandler;
 use Waaseyaa\Access\EntityAccessHandler;
 use Waaseyaa\Entity\EntityTypeLifecycleManager;
 use Waaseyaa\Foundation\Http\ControllerDispatcher;
