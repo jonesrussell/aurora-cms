@@ -19,6 +19,7 @@ use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Foundation\Http\CorsHandler;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
 use Waaseyaa\Foundation\Kernel\BuiltinRouteRegistrar;
+use Waaseyaa\Foundation\Kernel\EventListenerRegistrar;
 use Waaseyaa\Foundation\Kernel\HttpKernel;
 use Waaseyaa\User\AnonymousUser;
 use Waaseyaa\User\DevAdminAccount;
@@ -550,17 +551,11 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_cache_listener_uses_tag_invalidation_when_available(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
         $dispatcher = new EventDispatcher();
-
-        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
-        $dispatcherProp->setAccessible(true);
-        $dispatcherProp->setValue($kernel, $dispatcher);
+        $registrar = new EventListenerRegistrar($dispatcher);
 
         $cache = new TestTagAwareCacheBackend();
-        $method = new \ReflectionMethod(HttpKernel::class, 'registerDiscoveryCacheListeners');
-        $method->setAccessible(true);
-        $method->invoke($kernel, $cache);
+        $registrar->registerDiscoveryCacheListeners($cache);
 
         $dispatcher->dispatch(
             new EntityEvent(new TestKernelEntity(9, 'node')),
@@ -577,17 +572,11 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_cache_listener_falls_back_to_delete_all_for_non_tag_backend(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
         $dispatcher = new EventDispatcher();
-
-        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
-        $dispatcherProp->setAccessible(true);
-        $dispatcherProp->setValue($kernel, $dispatcher);
+        $registrar = new EventListenerRegistrar($dispatcher);
 
         $cache = new TestNonTagCacheBackend();
-        $method = new \ReflectionMethod(HttpKernel::class, 'registerDiscoveryCacheListeners');
-        $method->setAccessible(true);
-        $method->invoke($kernel, $cache);
+        $registrar->registerDiscoveryCacheListeners($cache);
 
         $dispatcher->dispatch(
             new EntityEvent(new TestKernelEntity(5, 'node')),
@@ -600,17 +589,11 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function mcp_read_cache_listener_uses_tag_invalidation_when_available(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
         $dispatcher = new EventDispatcher();
-
-        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
-        $dispatcherProp->setAccessible(true);
-        $dispatcherProp->setValue($kernel, $dispatcher);
+        $registrar = new EventListenerRegistrar($dispatcher);
 
         $cache = new TestTagAwareCacheBackend();
-        $method = new \ReflectionMethod(HttpKernel::class, 'registerMcpReadCacheListeners');
-        $method->setAccessible(true);
-        $method->invoke($kernel, $cache);
+        $registrar->registerMcpReadCacheListeners($cache);
 
         $dispatcher->dispatch(
             new EntityEvent(new TestKernelEntity(11, 'node')),
@@ -626,17 +609,11 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function mcp_read_cache_listener_falls_back_to_delete_all_for_non_tag_backend(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
         $dispatcher = new EventDispatcher();
-
-        $dispatcherProp = new \ReflectionProperty(AbstractKernel::class, 'dispatcher');
-        $dispatcherProp->setAccessible(true);
-        $dispatcherProp->setValue($kernel, $dispatcher);
+        $registrar = new EventListenerRegistrar($dispatcher);
 
         $cache = new TestNonTagCacheBackend();
-        $method = new \ReflectionMethod(HttpKernel::class, 'registerMcpReadCacheListeners');
-        $method->setAccessible(true);
-        $method->invoke($kernel, $cache);
+        $registrar->registerMcpReadCacheListeners($cache);
 
         $dispatcher->dispatch(
             new EntityEvent(new TestKernelEntity(12, 'node')),
