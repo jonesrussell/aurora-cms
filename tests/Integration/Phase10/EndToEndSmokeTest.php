@@ -18,6 +18,11 @@ use Waaseyaa\CLI\Command\ConfigImportCommand;
 use Waaseyaa\CLI\Command\EntityCreateCommand;
 use Waaseyaa\CLI\Command\EntityListCommand;
 use Waaseyaa\CLI\Command\InstallCommand;
+use Waaseyaa\CLI\Command\MigrateDefaultsCommand;
+use Waaseyaa\CLI\Command\TypeDisableCommand;
+use Waaseyaa\CLI\Command\TypeEnableCommand;
+use Waaseyaa\Entity\Audit\EntityAuditLogger;
+use Waaseyaa\Entity\EntityTypeLifecycleManager;
 use Waaseyaa\Config\ConfigManager;
 use Waaseyaa\Config\Storage\MemoryStorage;
 use Waaseyaa\Entity\EntityType;
@@ -461,5 +466,96 @@ final class EndToEndSmokeTest extends TestCase
         // Verify the old values are still gone.
         $this->assertFalse($defaultBin->get('entity:1'));
         $this->assertFalse($renderBin->get('block:sidebar'));
+    }
+
+    /**
+     * Exercises the full migration lifecycle: disable types, migrate:defaults to fix,
+     * rollback to revert, and verify audit log entries.
+     */
+    #[Test]
+    public function testMigrationDefaultsLifecycle(): void
+    {
+        // --- Setup ---
+
+        $tempDir = sys_get_temp_dir() . '/waaseyaa_migration_test_' . uniqid();
+        mkdir($tempDir, 0755, true);
+
+        $lifecycleManager = new EntityTypeLifecycleManager($tempDir);
+        $auditLogger = new EntityAuditLogger($tempDir);
+
+        $entityTypeManager = new EntityTypeManager(new EventDispatcher());
+
+        $entityTypeManager->registerEntityType(new EntityType(
+            id: 'note',
+            label: 'Note',
+            class: \stdClass::class,
+            keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'title'],
+        ));
+
+        $entityTypeManager->registerEntityType(new EntityType(
+            id: 'article',
+            label: 'Article',
+            class: \stdClass::class,
+            keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'title'],
+        ));
+
+        $application = new \Symfony\Component\Console\Application();
+        $application->add(new TypeDisableCommand($entityTypeManager, $lifecycleManager));
+        $application->add(new TypeEnableCommand($entityTypeManager, $lifecycleManager));
+        $application->add(new MigrateDefaultsCommand($entityTypeManager, $lifecycleManager, $auditLogger, $tempDir));
+
+        // --- Step 1: Disable all types for tenant "acme" ---
+
+        $disableNote = $application->find('type:disable');
+        $noteTester = new CommandTester($disableNote);
+        $noteTester->execute(['type' => 'note', '--tenant' => 'acme', '--yes' => true]);
+        $this->assertSame(Command::SUCCESS, $noteTester->getStatusCode());
+        $this->assertTrue($lifecycleManager->isDisabled('note', 'acme'));
+
+        $disableArticle = $application->find('type:disable');
+        $articleTester = new CommandTester($disableArticle);
+        $articleTester->execute(['type' => 'article', '--tenant' => 'acme', '--yes' => true, '--force' => true]);
+        $this->assertSame(Command::SUCCESS, $articleTester->getStatusCode());
+        $this->assertTrue($lifecycleManager->isDisabled('article', 'acme'));
+
+        // --- Step 2: migrate:defaults detects and fixes ---
+
+        $migrateCmd = $application->find('migrate:defaults');
+        $migrateTester = new CommandTester($migrateCmd);
+        $migrateTester->execute(['--tenant' => ['acme'], '--enable' => 'note', '--yes' => true]);
+
+        $this->assertSame(Command::SUCCESS, $migrateTester->getStatusCode());
+        $this->assertFalse($lifecycleManager->isDisabled('note', 'acme'));
+        $this->assertStringContainsString('Enabled "note" for tenant "acme"', $migrateTester->getDisplay());
+
+        // --- Step 3: Rollback reverses ---
+
+        $rollbackTester = new CommandTester($migrateCmd);
+        $rollbackTester->execute(['--tenant' => ['acme'], '--rollback' => true, '--yes' => true]);
+
+        $this->assertSame(Command::SUCCESS, $rollbackTester->getStatusCode());
+        $this->assertTrue($lifecycleManager->isDisabled('note', 'acme'));
+        $this->assertStringContainsString('Disabled "note" for tenant "acme"', $rollbackTester->getDisplay());
+
+        // --- Step 4: Audit log contains both 'disabled' and 'enabled' actions for note/acme ---
+
+        $auditEntries = $lifecycleManager->readAuditLog('note', 'acme');
+        $actions = array_column($auditEntries, 'action');
+        $this->assertContains('disabled', $actions);
+        $this->assertContains('enabled', $actions);
+
+        // --- Cleanup ---
+
+        $storageDir = $tempDir . '/storage/framework';
+        foreach (glob($storageDir . '/*') ?: [] as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        if (is_dir($storageDir)) {
+            rmdir($storageDir);
+            rmdir(dirname($storageDir));
+        }
+        rmdir($tempDir);
     }
 }
