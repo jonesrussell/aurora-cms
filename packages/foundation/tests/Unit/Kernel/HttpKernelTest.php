@@ -16,7 +16,10 @@ use Waaseyaa\Entity\EntityInterface;
 use Waaseyaa\Entity\Event\EntityEvent;
 use Waaseyaa\Entity\Event\EntityEvents;
 use Waaseyaa\Cache\CacheConfigResolver;
+use Waaseyaa\Database\PdoDatabase;
+use Waaseyaa\Entity\EntityTypeManager;
 use Waaseyaa\Foundation\Http\CorsHandler;
+use Waaseyaa\Foundation\Http\DiscoveryApiHandler;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
 use Waaseyaa\Foundation\Kernel\BuiltinRouteRegistrar;
 use Waaseyaa\Foundation\Kernel\EventListenerRegistrar;
@@ -329,6 +332,9 @@ final class HttpKernelTest extends TestCase
     public function render_surrogate_headers_include_workflow_and_graph_dimensions(): void
     {
         $kernel = new HttpKernel('/tmp/test-project');
+        $dhProp = new \ReflectionProperty(HttpKernel::class, 'discoveryHandler');
+        $dhProp->setAccessible(true);
+        $dhProp->setValue($kernel, new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite()));
         $method = new \ReflectionMethod(HttpKernel::class, 'buildRenderSurrogateHeaders');
         $method->setAccessible(true);
 
@@ -429,42 +435,32 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function parses_relationship_types_from_comma_separated_query_string(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'parseRelationshipTypesQuery');
-        $method->setAccessible(true);
-
-        $types = $method->invoke($kernel, 'references, influences, ,references');
-
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $types = $handler->parseRelationshipTypesQuery('references, influences, ,references');
         $this->assertSame(['references', 'influences', 'references'], $types);
     }
 
     #[Test]
     public function parses_relationship_types_from_array_query_value(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'parseRelationshipTypesQuery');
-        $method->setAccessible(true);
-
-        $types = $method->invoke($kernel, ['references', 'influences', 'references', '', 123]);
-
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $types = $handler->parseRelationshipTypesQuery(['references', 'influences', 'references', '', 123]);
         $this->assertSame(['references', 'influences'], $types);
     }
 
     #[Test]
     public function discovery_cache_key_is_deterministic_for_equivalent_option_order(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheKey');
-        $method->setAccessible(true);
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
 
-        $keyA = $method->invoke($kernel, 'timeline', 'node', '1', [
+        $keyA = $handler->buildDiscoveryCacheKey('timeline', 'node', '1', [
             'status' => 'published',
             'direction' => 'both',
             'from' => 100,
             'to' => 200,
             'relationship_types' => ['references', 'influences'],
         ]);
-        $keyB = $method->invoke($kernel, 'timeline', 'node', '1', [
+        $keyB = $handler->buildDiscoveryCacheKey('timeline', 'node', '1', [
             'relationship_types' => ['references', 'influences'],
             'to' => 200,
             'from' => 100,
@@ -478,12 +474,10 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_cache_key_changes_when_filter_values_change(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheKey');
-        $method->setAccessible(true);
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
 
-        $keyA = $method->invoke($kernel, 'hub', 'node', '1', ['status' => 'published', 'limit' => 10]);
-        $keyB = $method->invoke($kernel, 'hub', 'node', '1', ['status' => 'published', 'limit' => 20]);
+        $keyA = $handler->buildDiscoveryCacheKey('hub', 'node', '1', ['status' => 'published', 'limit' => 10]);
+        $keyB = $handler->buildDiscoveryCacheKey('hub', 'node', '1', ['status' => 'published', 'limit' => 20]);
 
         $this->assertNotSame($keyA, $keyB);
     }
@@ -491,11 +485,8 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_payload_contract_meta_is_added_when_missing(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'withDiscoveryContractMeta');
-        $method->setAccessible(true);
-
-        $payload = $method->invoke($kernel, ['data' => ['source' => ['type' => 'node', 'id' => '1']]]);
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $payload = $handler->withDiscoveryContractMeta(['data' => ['source' => ['type' => 'node', 'id' => '1']]]);
 
         $this->assertSame('v1.0', $payload['meta']['contract_version']);
         $this->assertSame('stable', $payload['meta']['contract_stability']);
@@ -505,11 +496,8 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_payload_contract_meta_preserves_existing_surface(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'withDiscoveryContractMeta');
-        $method->setAccessible(true);
-
-        $payload = $method->invoke($kernel, [
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $payload = $handler->withDiscoveryContractMeta([
             'data' => [],
             'meta' => ['surface' => 'custom_surface', 'count' => 3],
         ]);
@@ -523,11 +511,8 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_cache_tags_include_surface_entity_and_filters(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheTags');
-        $method->setAccessible(true);
-
-        $tags = $method->invoke($kernel, [
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $tags = $handler->buildDiscoveryCacheTags([
             'data' => [
                 'data' => [
                     'source' => ['type' => 'node', 'id' => '42'],
@@ -627,6 +612,9 @@ final class HttpKernelTest extends TestCase
     public function ssr_cache_variant_langcode_is_deterministic_for_equivalent_context_order(): void
     {
         $kernel = new HttpKernel('/tmp/test-project');
+        $dhProp = new \ReflectionProperty(HttpKernel::class, 'discoveryHandler');
+        $dhProp->setAccessible(true);
+        $dhProp->setValue($kernel, new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite()));
         $method = new \ReflectionMethod(HttpKernel::class, 'buildSsrCacheVariantLangcode');
         $method->setAccessible(true);
 
@@ -660,6 +648,9 @@ final class HttpKernelTest extends TestCase
     public function ssr_cache_variant_langcode_changes_with_workflow_or_graph_dimensions(): void
     {
         $kernel = new HttpKernel('/tmp/test-project');
+        $dhProp = new \ReflectionProperty(HttpKernel::class, 'discoveryHandler');
+        $dhProp->setAccessible(true);
+        $dhProp->setValue($kernel, new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite()));
         $method = new \ReflectionMethod(HttpKernel::class, 'buildSsrCacheVariantLangcode');
         $method->setAccessible(true);
 
@@ -694,11 +685,8 @@ final class HttpKernelTest extends TestCase
     #[Test]
     public function discovery_cache_tags_include_related_entities_for_invalidation_coverage(): void
     {
-        $kernel = new HttpKernel('/tmp/test-project');
-        $method = new \ReflectionMethod(HttpKernel::class, 'buildDiscoveryCacheTags');
-        $method->setAccessible(true);
-
-        $tags = $method->invoke($kernel, [
+        $handler = new DiscoveryApiHandler(new EntityTypeManager(new EventDispatcher()), PdoDatabase::createSqlite());
+        $tags = $handler->buildDiscoveryCacheTags([
             'data' => [
                 'source' => ['type' => 'node', 'id' => '1'],
                 'items' => [
