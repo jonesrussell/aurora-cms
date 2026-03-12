@@ -18,6 +18,7 @@ use Waaseyaa\Entity\Event\EntityEvents;
 use Waaseyaa\Cache\CacheConfigResolver;
 use Waaseyaa\Foundation\Http\CorsHandler;
 use Waaseyaa\Foundation\Kernel\AbstractKernel;
+use Waaseyaa\Foundation\Kernel\BuiltinRouteRegistrar;
 use Waaseyaa\Foundation\Kernel\HttpKernel;
 use Waaseyaa\User\AnonymousUser;
 use Waaseyaa\User\DevAdminAccount;
@@ -201,10 +202,13 @@ final class HttpKernelTest extends TestCase
         $boot->setAccessible(true);
         $boot->invoke($kernel);
 
+        $etmProp = new \ReflectionProperty(AbstractKernel::class, 'entityTypeManager');
+        $etmProp->setAccessible(true);
+        $entityTypeManager = $etmProp->getValue($kernel);
+
+        $registrar = new BuiltinRouteRegistrar($entityTypeManager);
         $router = new \Waaseyaa\Routing\WaaseyaaRouter(new \Symfony\Component\Routing\RequestContext('', 'GET'));
-        $registerRoutes = new \ReflectionMethod(HttpKernel::class, 'registerRoutes');
-        $registerRoutes->setAccessible(true);
-        $registerRoutes->invoke($kernel, $router);
+        $registrar->register($router);
 
         $routes = $router->getRouteCollection();
         $this->assertNotNull($routes->get('api.schema.show'));
