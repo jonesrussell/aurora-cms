@@ -279,6 +279,32 @@ final class RenderControllerTest extends TestCase
         $this->assertSame(403, $response->statusCode);
         $this->assertStringContainsString('403', $response->content);
     }
+
+    #[Test]
+    public function renderServerErrorReturns500WithTemplate(): void
+    {
+        $twig = new Environment(new ArrayLoader([
+            '500.html.twig' => '<h1>Server Error</h1>',
+        ]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->renderServerError();
+
+        $this->assertSame(500, $response->statusCode);
+        $this->assertSame('<h1>Server Error</h1>', $response->content);
+    }
+
+    #[Test]
+    public function renderServerErrorFallsBackToInlineHtmlWhenNoTemplate(): void
+    {
+        $twig = new Environment(new ArrayLoader([]));
+        $controller = new RenderController($twig);
+
+        $response = $controller->renderServerError();
+
+        $this->assertSame(500, $response->statusCode);
+        $this->assertStringContainsString('500', $response->content);
+    }
 }
 
 final readonly class RenderControllerEntity implements \Waaseyaa\Entity\EntityInterface

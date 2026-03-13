@@ -188,4 +188,23 @@ final class RenderController
             statusCode: 403,
         );
     }
+
+    public function renderServerError(): SsrResponse
+    {
+        foreach (['500.html.twig', 'ssr/500.html.twig'] as $template) {
+            try {
+                return new SsrResponse(
+                    content: $this->twig->render($template),
+                    statusCode: 500,
+                );
+            } catch (LoaderError) {
+                continue;
+            }
+        }
+
+        return new SsrResponse(
+            content: '<!doctype html><html><head><meta charset="utf-8"><title>500</title></head><body><main><h1>Server Error</h1><p>Something went wrong. Please try again later.</p></main></body></html>',
+            statusCode: 500,
+        );
+    }
 }
