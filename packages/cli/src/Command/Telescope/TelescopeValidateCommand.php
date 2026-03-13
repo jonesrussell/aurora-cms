@@ -20,8 +20,9 @@ use Waaseyaa\Telescope\CodifiedContext\Validator\EmbeddingProviderInterface;
 )]
 final class TelescopeValidateCommand extends Command
 {
-    public function __construct(private readonly EmbeddingProviderInterface $embeddingProvider)
-    {
+    public function __construct(
+        private readonly EmbeddingProviderInterface $embeddingProvider, // @phpstan-ignore property.onlyWritten (skeleton — wired in full implementation)
+    ) {
         parent::__construct();
     }
 

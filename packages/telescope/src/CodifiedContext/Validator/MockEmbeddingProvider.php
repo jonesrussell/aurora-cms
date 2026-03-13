@@ -6,7 +6,7 @@ namespace Waaseyaa\Telescope\CodifiedContext\Validator;
 
 final class MockEmbeddingProvider implements EmbeddingProviderInterface
 {
-    /** @param float[] $fixedEmbeddings */
+    /** @param array<string, float[]> $fixedEmbeddings */
     public function __construct(
         private readonly array $fixedEmbeddings = [],
         private readonly int $dimensions = 8,

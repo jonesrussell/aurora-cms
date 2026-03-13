@@ -7,8 +7,8 @@ namespace Waaseyaa\Telescope\CodifiedContext\Validator;
 final class OpenAIEmbeddingProvider implements EmbeddingProviderInterface
 {
     public function __construct(
-        private readonly string $apiKey,
-        private readonly string $model = 'text-embedding-3-small',
+        private readonly string $apiKey, // @phpstan-ignore property.onlyWritten (stub for future HTTP integration)
+        private readonly string $model = 'text-embedding-3-small', // @phpstan-ignore property.onlyWritten (stub for future HTTP integration)
     ) {}
 
     /** @return float[] */
