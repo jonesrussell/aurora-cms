@@ -12,12 +12,12 @@ test.describe('Dashboard', () => {
     // Use heading role to target card <h2> titles, avoiding duplicate
     // matches with the sidebar navigation which also renders entity labels.
     await expect(page.getByRole('heading', { name: 'User' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Content' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Content', exact: true })).toBeVisible()
   })
 
   test('each card links to the entity type route', async ({ page }) => {
     await page.goto('/')
-    const userCard = page.locator('a[href="/user"]')
+    const userCard = page.locator('main a[href="/user"]')
     await expect(userCard).toBeVisible()
   })
 
@@ -29,7 +29,7 @@ test.describe('Dashboard', () => {
       }),
     )
     await page.goto('/')
-    await page.locator('a[href="/user"]').first().click()
+    await page.locator('main a[href="/user"]').click()
     await expect(page).toHaveURL('/user')
   })
 
