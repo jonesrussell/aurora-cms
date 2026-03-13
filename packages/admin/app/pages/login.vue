@@ -1,17 +1,13 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
-const { login, isAuthenticated } = useAuth()
+const { login } = useAuth()
 const router = useRouter()
 
 const username = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
-
-if (isAuthenticated.value) {
-  await navigateTo('/')
-}
 
 async function handleSubmit() {
   error.value = ''

@@ -31,7 +31,7 @@ final class AuthController
             'id' => $account->id(),
             'name' => $account instanceof User ? $account->getName() : '',
             'email' => $account instanceof User ? $account->getEmail() : '',
-            'roles' => $account instanceof User ? $account->getRoles() : $account->getRoles(),
+            'roles' => $account->getRoles(),
         ];
 
         return ['statusCode' => 200, 'data' => $data];
@@ -44,6 +44,7 @@ final class AuthController
     {
         $ids = $storage->getQuery()
             ->condition('name', $name)
+            ->condition('status', 1)
             ->range(0, 1)
             ->execute();
 

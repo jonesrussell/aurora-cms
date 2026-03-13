@@ -71,4 +71,36 @@ describe('useAuth', () => {
     expect(mockFetch).toHaveBeenLastCalledWith('/api/auth/logout', { method: 'POST' })
     expect(isAuthenticated.value).toBe(false)
   })
+
+  it('checkAuth calls fetchMe only once across multiple invocations', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      data: { id: 3, name: 'dave', email: '', roles: [] },
+    })
+    vi.stubGlobal('$fetch', mockFetch)
+
+    const { checkAuth } = useAuth()
+    await checkAuth()
+    await checkAuth()
+    await checkAuth()
+
+    // fetchMe should only be called once — subsequent checkAuth calls are no-ops
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('checkAuth calls fetchMe again after logout resets the checked flag', async () => {
+    // authChecked may already be true from the previous test (useState persists).
+    // This test specifically verifies that logout() resets the flag so the next
+    // checkAuth() triggers a fresh fetchMe call.
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({ meta: { message: 'Logged out.' } })
+      .mockResolvedValueOnce({ data: { id: 3, name: 'dave', email: '', roles: [] } })
+    vi.stubGlobal('$fetch', mockFetch)
+
+    const { checkAuth, logout } = useAuth()
+    await logout()     // resets authChecked to false
+    await checkAuth()  // should now call fetchMe since flag was reset
+
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+    expect(mockFetch).toHaveBeenLastCalledWith('/api/user/me')
+  })
 })

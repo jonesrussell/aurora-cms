@@ -30,7 +30,6 @@ use Waaseyaa\AI\Vector\SqliteEmbeddingStorage;
 use Waaseyaa\Mcp\McpController;
 use Waaseyaa\SSR\SsrPageHandler;
 use Waaseyaa\User\Http\AuthController;
-use Waaseyaa\User\User;
 
 /**
  * Routes a matched controller name to the appropriate handler.
@@ -573,16 +572,20 @@ final class ControllerDispatcher
                 $controller === 'user.me' => (function () use ($account): never {
                     $authController = new AuthController();
                     $result = $authController->me($account);
-                    ResponseSender::json($result['statusCode'], array_filter([
-                        'jsonapi' => ['version' => '1.1'],
-                        'data' => $result['data'] ?? null,
-                        'errors' => $result['errors'] ?? null,
-                    ]));
+                    $payload = ['jsonapi' => ['version' => '1.1']];
+                    if (isset($result['data'])) {
+                        $payload['data'] = $result['data'];
+                    }
+                    if (isset($result['errors'])) {
+                        $payload['errors'] = $result['errors'];
+                    }
+                    ResponseSender::json($result['statusCode'], $payload);
                 })(),
 
                 $controller === 'auth.login' => (function () use ($body): never {
-                    $username = is_string($body['username'] ?? null) ? trim((string) $body['username']) : '';
-                    $password = is_string($body['password'] ?? null) ? (string) $body['password'] : '';
+                    $safeBody = $body ?? [];
+                    $username = is_string($safeBody['username'] ?? null) ? trim((string) $safeBody['username']) : '';
+                    $password = is_string($safeBody['password'] ?? null) ? (string) $safeBody['password'] : '';
 
                     if ($username === '' || $password === '') {
                         ResponseSender::json(400, [
@@ -615,8 +618,9 @@ final class ControllerDispatcher
                 })(),
 
                 $controller === 'auth.logout' => (function (): never {
-                    if (isset($_SESSION['waaseyaa_uid'])) {
-                        unset($_SESSION['waaseyaa_uid']);
+                    if (session_status() === PHP_SESSION_ACTIVE) {
+                        session_destroy();
+                        session_regenerate_id(true);
                     }
                     ResponseSender::json(200, ['jsonapi' => ['version' => '1.1'], 'meta' => ['message' => 'Logged out.']]);
                 })(),

@@ -1,13 +1,17 @@
 export default defineNuxtRouteMiddleware(async (to) => {
+  // Auth check runs client-side only. The PHP backend is the authoritative
+  // security layer; the Nuxt middleware is a UX redirect guard.
+  if (!import.meta.client) {
+    return
+  }
+
   if (to.path === '/login') {
     return
   }
 
-  const { isAuthenticated, fetchMe } = useAuth()
+  const { isAuthenticated, checkAuth } = useAuth()
 
-  if (!isAuthenticated.value) {
-    await fetchMe()
-  }
+  await checkAuth()
 
   if (!isAuthenticated.value) {
     return navigateTo('/login')

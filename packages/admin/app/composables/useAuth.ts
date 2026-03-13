@@ -6,9 +6,11 @@ export interface AuthUser {
 }
 
 const STATE_KEY = 'waaseyaa.auth.user'
+const CHECKED_KEY = 'waaseyaa.auth.checked'
 
 export function useAuth() {
   const currentUser = useState<AuthUser | null>(STATE_KEY, () => null)
+  const authChecked = useState<boolean>(CHECKED_KEY, () => false)
   const isAuthenticated = computed(() => currentUser.value !== null)
 
   async function fetchMe(): Promise<void> {
@@ -19,6 +21,14 @@ export function useAuth() {
     catch {
       currentUser.value = null
     }
+  }
+
+  async function checkAuth(): Promise<void> {
+    if (authChecked.value) {
+      return
+    }
+    await fetchMe()
+    authChecked.value = true
   }
 
   async function login(username: string, password: string): Promise<void> {
@@ -32,7 +42,8 @@ export function useAuth() {
   async function logout(): Promise<void> {
     await $fetch('/api/auth/logout', { method: 'POST' })
     currentUser.value = null
+    authChecked.value = false
   }
 
-  return { currentUser, isAuthenticated, fetchMe, login, logout }
+  return { currentUser, isAuthenticated, fetchMe, checkAuth, login, logout }
 }
