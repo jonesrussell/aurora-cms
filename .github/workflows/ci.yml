@@ -79,17 +79,19 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Run unit tests
-        run: ./vendor/bin/phpunit --testsuite Unit
+        run: ./vendor/bin/phpunit --testsuite Unit --log-junit build/logs/junit.xml
 
       - name: Run integration tests
-        run: ./vendor/bin/phpunit --testsuite Integration
+        run: ./vendor/bin/phpunit --testsuite Integration --log-junit build/logs/junit.xml
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report
-          path: build/logs/clover.xml
+          path: |
+            build/logs/clover.xml
+            build/logs/junit.xml
           retention-days: 14
 
   manifest-conformance:
@@ -168,3 +170,80 @@ jobs:
 
       - name: Run structural secrets scan
         run: ./vendor/bin/phpunit --filter Phase22 --no-coverage
+
+  frontend-build:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: packages/admin/package-lock.json
+      - name: Install dependencies
+        run: cd packages/admin && npm ci
+      - name: Build
+        run: cd packages/admin && npm run build
+      - name: Run unit tests
+        run: cd packages/admin && npm test
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-build
+          path: packages/admin/.output/
+          retention-days: 14
+
+  playwright-smoke:
+    name: Playwright smoke
+    runs-on: ubuntu-latest
+    needs: [frontend-build]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, sqlite3, mbstring, xml
+          coverage: none
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: packages/admin/package-lock.json
+      - name: Install Playwright
+        run: cd packages/admin && npm ci && npx playwright install --with-deps chromium
+      - name: Start backend server
+        run: |
+          php -S 127.0.0.1:8080 -t public/ > /tmp/php-server.log 2>&1 &
+          echo "Waiting for PHP server..."
+          for i in $(seq 1 30); do
+            curl -s http://127.0.0.1:8080/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+      - name: Start Nuxt dev server
+        run: |
+          cd packages/admin && npm run dev -- --port 3000 &
+          echo "Waiting for Nuxt server..."
+          for i in $(seq 1 60); do
+            curl -s http://localhost:3000/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+      - name: Run Playwright smoke tests
+        run: cd packages/admin && npx playwright test --project=chromium --grep @smoke
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+      - name: Upload Playwright artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-smoke-results
+          path: |
+            packages/admin/test-results/
+            packages/admin/playwright-report/
+          retention-days: 14

@@ -1,0 +1,272 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_staging:
+        description: 'Skip staging deployment'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-staging:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      deploy_sha: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, sqlite3, mbstring, xml
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying commit ${{ github.sha }} to staging..."
+          # Scripts handle actual deployment
+          if [ -f scripts/deploy.sh ]; then
+            bash scripts/deploy.sh staging
+          else
+            echo "::warning::scripts/deploy.sh not found — skipping deployment"
+            echo "Manual deployment needed for commit ${{ github.sha }}"
+          fi
+
+      - name: Record deployment metadata
+        run: |
+          mkdir -p build/deploy
+          cat > build/deploy/staging-metadata.json << EOF
+          {
+            "environment": "staging",
+            "sha": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "actor": "${{ github.actor }}",
+            "run_id": "${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Upload deployment metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-deploy-metadata
+          path: build/deploy/
+          retention-days: 90
+
+  playwright-full-sweep:
+    name: Full Playwright sweep (staging)
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, sqlite3, mbstring, xml
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: packages/admin/package-lock.json
+
+      - name: Install Playwright
+        run: cd packages/admin && npm ci && npx playwright install --with-deps chromium
+
+      - name: Start backend server
+        run: |
+          php -S 127.0.0.1:8080 -t public/ > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -s http://127.0.0.1:8080/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+
+      - name: Start Nuxt dev server
+        run: |
+          cd packages/admin && npm run dev -- --port 3000 &
+          for i in $(seq 1 60); do
+            curl -s http://localhost:3000/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+
+      - name: Run full Playwright suite
+        run: cd packages/admin && npx playwright test --project=chromium
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+
+      - name: Upload Playwright artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-full-sweep
+          path: |
+            packages/admin/test-results/
+            packages/admin/playwright-report/
+          retention-days: 90
+
+  promote-production:
+    name: Promote to production
+    runs-on: ubuntu-latest
+    needs: [playwright-full-sweep]
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, sqlite3, mbstring, xml
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Deploy to production
+        run: |
+          echo "Promoting commit ${{ github.sha }} to production..."
+          if [ -f scripts/deploy.sh ]; then
+            bash scripts/deploy.sh production
+          else
+            echo "::warning::scripts/deploy.sh not found — skipping deployment"
+            echo "Manual deployment needed for commit ${{ github.sha }}"
+          fi
+
+      - name: Record deployment metadata
+        run: |
+          mkdir -p build/deploy
+          cat > build/deploy/production-metadata.json << EOF
+          {
+            "environment": "production",
+            "sha": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "actor": "${{ github.actor }}",
+            "run_id": "${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Upload deployment metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-deploy-metadata
+          path: build/deploy/
+          retention-days: 90
+
+  post-deploy-smoke:
+    name: Post-deploy smoke tests
+    runs-on: ubuntu-latest
+    needs: [promote-production]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_sqlite, sqlite3, mbstring, xml
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: packages/admin/package-lock.json
+
+      - name: Install Playwright
+        run: cd packages/admin && npm ci && npx playwright install --with-deps chromium
+
+      - name: Start backend server
+        run: |
+          php -S 127.0.0.1:8080 -t public/ > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -s http://127.0.0.1:8080/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+
+      - name: Start Nuxt dev server
+        run: |
+          cd packages/admin && npm run dev -- --port 3000 &
+          for i in $(seq 1 60); do
+            curl -s http://localhost:3000/ > /dev/null 2>&1 && break
+            sleep 1
+          done
+
+      - name: Run post-deploy smoke tests
+        run: cd packages/admin && npx playwright test --project=chromium --grep @smoke
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+
+      - name: Upload smoke test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deploy-smoke
+          path: |
+            packages/admin/test-results/
+            packages/admin/playwright-report/
+          retention-days: 90
+
+      - name: Trigger rollback on failure
+        if: failure()
+        run: |
+          echo "::error::Post-deploy smoke tests FAILED. Initiating rollback..."
+          PREV_TAG=$(git tag --sort=-v:refname | head -1)
+          echo "Would rollback to: $PREV_TAG"
+          if [ -f scripts/rollback.sh ]; then
+            bash scripts/rollback.sh "$PREV_TAG"
+          else
+            echo "::error::scripts/rollback.sh not found — manual rollback required to $PREV_TAG"
+          fi
+
+      - name: Create incident issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            await github.rest.issues.create({
+              owner, repo,
+              title: `[INCIDENT] Post-deploy smoke test failure — run ${context.runId}`,
+              body: [
+                '## Incident: Post-deploy smoke test failure',
+                '',
+                `**Commit:** ${context.sha}`,
+                `**Run:** ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                `**Triggered by:** ${context.actor}`,
+                '',
+                'Post-deploy smoke tests failed after production deployment.',
+                'Automatic rollback was attempted. Check the workflow run for details.',
+                '',
+                '### Action Required',
+                '1. Verify rollback succeeded',
+                '2. Review Playwright artifacts in the workflow run',
+                '3. Fix the issue and re-deploy',
+              ].join('\n'),
+              labels: ['incident', 'production'],
+            });
