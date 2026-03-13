@@ -540,16 +540,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.4.6",
+            "version": "v7.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "6d643a93b47398599124022eb24d97c153c12f27"
+                "reference": "e1e6770440fb9c9b0cf725f81d1361ad1835329d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/6d643a93b47398599124022eb24d97c153c12f27",
-                "reference": "6d643a93b47398599124022eb24d97c153c12f27",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e1e6770440fb9c9b0cf725f81d1361ad1835329d",
+                "reference": "e1e6770440fb9c9b0cf725f81d1361ad1835329d",
                 "shasum": ""
             },
             "require": {
@@ -614,7 +614,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.4.6"
+                "source": "https://github.com/symfony/console/tree/v7.4.7"
             },
             "funding": [
                 {
@@ -634,20 +634,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-25T17:02:47+00:00"
+            "time": "2026-03-06T14:06:20+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v7.4.6",
+            "version": "v7.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "a3f7d594ca53a34a7d39ae683fbca09408b0c598"
+                "reference": "0f651e58f4917fb0e2cd261ccbfe3d71e6e0f5db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/a3f7d594ca53a34a7d39ae683fbca09408b0c598",
-                "reference": "a3f7d594ca53a34a7d39ae683fbca09408b0c598",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/0f651e58f4917fb0e2cd261ccbfe3d71e6e0f5db",
+                "reference": "0f651e58f4917fb0e2cd261ccbfe3d71e6e0f5db",
                 "shasum": ""
             },
             "require": {
@@ -698,7 +698,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v7.4.6"
+                "source": "https://github.com/symfony/dependency-injection/tree/v7.4.7"
             },
             "funding": [
                 {
@@ -718,7 +718,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-25T16:50:00+00:00"
+            "time": "2026-03-03T07:48:48+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -950,16 +950,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v7.4.6",
+            "version": "v7.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "fd97d5e926e988a363cef56fbbf88c5c528e9065"
+                "reference": "f94b3e7b7dafd40e666f0c9ff2084133bae41e81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/fd97d5e926e988a363cef56fbbf88c5c528e9065",
-                "reference": "fd97d5e926e988a363cef56fbbf88c5c528e9065",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/f94b3e7b7dafd40e666f0c9ff2084133bae41e81",
+                "reference": "f94b3e7b7dafd40e666f0c9ff2084133bae41e81",
                 "shasum": ""
             },
             "require": {
@@ -1008,7 +1008,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v7.4.6"
+                "source": "https://github.com/symfony/http-foundation/tree/v7.4.7"
             },
             "funding": [
                 {
@@ -1028,20 +1028,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-21T16:25:55+00:00"
+            "time": "2026-03-06T13:15:18+00:00"
         },
         {
             "name": "symfony/messenger",
-            "version": "v7.4.6",
+            "version": "v7.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/messenger.git",
-                "reference": "9da6166eb98937d903ed3685b317b426c82d3496"
+                "reference": "13a00f01a46ba7d47ac7f0e3d9a901d19f9432f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/messenger/zipball/9da6166eb98937d903ed3685b317b426c82d3496",
-                "reference": "9da6166eb98937d903ed3685b317b426c82d3496",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/13a00f01a46ba7d47ac7f0e3d9a901d19f9432f0",
+                "reference": "13a00f01a46ba7d47ac7f0e3d9a901d19f9432f0",
                 "shasum": ""
             },
             "require": {
@@ -1102,7 +1102,7 @@
             "description": "Helps applications send and receive messages to/from other applications or via message queues",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/messenger/tree/v7.4.6"
+                "source": "https://github.com/symfony/messenger/tree/v7.4.7"
             },
             "funding": [
                 {
@@ -1122,7 +1122,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-25T16:50:00+00:00"
+            "time": "2026-03-04T13:54:41+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2046,16 +2046,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v7.4.6",
+            "version": "v7.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "a1ceaf285712ed8034819a76b5fbba23eaf3e54d"
+                "reference": "3a1a460a9f8c5e5611e15c52c4baa5a62fa3c203"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/a1ceaf285712ed8034819a76b5fbba23eaf3e54d",
-                "reference": "a1ceaf285712ed8034819a76b5fbba23eaf3e54d",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/3a1a460a9f8c5e5611e15c52c4baa5a62fa3c203",
+                "reference": "3a1a460a9f8c5e5611e15c52c4baa5a62fa3c203",
                 "shasum": ""
             },
             "require": {
@@ -2126,7 +2126,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v7.4.6"
+                "source": "https://github.com/symfony/validator/tree/v7.4.7"
             },
             "funding": [
                 {
@@ -2146,7 +2146,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-25T16:50:00+00:00"
+            "time": "2026-03-06T11:10:17+00:00"
         },
         {
             "name": "symfony/var-exporter",
@@ -2385,7 +2385,7 @@
         },
         {
             "name": "waaseyaa/access",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/access",
@@ -2423,7 +2423,7 @@
         },
         {
             "name": "waaseyaa/ai-agent",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-agent",
@@ -2458,7 +2458,7 @@
         },
         {
             "name": "waaseyaa/ai-pipeline",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-pipeline",
@@ -2501,7 +2501,7 @@
         },
         {
             "name": "waaseyaa/ai-schema",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-schema",
@@ -2535,7 +2535,7 @@
         },
         {
             "name": "waaseyaa/ai-vector",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/ai-vector",
@@ -2573,7 +2573,7 @@
         },
         {
             "name": "waaseyaa/api",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/api",
@@ -2610,7 +2610,7 @@
         },
         {
             "name": "waaseyaa/cache",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
@@ -2649,7 +2649,7 @@
         },
         {
             "name": "waaseyaa/cli",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/cli",
@@ -2688,7 +2688,7 @@
         },
         {
             "name": "waaseyaa/config",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/config",
@@ -2723,7 +2723,7 @@
         },
         {
             "name": "waaseyaa/database-legacy",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/database-legacy",
@@ -2756,7 +2756,7 @@
         },
         {
             "name": "waaseyaa/entity",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/entity",
@@ -2796,7 +2796,7 @@
         },
         {
             "name": "waaseyaa/entity-storage",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/entity-storage",
@@ -2834,7 +2834,7 @@
         },
         {
             "name": "waaseyaa/field",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/field",
@@ -2870,11 +2870,11 @@
         },
         {
             "name": "waaseyaa/foundation",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/foundation",
-                "reference": "d1156ac4cf339427e758534bfaf414d544fd37f9"
+                "reference": "f8c1367c3ee576f020e31271caed8b951ab0b5dd"
             },
             "require": {
                 "doctrine/dbal": "^4.0",
@@ -2884,7 +2884,6 @@
                 "symfony/http-foundation": "^7.0",
                 "symfony/messenger": "^7.0",
                 "symfony/uid": "^7.0",
-                "waaseyaa/path": "@dev",
                 "waaseyaa/queue": "@dev"
             },
             "require-dev": {
@@ -2911,7 +2910,7 @@
         },
         {
             "name": "waaseyaa/i18n",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/i18n",
@@ -2944,7 +2943,7 @@
         },
         {
             "name": "waaseyaa/mail",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
@@ -2982,7 +2981,7 @@
         },
         {
             "name": "waaseyaa/mcp",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/mcp",
@@ -3024,7 +3023,7 @@
         },
         {
             "name": "waaseyaa/media",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/media",
@@ -3065,7 +3064,7 @@
         },
         {
             "name": "waaseyaa/menu",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/menu",
@@ -3106,7 +3105,7 @@
         },
         {
             "name": "waaseyaa/node",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/node",
@@ -3148,7 +3147,7 @@
         },
         {
             "name": "waaseyaa/note",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/note",
@@ -3190,7 +3189,7 @@
         },
         {
             "name": "waaseyaa/path",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/path",
@@ -3231,7 +3230,7 @@
         },
         {
             "name": "waaseyaa/plugin",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/plugin",
@@ -3265,7 +3264,7 @@
         },
         {
             "name": "waaseyaa/queue",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
@@ -3299,7 +3298,7 @@
         },
         {
             "name": "waaseyaa/routing",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/routing",
@@ -3336,7 +3335,7 @@
         },
         {
             "name": "waaseyaa/search",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/search",
@@ -3370,7 +3369,7 @@
         },
         {
             "name": "waaseyaa/ssr",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/ssr",
@@ -3418,7 +3417,7 @@
         },
         {
             "name": "waaseyaa/state",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/state",
@@ -3452,7 +3451,7 @@
         },
         {
             "name": "waaseyaa/taxonomy",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/taxonomy",
@@ -3494,7 +3493,7 @@
         },
         {
             "name": "waaseyaa/telescope",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/telescope",
@@ -3527,7 +3526,7 @@
         },
         {
             "name": "waaseyaa/typed-data",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/typed-data",
@@ -3561,7 +3560,7 @@
         },
         {
             "name": "waaseyaa/user",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/user",
@@ -3605,7 +3604,7 @@
         },
         {
             "name": "waaseyaa/validation",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
@@ -3641,7 +3640,7 @@
         },
         {
             "name": "waaseyaa/workflows",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/workflows",
@@ -7015,7 +7014,7 @@
         },
         {
             "name": "waaseyaa/testing",
-            "version": "dev-main",
+            "version": "dev-fix/v1.0-315-foundation-path-dep",
             "dist": {
                 "type": "path",
                 "url": "packages/testing",
@@ -7090,5 +7089,5 @@
         "php": ">=8.4"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
