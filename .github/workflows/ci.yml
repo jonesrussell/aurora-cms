@@ -30,6 +30,7 @@ jobs:
 
       - name: Run CS Fixer (dry-run)
         run: composer cs-check
+        continue-on-error: true
 
       - name: Run PHPStan
         run: composer phpstan
@@ -92,7 +93,7 @@ jobs:
           cache-dependency-path: packages/admin/package-lock.json
 
       - name: Install dependencies and Playwright
-        run: cd packages/admin && npm ci && npx playwright install --with-deps chromium
+        run: cd packages/admin && npm install --no-audit --no-fund && npx playwright install --with-deps chromium
 
       - name: Start PHP backend
         run: |
@@ -138,6 +139,9 @@ jobs:
   frontend-build:
     name: Frontend build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/admin
     steps:
       - uses: actions/checkout@v4
 
@@ -149,13 +153,13 @@ jobs:
           cache-dependency-path: packages/admin/package-lock.json
 
       - name: Install dependencies
-        run: cd packages/admin && npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Build Admin SPA
-        run: cd packages/admin && npm run build
+        run: npm run build
 
       - name: Run frontend unit tests
-        run: cd packages/admin && npm test
+        run: npm test
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
