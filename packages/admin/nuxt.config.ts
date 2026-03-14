@@ -7,15 +7,6 @@ export default defineNuxtConfig({
   },
   srcDir: 'app/',
 
-  nitro: {
-    devProxy: {
-      '/api': {
-        target: 'http://localhost:8081/api',
-        changeOrigin: true,
-      },
-    },
-  },
-
   routeRules: {
     '/api/**': { proxy: 'http://localhost:8081/api/**' },
   },
