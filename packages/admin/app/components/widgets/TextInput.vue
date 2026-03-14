@@ -32,6 +32,7 @@ const inputType = computed(() => {
       :required="required"
       :disabled="disabled"
       :maxlength="schema?.maxLength"
+      :aria-label="label"
       class="field-input"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />

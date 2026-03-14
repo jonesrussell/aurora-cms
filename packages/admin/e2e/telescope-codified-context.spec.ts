@@ -86,8 +86,8 @@ test.describe('Telescope: Codified Context', () => {
   test('displays session list with sessions', async ({ page }) => {
     await page.goto('/telescope/codified-context')
     await expect(page.getByRole('heading', { name: 'Codified Context' })).toBeVisible()
-    await expect(page.getByText('sess-abcd')).toBeVisible()
-    await expect(page.getByText('sess-0011')).toBeVisible()
+    await expect(page.getByText('sess-abc')).toBeVisible()
+    await expect(page.getByText('sess-001')).toBeVisible()
   })
 
   test('shows severity badges with correct values', async ({ page }) => {
