@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=8.3",
-        "waaseyaa/entity": "@dev",
-        "waaseyaa/plugin": "@dev",
-        "waaseyaa/typed-data": "@dev"
+        "waaseyaa/entity": "^1.1",
+        "waaseyaa/plugin": "^1.1",
+        "waaseyaa/typed-data": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"
