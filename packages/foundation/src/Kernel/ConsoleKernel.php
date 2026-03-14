@@ -173,7 +173,10 @@ final class ConsoleKernel extends AbstractKernel
             new MakeTestCommand(),
             new AboutCommand(info: [
                 'name' => 'Waaseyaa',
-                'version' => '0.1.0',
+                'version' => (static function (): string {
+                    $pkg = \Composer\InstalledVersions::getRootPackage();
+                    return $pkg['pretty_version'] ?? $pkg['version'] ?? 'dev';
+                })(),
                 'php' => PHP_VERSION,
                 'environment' => getenv('APP_ENV') ?: 'production',
             ]),
