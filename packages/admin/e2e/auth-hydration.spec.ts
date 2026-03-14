@@ -12,7 +12,7 @@ test.describe('Auth hydration', () => {
     await mockUserMeRoute(page)
     await mockEntityTypesRoute(page)
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('load')
 
     const hydrationWarnings = warnings.filter(w => w.includes('Hydration'))
     expect(hydrationWarnings).toHaveLength(0)
