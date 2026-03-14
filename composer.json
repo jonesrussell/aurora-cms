@@ -130,6 +130,7 @@
             "Waaseyaa\\AI\\Vector\\Tests\\": "packages/ai-vector/tests/",
             "Waaseyaa\\Testing\\Tests\\": "packages/testing/tests/",
             "Waaseyaa\\Telescope\\Tests\\": "packages/telescope/tests/",
+            "Waaseyaa\\AdminBridge\\Tests\\": "packages/admin-bridge/tests/",
             "Waaseyaa\\Tests\\": "tests/"
         }
     },
