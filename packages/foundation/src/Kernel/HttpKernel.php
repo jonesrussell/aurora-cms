@@ -210,7 +210,11 @@ final class HttpKernel extends AbstractKernel
         if (empty($attributes)) {
             return 0;
         }
-        return $attributes[0]->newInstance()->priority;
+        $instance = $attributes[0]->newInstance();
+        if ($instance->pipeline !== 'http') {
+            return 0;
+        }
+        return $instance->priority;
     }
 
     private function handleCors(): void

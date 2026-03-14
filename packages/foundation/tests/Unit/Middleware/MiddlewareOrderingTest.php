@@ -7,11 +7,48 @@ namespace Waaseyaa\Foundation\Tests\Unit\Middleware;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Waaseyaa\Access\Middleware\AuthorizationMiddleware;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Waaseyaa\Foundation\Attribute\AsMiddleware;
-use Waaseyaa\User\Middleware\BearerAuthMiddleware;
-use Waaseyaa\User\Middleware\CsrfMiddleware;
-use Waaseyaa\User\Middleware\SessionMiddleware;
+use Waaseyaa\Foundation\Middleware\HttpHandlerInterface;
+use Waaseyaa\Foundation\Middleware\HttpMiddlewareInterface;
+
+// Local stubs — no cross-layer imports needed.
+#[AsMiddleware(pipeline: 'http', priority: 40)]
+final class StubPriority40Middleware implements HttpMiddlewareInterface
+{
+    public function process(HttpRequest $request, HttpHandlerInterface $next): HttpResponse
+    {
+        return $next->handle($request);
+    }
+}
+
+#[AsMiddleware(pipeline: 'http', priority: 30)]
+final class StubPriority30Middleware implements HttpMiddlewareInterface
+{
+    public function process(HttpRequest $request, HttpHandlerInterface $next): HttpResponse
+    {
+        return $next->handle($request);
+    }
+}
+
+#[AsMiddleware(pipeline: 'http', priority: 20)]
+final class StubPriority20Middleware implements HttpMiddlewareInterface
+{
+    public function process(HttpRequest $request, HttpHandlerInterface $next): HttpResponse
+    {
+        return $next->handle($request);
+    }
+}
+
+#[AsMiddleware(pipeline: 'http', priority: 10)]
+final class StubPriority10Middleware implements HttpMiddlewareInterface
+{
+    public function process(HttpRequest $request, HttpHandlerInterface $next): HttpResponse
+    {
+        return $next->handle($request);
+    }
+}
 
 #[CoversClass(AsMiddleware::class)]
 final class MiddlewareOrderingTest extends TestCase
@@ -19,10 +56,10 @@ final class MiddlewareOrderingTest extends TestCase
     #[Test]
     public function middleware_have_correct_priority_attributes(): void
     {
-        $this->assertMiddlewarePriority(BearerAuthMiddleware::class, 40);
-        $this->assertMiddlewarePriority(SessionMiddleware::class, 30);
-        $this->assertMiddlewarePriority(CsrfMiddleware::class, 20);
-        $this->assertMiddlewarePriority(AuthorizationMiddleware::class, 10);
+        $this->assertMiddlewarePriority(StubPriority40Middleware::class, 40);
+        $this->assertMiddlewarePriority(StubPriority30Middleware::class, 30);
+        $this->assertMiddlewarePriority(StubPriority20Middleware::class, 20);
+        $this->assertMiddlewarePriority(StubPriority10Middleware::class, 10);
     }
 
     #[Test]
@@ -30,10 +67,10 @@ final class MiddlewareOrderingTest extends TestCase
     {
         // Provide class names in REVERSE priority order to prove registration order is irrelevant.
         $classes = [
-            AuthorizationMiddleware::class, // priority 10
-            CsrfMiddleware::class,          // priority 20
-            SessionMiddleware::class,       // priority 30
-            BearerAuthMiddleware::class,    // priority 40
+            StubPriority10Middleware::class, // priority 10
+            StubPriority20Middleware::class, // priority 20
+            StubPriority30Middleware::class, // priority 30
+            StubPriority40Middleware::class, // priority 40
         ];
 
         usort(
@@ -43,10 +80,10 @@ final class MiddlewareOrderingTest extends TestCase
 
         $this->assertSame(
             [
-                BearerAuthMiddleware::class,
-                SessionMiddleware::class,
-                CsrfMiddleware::class,
-                AuthorizationMiddleware::class,
+                StubPriority40Middleware::class,
+                StubPriority30Middleware::class,
+                StubPriority20Middleware::class,
+                StubPriority10Middleware::class,
             ],
             $classes,
         );
