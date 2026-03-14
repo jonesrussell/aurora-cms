@@ -43,13 +43,15 @@
         { "type": "path", "url": "packages/i18n" },
         { "type": "path", "url": "packages/testing" },
         { "type": "path", "url": "packages/telescope" },
-        { "type": "path", "url": "packages/full" }
+        { "type": "path", "url": "packages/full" },
+        { "type": "path", "url": "packages/admin-bridge" }
     ],
     "require": {
         "php": ">=8.4",
         "symfony/console": "^7.0",
         "symfony/html-sanitizer": "^8.0",
         "waaseyaa/access": "@dev",
+        "waaseyaa/admin-bridge": "@dev",
         "waaseyaa/ai-agent": "@dev",
         "waaseyaa/ai-pipeline": "@dev",
         "waaseyaa/ai-schema": "@dev",
