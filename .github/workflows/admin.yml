@@ -74,7 +74,7 @@ jobs:
 
       - name: Install Composer dependencies
         if: hashFiles('packages/admin-bridge/composer.json') != ''
-        run: composer install --no-interaction --no-progress --prefer-dist
+        run: composer install --no-interaction --no-progress --prefer-dist --no-lock
         working-directory: .
 
       - name: Run PHP payload tests
