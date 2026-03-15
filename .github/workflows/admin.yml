@@ -2,14 +2,14 @@ name: Admin SPA
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'develop/*']
     tags: ['v*']
     paths:
       - 'packages/admin/**'
       - 'packages/admin-bridge/**'
       - '.github/workflows/admin.yml'
   pull_request:
-    branches: [main]
+    branches: [main, 'develop/*']
     paths:
       - 'packages/admin/**'
       - 'packages/admin-bridge/**'
