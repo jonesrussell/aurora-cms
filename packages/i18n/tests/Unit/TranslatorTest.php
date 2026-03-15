@@ -111,6 +111,17 @@ final class TranslatorTest extends TestCase
     }
 
     #[Test]
+    public function falls_back_when_translation_is_empty_string(): void
+    {
+        // oj.php has the key but value is '' — should fall back to en
+        file_put_contents($this->langDir . '/oj.php', "<?php\nreturn [\n    'greeting' => '',\n    'nav.home' => 'Endaad',\n];\n");
+        $this->manager->setCurrentLanguage($this->manager->getLanguage('oj'));
+        $translator = new Translator($this->langDir, $this->manager);
+
+        $this->assertSame('Hello', $translator->trans('greeting'));
+    }
+
+    #[Test]
     public function caches_loaded_translations(): void
     {
         $translator = new Translator($this->langDir, $this->manager);

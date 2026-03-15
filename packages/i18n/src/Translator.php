@@ -24,7 +24,7 @@ final class Translator implements TranslatorInterface
 
         foreach ($chain as $langcode) {
             $translations = $this->loadTranslations($langcode);
-            if (isset($translations[$key])) {
+            if (isset($translations[$key]) && $translations[$key] !== '') {
                 return $this->replaceParams($translations[$key], $params);
             }
         }
