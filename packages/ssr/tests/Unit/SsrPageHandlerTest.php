@@ -403,4 +403,18 @@ final class SsrPageHandlerTest extends TestCase
         $this->assertSame('/communities', $result);
         $this->assertSame('en', $manager->getCurrentLanguage()->id);
     }
+
+    #[Test]
+    public function resolve_language_manager_returns_app_instance(): void
+    {
+        // The shared app-level manager is used — verifiable by checking state mutation.
+        [$handler, $manager] = $this->createHandlerWithManager();
+        $request = HttpRequest::create('/oj/about');
+
+        $result = $handler->resolveRenderLanguageAndAliasPath('/oj/about', $request);
+
+        // The negotiated language was set on the app manager (same instance).
+        $this->assertSame('oj', $result['langcode']);
+        $this->assertSame('oj', $manager->getCurrentLanguage()->id);
+    }
 }
