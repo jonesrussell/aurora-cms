@@ -9,11 +9,23 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  const { isAuthenticated, checkAuth } = useAuth()
-
-  await checkAuth()
-
-  if (!isAuthenticated.value) {
+  // Check if $admin is available — if not, plugin may have redirected already
+  const nuxtApp = useNuxtApp()
+  const admin = (nuxtApp as any).$admin
+  if (!admin) {
     return navigateTo('/login')
   }
+
+  // For embedded auth strategy, check session via adapter
+  const strategy = admin.bootstrap?.auth?.strategy
+  if (strategy === 'embedded') {
+    const { isAuthenticated, checkAuth } = useAuth()
+    await checkAuth()
+    if (!isAuthenticated.value) {
+      return navigateTo('/login')
+    }
+  }
+
+  // For redirect strategy, the plugin handles auth — if we got here, bootstrap succeeded
+  // which means the user is authenticated.
 })
