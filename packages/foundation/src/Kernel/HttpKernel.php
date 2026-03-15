@@ -124,6 +124,9 @@ final class HttpKernel extends AbstractKernel
         $routeRegistrar = new BuiltinRouteRegistrar($this->entityTypeManager, $this->providers);
         $routeRegistrar->register($router);
 
+        // Strip language prefix before routing so /oj/communities matches /communities.
+        $path = $this->ssrPageHandler->stripLanguagePrefixForRouting($path);
+
         // Route matching.
         try {
             $params = $router->match($path);

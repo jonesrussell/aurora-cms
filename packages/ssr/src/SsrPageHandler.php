@@ -496,6 +496,32 @@ final class SsrPageHandler
     }
 
     /**
+     * Strip a language prefix from the path and activate the language on the
+     * shared LanguageManager. Called by the kernel BEFORE route matching so
+     * that language-prefixed paths like /oj/communities resolve correctly.
+     *
+     * Returns the path with the prefix removed (or unchanged if no prefix).
+     */
+    public function stripLanguagePrefixForRouting(string $path): string
+    {
+        $manager = $this->resolveLanguageManager();
+        $availableLanguages = array_keys($manager->getLanguages());
+        $defaultLanguage = $manager->getDefaultLanguage();
+
+        $prefix = $this->detectLanguagePrefixFromPath($path, $availableLanguages);
+        if ($prefix === null || $prefix === $defaultLanguage->id) {
+            return $path;
+        }
+
+        $language = $manager->getLanguage($prefix);
+        if ($language !== null) {
+            $manager->setCurrentLanguage($language);
+        }
+
+        return $this->stripLanguagePrefix($path, $prefix);
+    }
+
+    /**
      * @param list<string> $availableLanguages
      */
     public function detectLanguagePrefixFromPath(string $path, array $availableLanguages): ?string

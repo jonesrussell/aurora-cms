@@ -369,4 +369,36 @@ final class SsrPageHandlerTest extends TestCase
         $this->assertSame('/', $result['alias_path']);
         $this->assertSame('oj', $manager->getCurrentLanguage()->id);
     }
+
+    #[Test]
+    public function strip_language_prefix_for_routing_strips_known_prefix(): void
+    {
+        [$handler, $manager] = $this->createHandlerWithManager();
+
+        $result = $handler->stripLanguagePrefixForRouting('/oj/communities');
+
+        $this->assertSame('/communities', $result);
+        $this->assertSame('oj', $manager->getCurrentLanguage()->id);
+    }
+
+    #[Test]
+    public function strip_language_prefix_for_routing_preserves_unknown_prefix(): void
+    {
+        [$handler] = $this->createHandlerWithManager();
+
+        $result = $handler->stripLanguagePrefixForRouting('/xx/communities');
+
+        $this->assertSame('/xx/communities', $result);
+    }
+
+    #[Test]
+    public function strip_language_prefix_for_routing_preserves_default_language(): void
+    {
+        [$handler, $manager] = $this->createHandlerWithManager();
+
+        $result = $handler->stripLanguagePrefixForRouting('/communities');
+
+        $this->assertSame('/communities', $result);
+        $this->assertSame('en', $manager->getCurrentLanguage()->id);
+    }
 }
