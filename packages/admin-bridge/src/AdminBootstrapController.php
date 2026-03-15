@@ -18,11 +18,6 @@ final class AdminBootstrapController
     /** @return array<string, mixed> */
     public function __invoke(AccountInterface $account): array
     {
-        if (!$account->isAuthenticated()) {
-            http_response_code(401);
-            return ['error' => 'Unauthorized'];
-        }
-
         $payload = new AdminBootstrapPayload(
             auth: $this->authConfig,
             account: new AdminAccount(
