@@ -38,6 +38,9 @@ When working on files matching these patterns, retrieve the spec for deep contex
 | `packages/cms/*`, `packages/core/*`, `packages/full/*` | — (metapackages) | — |
 | `packages/graphql/*` | — (stub) | — |
 | GitHub issues, milestones, new features, roadmap | — | `docs/specs/workflow.md`, `docs/specs/v1.5-verification-gate-contract.md`, `docs/specs/v1.6-verification-gate-contract.md` |
+| `skills/waaseyaa/app-development/*` | — | — |
+| `skills/waaseyaa/framework-extraction/*` | — | `docs/specs/extraction-log.md` |
+| `docs/audits/*` | — | — |
 | `docs/specs/**`, `.claude/**`, `**/CLAUDE.md` | `updating-codified-context` | — |
 
 Use `waaseyaa_search_specs` MCP tool to find specs affected by a change when the mapping isn't obvious.
