@@ -34,7 +34,7 @@
         }
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "waaseyaa/entity": "^0.1",
         "waaseyaa/plugin": "^0.1",
         "waaseyaa/foundation": "^0.1",

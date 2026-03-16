@@ -19,6 +19,13 @@ jobs:
           php-version: '8.4'
           coverage: none
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
@@ -46,6 +53,13 @@ jobs:
           php-version: '8.4'
           extensions: pdo_sqlite, sqlite3, mbstring, xml
           coverage: pcov
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
@@ -81,6 +95,13 @@ jobs:
           extensions: pdo_sqlite, sqlite3, mbstring, xml
           coverage: none
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist
 
@@ -90,6 +111,18 @@ jobs:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: packages/admin/package-lock.json
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: packages/admin/node_modules
+          key: node-${{ hashFiles('packages/admin/package-lock.json') }}
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('packages/admin/package-lock.json') }}
 
       - name: Install dependencies and Playwright
         run: cd packages/admin && npm install --no-audit --no-fund && npx playwright install --with-deps chromium firefox
@@ -140,6 +173,12 @@ jobs:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: packages/admin/package-lock.json
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: packages/admin/node_modules
+          key: node-${{ hashFiles('packages/admin/package-lock.json') }}
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
@@ -228,6 +267,13 @@ jobs:
           php-version: '8.4'
           extensions: pdo_sqlite, sqlite3, mbstring, xml
           coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist

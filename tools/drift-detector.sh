@@ -45,7 +45,7 @@ map_file_to_specs() {
   # Access control
   case "$file" in
     packages/access/*|packages/user/src/Middleware/*)
-      specs="$specs docs/specs/access-control.md" ;;
+      specs="$specs docs/specs/access-control.md docs/specs/field-access.md" ;;
   esac
 
   # Field access (FieldAccess in access, Schema in api)
@@ -66,8 +66,16 @@ map_file_to_specs() {
 
   # Infrastructure
   case "$file" in
-    packages/foundation/*|packages/cache/*|packages/database-legacy/*)
+    packages/foundation/*|packages/cache/*|packages/database-legacy/*|\
+packages/plugin/*|packages/i18n/*|packages/queue/*|packages/state/*|\
+packages/validation/*|packages/typed-data/*|packages/testing/*|packages/mail/*)
       specs="$specs docs/specs/infrastructure.md" ;;
+  esac
+
+  # Ingestion
+  case "$file" in
+    packages/foundation/src/Ingestion/*)
+      specs="$specs docs/specs/ingestion-defaults.md" ;;
   esac
 
   # Package discovery
@@ -92,8 +100,20 @@ map_file_to_specs() {
 
   # Admin SPA
   case "$file" in
-    packages/admin/*)
+    packages/admin/*|packages/admin-bridge/*)
       specs="$specs docs/specs/admin-spa.md" ;;
+  esac
+
+  # Note (ingestion-defaults)
+  case "$file" in
+    packages/note/*)
+      specs="$specs docs/specs/ingestion-defaults.md" ;;
+  esac
+
+  # Relationship modeling
+  case "$file" in
+    packages/relationship/*)
+      specs="$specs docs/specs/relationship-modeling.md" ;;
   esac
 
   # AI integration

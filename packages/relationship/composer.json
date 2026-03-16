@@ -9,7 +9,7 @@
         }
     },
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "waaseyaa/access": "^0.1",
         "waaseyaa/database-legacy": "^0.1",
         "waaseyaa/entity": "^0.1",

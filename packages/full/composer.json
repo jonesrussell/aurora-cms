@@ -5,7 +5,6 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "waaseyaa/cms": "^0.1",
-        "waaseyaa/graphql": "^0.1",
         "waaseyaa/ai-schema": "^0.1",
         "waaseyaa/ai-agent": "^0.1",
         "waaseyaa/ai-vector": "^0.1",

@@ -66,7 +66,7 @@
         }
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "waaseyaa/ai-schema": "^0.1",
         "waaseyaa/ai-agent": "^0.1",
         "waaseyaa/routing": "^0.1",

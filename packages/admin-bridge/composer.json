@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "waaseyaa/entity": "@dev",
         "waaseyaa/access": "@dev",
         "waaseyaa/routing": "@dev",
