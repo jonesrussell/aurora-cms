@@ -1,6 +1,6 @@
 {
     "name": "waaseyaa/admin-bridge",
-    "description": "PHP bridge for mounting the Waaseyaa Admin SPA",
+    "description": "[DEPRECATED] PHP bridge for mounting the Waaseyaa Admin SPA. Use waaseyaa/admin-surface instead.",
     "type": "library",
     "license": "GPL-2.0-or-later",
     "repositories": [

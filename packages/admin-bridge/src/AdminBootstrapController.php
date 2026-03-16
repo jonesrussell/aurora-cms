@@ -6,6 +6,9 @@ namespace Waaseyaa\AdminBridge;
 
 use Waaseyaa\Access\AccountInterface;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\{equivalent} instead. Will be removed in v1.0.
+ */
 final class AdminBootstrapController
 {
     public function __construct(

@@ -6,6 +6,9 @@ namespace Waaseyaa\AdminBridge;
 
 use Waaseyaa\Entity\EntityTypeManagerInterface;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\Catalog\CatalogBuilder instead. Will be removed in v1.0.
+ */
 final class CatalogBuilder
 {
     private const DEFAULT_CAPABILITIES = [

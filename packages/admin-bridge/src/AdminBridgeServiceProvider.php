@@ -8,6 +8,9 @@ use Waaseyaa\Foundation\ServiceProvider\ServiceProvider;
 use Waaseyaa\Routing\RouteBuilder;
 use Waaseyaa\Routing\WaaseyaaRouter;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\AdminSurfaceServiceProvider instead. Will be removed in v1.0.
+ */
 final class AdminBridgeServiceProvider extends ServiceProvider
 {
     public function register(): void

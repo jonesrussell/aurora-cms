@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Waaseyaa\AdminBridge;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\Catalog\EntityDefinition instead. Will be removed in v1.0.
+ */
 final readonly class CatalogCapabilities
 {
     public function __construct(

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Waaseyaa\AdminBridge;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\AdminSurfaceServiceProvider routes instead. Will be removed in v1.0.
+ */
 final class AdminSpaController
 {
     public function __construct(

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Waaseyaa\AdminBridge;
 
+/**
+ * @deprecated Use Waaseyaa\AdminSurface\AdminSurfaceSessionData instead. Will be removed in v1.0.
+ */
 final readonly class AdminBootstrapPayload
 {
     private const CONTRACT_VERSION = '1.0';
