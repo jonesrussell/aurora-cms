@@ -74,8 +74,9 @@ final class GraphQlEndpoint
             referenceLoader: $referenceLoader,
         );
 
+        $schema = $schemaFactory->build();
+
         try {
-            $schema = $schemaFactory->build();
             $result = GraphQL::executeQuery(
                 schema: $schema,
                 source: $query,
@@ -87,8 +88,8 @@ final class GraphQlEndpoint
                 'statusCode' => 200,
                 'body' => $result->toArray(DebugFlag::NONE),
             ];
-        } catch (\Throwable $e) {
-            error_log('GraphQL execution error: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            error_log('GraphQL execution error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
 
             return [
                 'statusCode' => 500,

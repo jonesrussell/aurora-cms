@@ -21,13 +21,19 @@ final class FieldTypeMapper
 
     public function toOutputType(string $fieldType, bool $isMultiple): Type
     {
+        $known = true;
         $type = match ($fieldType) {
             'string', 'email', 'uri', 'timestamp', 'datetime', 'list_string' => Type::string(),
             'integer' => Type::int(),
             'boolean' => Type::boolean(),
             'float', 'decimal' => Type::float(),
             'text', 'text_long' => $this->getTextType(),
-            default => Type::string(),
+            default => (function () use ($fieldType, &$known): Type {
+                $known = false;
+                error_log("GraphQL: unknown field type '{$fieldType}', falling back to String");
+
+                return Type::string();
+            })(),
         };
 
         return $isMultiple ? Type::listOf(Type::nonNull($type)) : $type;

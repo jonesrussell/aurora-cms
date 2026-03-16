@@ -134,25 +134,42 @@ final class EntityTypeBuilder
         // Lazy type resolution — by the time webonyx evaluates this,
         // all entity ObjectTypes will be registered in TypeRegistry.
         $getType = static function () use ($registry, $targetTypeName): Type {
-            return $registry->get($targetTypeName) ?? Type::string();
+            $type = $registry->get($targetTypeName);
+            if ($type === null) {
+                error_log("GraphQL: target type '{$targetTypeName}' not found in registry, falling back to String");
+            }
+
+            return $type ?? Type::string();
         };
 
         return [
             'type' => $isMultiple
                 ? static fn(): Type => Type::listOf($getType())
                 : $getType,
-            'resolve' => static function (array $data) use ($fieldName, $targetEntityTypeId, $referenceLoader): mixed {
+            'resolve' => static function (array $data) use ($fieldName, $targetEntityTypeId, $referenceLoader, $isMultiple): mixed {
                 $value = $data[$fieldName] ?? null;
                 if ($value === null) {
                     return null;
+                }
+
+                $depth = ($data['_graphql_depth'] ?? 0) + 1;
+
+                if ($isMultiple) {
+                    $refs = is_array($value) ? $value : [$value];
+
+                    return array_filter(array_map(static function (mixed $ref) use ($targetEntityTypeId, $referenceLoader, $depth): mixed {
+                        $targetId = is_array($ref) ? ($ref['target_id'] ?? null) : $ref;
+
+                        return $targetId !== null
+                            ? $referenceLoader->load($targetEntityTypeId, $targetId, $depth)
+                            : null;
+                    }, $refs), static fn(mixed $v): bool => $v !== null);
                 }
 
                 $targetId = is_array($value) ? ($value['target_id'] ?? null) : $value;
                 if ($targetId === null) {
                     return null;
                 }
-
-                $depth = ($data['_graphql_depth'] ?? 0) + 1;
 
                 return $referenceLoader->load($targetEntityTypeId, $targetId, $depth);
             },

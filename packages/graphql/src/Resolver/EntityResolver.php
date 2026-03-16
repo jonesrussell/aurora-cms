@@ -84,7 +84,12 @@ final class EntityResolver
     public function resolveSingle(string $entityTypeId, int|string $id): ?array
     {
         $entity = $this->loadEntity($entityTypeId, $id);
-        if ($entity === null || !$this->guard->canView($entity)) {
+        if ($entity === null) {
+            return null;
+        }
+        if (!$this->guard->canView($entity)) {
+            error_log("GraphQL: view access denied for {$entityTypeId}/{$id}");
+
             return null;
         }
 
