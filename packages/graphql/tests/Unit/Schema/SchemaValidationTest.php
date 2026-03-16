@@ -265,14 +265,54 @@ final class SchemaValidationTest extends TestCase
         $createTitle = $createInputType->getField('title');
         self::assertInstanceOf(NonNull::class, $createTitle->getType());
 
+        // Create input: non-required fields remain nullable
+        $createBody = $createInputType->getField('body');
+        self::assertNotInstanceOf(NonNull::class, $createBody->getType());
+
         // Update input: all fields nullable (PATCH semantics)
         $updateTitle = $updateInputType->getField('title');
         self::assertNotInstanceOf(NonNull::class, $updateTitle->getType());
+
+        // Entity keys are excluded from both input types
+        self::assertFalse($createInputType->hasField('id'));
+        self::assertFalse($createInputType->hasField('uuid'));
+        self::assertFalse($updateInputType->hasField('id'));
+        self::assertFalse($updateInputType->hasField('uuid'));
 
         // Both should have the same non-key, non-readOnly fields
         $createFieldNames = array_keys($createInputType->getFields());
         $updateFieldNames = array_keys($updateInputType->getFields());
         self::assertSame($createFieldNames, $updateFieldNames);
+    }
+
+    #[Test]
+    public function updateInputTypeExcludesReadOnlyFields(): void
+    {
+        $this->entityTypeManager->registerCoreEntityType(new EntityType(
+            id: 'log_entry',
+            label: 'Log Entry',
+            class: EntityBase::class,
+            keys: ['id' => 'id'],
+            fieldDefinitions: [
+                'id' => ['type' => 'integer', 'readOnly' => true],
+                'message' => ['type' => 'string', 'required' => true],
+                'timestamp' => ['type' => 'timestamp', 'readOnly' => true],
+            ],
+        ));
+
+        $schema = $this->buildSchema();
+        $mutationType = $schema->getMutationType();
+
+        // Update input should exclude readOnly fields
+        $updateField = $mutationType->getField('updateLogEntry');
+        $updateInputType = $updateField->getArg('input')->getType();
+        if ($updateInputType instanceof NonNull) {
+            $updateInputType = $updateInputType->getWrappedType();
+        }
+
+        self::assertInstanceOf(InputObjectType::class, $updateInputType);
+        self::assertTrue($updateInputType->hasField('message'));
+        self::assertFalse($updateInputType->hasField('timestamp'));
     }
 
     #[Test]
@@ -295,8 +335,8 @@ final class SchemaValidationTest extends TestCase
 
     /**
      * Documents that EntityResolver::resolveList() enforces pagination bounds:
-     * - Default limit: EntityResolver::DEFAULT_LIMIT (50)
-     * - Max limit: EntityResolver::MAX_LIMIT (100) — requests above are clamped
+     * - Default limit: EntityResolver::DEFAULT_LIMIT
+     * - Max limit: EntityResolver::MAX_LIMIT — requests above are clamped
      * - Min limit: 1 — zero or negative values are clamped to 1
      * - Min offset: 0 — negative offsets are clamped to 0
      *
