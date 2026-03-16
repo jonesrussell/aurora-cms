@@ -38,6 +38,8 @@ jobs:
           - { local: 'packages/media', remote: 'media' }
           - { local: 'packages/path', remote: 'path' }
           - { local: 'packages/menu', remote: 'menu' }
+          - { local: 'packages/note', remote: 'note' }
+          - { local: 'packages/relationship', remote: 'relationship' }
           # Layer 3: Services
           - { local: 'packages/workflows', remote: 'workflows' }
           # Layer 4: API
@@ -54,6 +56,7 @@ jobs:
           - { local: 'packages/mcp', remote: 'mcp' }
           - { local: 'packages/ssr', remote: 'ssr' }
           - { local: 'packages/telescope', remote: 'telescope' }
+          - { local: 'packages/admin-surface', remote: 'admin-surface' }
           # Meta-packages
           - { local: 'packages/cms', remote: 'cms' }
           - { local: 'packages/core', remote: 'core' }

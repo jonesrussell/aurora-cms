@@ -98,6 +98,11 @@
         "phpunit/phpunit": "^10.5",
         "waaseyaa/testing": "@dev"
     },
+    "autoload": {
+        "psr-4": {
+            "Waaseyaa\\GitHub\\": "packages/github/src/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Waaseyaa\\Cache\\Tests\\": "packages/cache/tests/",
@@ -108,7 +113,6 @@
             "Waaseyaa\\Entity\\Tests\\": "packages/entity/tests/",
             "Waaseyaa\\Field\\Tests\\": "packages/field/tests/",
             "Waaseyaa\\Foundation\\Tests\\": "packages/foundation/tests/",
-            "Waaseyaa\\GitHub\\": "packages/github/src/",
             "Waaseyaa\\GitHub\\Tests\\": "packages/github/tests/",
             "Waaseyaa\\I18n\\Tests\\": "packages/i18n/tests/",
             "Waaseyaa\\Database\\Tests\\": "packages/database-legacy/tests/",
