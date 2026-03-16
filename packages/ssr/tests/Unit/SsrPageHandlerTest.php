@@ -259,16 +259,17 @@ final class SsrPageHandlerTest extends TestCase
     // --- i18n refactor: unified LanguageManager tests ---
 
     #[Test]
-    public function resolve_language_manager_throws_when_no_app_manager(): void
+    public function resolve_language_manager_falls_back_to_english_when_no_app_manager(): void
     {
         // Handler created without serviceResolver — no app-level LanguageManager available.
+        // Falls back to default English langcode and unchanged path.
         $handler = $this->createHandler();
         $request = HttpRequest::create('/about');
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('LanguageManagerInterface not registered');
+        $result = $handler->resolveRenderLanguageAndAliasPath('/about', $request);
 
-        $handler->resolveRenderLanguageAndAliasPath('/about', $request);
+        $this->assertSame('en', $result['langcode']);
+        $this->assertSame('/about', $result['alias_path']);
     }
 
     #[Test]
@@ -286,16 +287,17 @@ final class SsrPageHandlerTest extends TestCase
     }
 
     #[Test]
-    public function resolve_language_manager_throws_when_resolver_returns_wrong_type(): void
+    public function resolve_language_manager_falls_back_to_english_when_resolver_returns_wrong_type(): void
     {
         // serviceResolver is present but returns something that isn't a LanguageManagerInterface.
+        // Falls back to default English langcode and unchanged path.
         $handler = $this->createHandler(serviceResolver: static fn(string $class): ?object => new \stdClass());
         $request = HttpRequest::create('/about');
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('LanguageManagerInterface not registered');
+        $result = $handler->resolveRenderLanguageAndAliasPath('/about', $request);
 
-        $handler->resolveRenderLanguageAndAliasPath('/about', $request);
+        $this->assertSame('en', $result['langcode']);
+        $this->assertSame('/about', $result['alias_path']);
     }
 
     #[Test]

@@ -36,6 +36,14 @@ class StubControllerWithDefault
     ) {}
 }
 
+class StubControllerWithRequiredNonNullable
+{
+    public function __construct(
+        public readonly StubDependency $dep,
+        public readonly \DateTimeInterface $time,
+    ) {}
+}
+
 #[CoversClass(SsrPageHandler::class)]
 final class SsrPageHandlerResolverTest extends TestCase
 {
@@ -121,5 +129,24 @@ final class SsrPageHandlerResolverTest extends TestCase
 
         $this->assertInstanceOf(StubControllerWithDefault::class, $controller);
         $this->assertNull($controller->dep);
+    }
+
+    #[Test]
+    public function throws_for_required_non_nullable_unresolvable_parameter(): void
+    {
+        $handler = $this->createHandler(null);
+        $twig = $this->createStub(\Twig\Environment::class);
+        $account = $this->createStub(AccountInterface::class);
+        $request = HttpRequest::create('/test');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Cannot resolve required parameter \$dep/');
+
+        $handler->resolveControllerInstance(
+            StubControllerWithRequiredNonNullable::class,
+            $twig,
+            $account,
+            $request,
+        );
     }
 }

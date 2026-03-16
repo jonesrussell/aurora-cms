@@ -17,9 +17,12 @@ useHead({
   title: t('error_page_title'),
 })
 
-const message = computed(() =>
-  props.error.statusCode === 404 ? t('error_not_found') : t('error_generic'),
-)
+const message = computed(() => {
+  if (props.error.statusCode === 404) {
+    return t('error_not_found')
+  }
+  return props.error.message || t('error_generic')
+})
 </script>
 
 <template>

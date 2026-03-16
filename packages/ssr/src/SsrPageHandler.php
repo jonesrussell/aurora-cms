@@ -338,13 +338,13 @@ final class SsrPageHandler
                 } elseif ($param->allowsNull()) {
                     $args[] = null;
                 } else {
-                    error_log(sprintf(
-                        '[Waaseyaa] Cannot resolve constructor parameter $%s (%s) for controller %s',
+                    $paramType = $type instanceof \ReflectionNamedType ? $type->getName() : 'mixed';
+                    throw new \RuntimeException(sprintf(
+                        '[Waaseyaa] Cannot resolve required parameter $%s (%s) for controller %s',
                         $param->getName(),
-                        $type instanceof \ReflectionNamedType ? $type->getName() : 'mixed',
+                        $paramType,
                         $class,
                     ));
-                    $args[] = null;
                 }
             }
         }
@@ -448,6 +448,13 @@ final class SsrPageHandler
     public function resolveRenderLanguageAndAliasPath(string $path, HttpRequest $request): array
     {
         $manager = $this->resolveLanguageManager();
+        if ($manager === null) {
+            return [
+                'langcode' => 'en',
+                'alias_path' => $path,
+            ];
+        }
+
         $availableLanguages = array_keys($manager->getLanguages());
 
         $headers = [];
@@ -478,9 +485,9 @@ final class SsrPageHandler
 
     /**
      * Resolve the app-level LanguageManager via serviceResolver.
-     * Throws if no manager is registered — apps must provide one.
+     * Returns null if no manager is registered.
      */
-    private function resolveLanguageManager(): LanguageManagerInterface
+    private function resolveLanguageManager(): ?LanguageManagerInterface
     {
         if ($this->serviceResolver !== null) {
             $manager = ($this->serviceResolver)(LanguageManagerInterface::class);
@@ -489,10 +496,7 @@ final class SsrPageHandler
             }
         }
 
-        throw new \RuntimeException(
-            'LanguageManagerInterface not registered. '
-            . 'Register via I18nServiceProvider or provide via serviceResolver.',
-        );
+        return null;
     }
 
     /**
@@ -505,6 +509,9 @@ final class SsrPageHandler
     public function stripLanguagePrefixForRouting(string $path): string
     {
         $manager = $this->resolveLanguageManager();
+        if ($manager === null) {
+            return $path;
+        }
         $availableLanguages = array_keys($manager->getLanguages());
         $defaultLanguage = $manager->getDefaultLanguage();
 

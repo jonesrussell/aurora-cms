@@ -14,21 +14,38 @@ export default defineNuxtPlugin(async (): Promise<{ provide: { admin: AdminRunti
   if (import.meta.client && window.__WAASEYAA_ADMIN__) {
     bootstrap = window.__WAASEYAA_ADMIN__
   } else {
-    const response = await $fetch<AdminBootstrap>(`${baseUrl}/admin/bootstrap`, {
-      ignoreResponseError: true,
-      onResponseError({ response: res }) {
-        if (res.status === 401) {
-          // Will be handled below after version check attempt
-        }
-      },
-    }).catch(() => null)
+    let response: AdminBootstrap | null = null
+    let fetchError: unknown = null
+
+    try {
+      response = await $fetch<AdminBootstrap>(`${baseUrl}/admin/bootstrap`, {
+        ignoreResponseError: true,
+        onResponseError({ response: res }) {
+          if (res.status === 401 || res.status === 403) {
+            // Auth failure — will redirect to login below
+          }
+        },
+      })
+    } catch (err) {
+      fetchError = err
+    }
+
+    if (fetchError) {
+      // Network, CORS, or timeout error — not an auth issue
+      const message = fetchError instanceof Error ? fetchError.message : String(fetchError)
+      console.error('[waaseyaa:admin] Bootstrap fetch failed (network/CORS/timeout):', message)
+      throw createError({
+        statusCode: 503,
+        message: `Unable to reach the admin API: ${message}`,
+        fatal: true,
+      })
+    }
 
     if (!response) {
-      // No bootstrap available — redirect to a default login or show error
+      // HTTP error (401/403) — redirect to login
       if (import.meta.client) {
         window.location.href = `${baseUrl}/login`
       }
-      // Return a stub to prevent plugin crash during SSR
       return { provide: { admin: null } }
     }
     bootstrap = response
