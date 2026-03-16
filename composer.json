@@ -28,7 +28,7 @@
         { "type": "path", "url": "packages/relationship" },
         { "type": "path", "url": "packages/workflows" },
         { "type": "path", "url": "packages/api" },
-        { "type": "path", "url": "packages/graphql" },
+
         { "type": "path", "url": "packages/ai-schema" },
         { "type": "path", "url": "packages/ai-agent" },
         { "type": "path", "url": "packages/ai-vector" },

@@ -35,7 +35,7 @@ When working on files matching these patterns, retrieve the spec for deep contex
 | `packages/workflows/*` | — | — |
 | `packages/mail/*` | `waaseyaa:infrastructure` | `docs/specs/infrastructure.md` |
 | `packages/cms/*`, `packages/core/*`, `packages/full/*` | — (metapackages) | — |
-| `packages/graphql/*` | — (stub) | — |
+
 | GitHub issues, milestones, new features, roadmap | — | `docs/specs/workflow.md`, `docs/specs/v1.5-verification-gate-contract.md`, `docs/specs/v1.6-verification-gate-contract.md` |
 | `skills/waaseyaa/app-development/*` | — | — |
 | `skills/waaseyaa/framework-extraction/*` | — | `docs/specs/extraction-log.md` |
@@ -59,7 +59,7 @@ Use `waaseyaa_search_specs` MCP tool to find specs affected by a change when the
 | 3 | Services | workflows, search |
 | 4 | API | api, routing |
 | 5 | AI | ai-schema, ai-agent, ai-pipeline, ai-vector |
-| 6 | Interfaces | cli, admin, admin-bridge, mcp, ssr, telescope, graphql |
+| 6 | Interfaces | cli, admin, admin-surface, mcp, ssr, telescope |
 
 **Rule:** Packages can only import from their own layer or lower. Upward communication via DomainEvents.
 
