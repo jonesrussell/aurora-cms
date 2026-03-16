@@ -111,7 +111,12 @@ final class HttpKernel extends AbstractKernel
             serviceResolver: function (string $className): ?object {
                 foreach ($this->providers as $provider) {
                     if (isset($provider->getBindings()[$className])) {
-                        return $provider->resolve($className);
+                        try {
+                            return $provider->resolve($className);
+                        } catch (\Throwable $e) {
+                            error_log(sprintf('[Waaseyaa] Failed to resolve %s: %s', $className, $e->getMessage()));
+                            return null;
+                        }
                     }
                 }
                 return null;

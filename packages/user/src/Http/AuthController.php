@@ -21,6 +21,10 @@ final class AuthController
     public function me(AccountInterface $account): array
     {
         if (!$account->isAuthenticated()) {
+            if (\PHP_SAPI === 'cli-server') {
+                error_log('[Waaseyaa] Admin endpoint returned 401. For local development, set APP_ENV=local and WAASEYAA_DEV_FALLBACK_ACCOUNT=true (or use `composer dev` which sets both automatically).');
+            }
+
             return [
                 'statusCode' => 401,
                 'errors' => [['status' => '401', 'title' => 'Unauthorized', 'detail' => 'Not authenticated.']],
