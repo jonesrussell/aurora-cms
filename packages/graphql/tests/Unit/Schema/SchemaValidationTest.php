@@ -275,6 +275,46 @@ final class SchemaValidationTest extends TestCase
         self::assertSame($createFieldNames, $updateFieldNames);
     }
 
+    #[Test]
+    public function listQueryHasPaginationArguments(): void
+    {
+        $schema = $this->buildSchema();
+        $queryType = $schema->getQueryType();
+        $listField = $queryType->getField('articleList');
+
+        // limit should be Int
+        $limitArg = $listField->getArg('limit');
+        self::assertNotNull($limitArg);
+        self::assertSame('Int', $this->unwrapTypeName($limitArg->getType()));
+
+        // offset should be Int
+        $offsetArg = $listField->getArg('offset');
+        self::assertNotNull($offsetArg);
+        self::assertSame('Int', $this->unwrapTypeName($offsetArg->getType()));
+    }
+
+    /**
+     * Documents that EntityResolver::resolveList() enforces pagination bounds:
+     * - Default limit: EntityResolver::DEFAULT_LIMIT (50)
+     * - Max limit: EntityResolver::MAX_LIMIT (100) — requests above are clamped
+     * - Min limit: 1 — zero or negative values are clamped to 1
+     * - Min offset: 0 — negative offsets are clamped to 0
+     *
+     * These are enforced at the resolver level (not schema level) so that
+     * clients always get safe pagination regardless of the arguments passed.
+     */
+    #[Test]
+    public function paginationConstantsAreDefined(): void
+    {
+        $reflection = new \ReflectionClass(EntityResolver::class);
+
+        $defaultLimit = $reflection->getConstant('DEFAULT_LIMIT');
+        self::assertSame(50, $defaultLimit);
+
+        $maxLimit = $reflection->getConstant('MAX_LIMIT');
+        self::assertSame(100, $maxLimit);
+    }
+
     /**
      * Unwrap NonNull wrappers to get the named type.
      */

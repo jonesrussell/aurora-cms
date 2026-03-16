@@ -22,6 +22,9 @@ use Waaseyaa\GraphQL\Access\GraphQlAccessGuard;
  */
 final class EntityResolver
 {
+    private const DEFAULT_LIMIT = 50;
+    private const MAX_LIMIT = 100;
+
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly GraphQlAccessGuard $guard,
@@ -48,7 +51,7 @@ final class EntityResolver
         $filters = $this->parseFilters($args);
         $sorts = $this->parseSorts($args);
         $offset = isset($args['offset']) ? max(0, (int) $args['offset']) : 0;
-        $limit = isset($args['limit']) ? min(100, max(1, (int) $args['limit'])) : 50;
+        $limit = isset($args['limit']) ? min(self::MAX_LIMIT, max(1, (int) $args['limit'])) : self::DEFAULT_LIMIT;
 
         // Count query — filters only, no sorts/pagination, access deferred to post-fetch
         $countQuery = $storage->getQuery()->accessCheck(false);
