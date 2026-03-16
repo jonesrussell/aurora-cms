@@ -98,11 +98,16 @@ final class EntityTypeBuilder
         }
 
         $fieldDefs = $entityType->getFieldDefinitions();
-        $keyValues = array_values($keys);
+        // Only skip id and uuid keys (explicitly re-added above).
+        // The label key should pass through as a normal field.
+        $skipFields = array_filter([
+            $keys['id'] ?? null,
+            $keys['uuid'] ?? null,
+        ]);
 
         foreach ($fieldDefs as $fieldName => $def) {
-            // Skip entity keys already handled above
-            if (in_array($fieldName, $keyValues, true)) {
+            // Skip entity keys already handled above (id, uuid)
+            if (in_array($fieldName, $skipFields, true)) {
                 continue;
             }
 
@@ -194,12 +199,17 @@ final class EntityTypeBuilder
     {
         $fields = [];
         $keys = $entityType->getKeys();
-        $keyValues = array_values($keys);
+        // Only skip id and uuid keys (system-managed).
+        // The label key should be editable via input types.
+        $skipFields = array_filter([
+            $keys['id'] ?? null,
+            $keys['uuid'] ?? null,
+        ]);
         $fieldDefs = $entityType->getFieldDefinitions();
 
         foreach ($fieldDefs as $fieldName => $def) {
             // Skip entity keys (id, uuid) — not user-editable
-            if (in_array($fieldName, $keyValues, true)) {
+            if (in_array($fieldName, $skipFields, true)) {
                 continue;
             }
 
