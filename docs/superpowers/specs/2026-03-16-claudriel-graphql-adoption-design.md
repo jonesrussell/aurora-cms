@@ -240,37 +240,37 @@ Eight items to validate before any Claudriel code changes:
 
 ## 7. GitHub Issue Tree
 
-### Waaseyaa repo — milestone: v1.3 (GraphQL & Cleanup)
+### Waaseyaa repo — milestone: v1.3 (GraphQL & Cleanup), milestone #24
 
 | # | Issue | Depends on | Description |
 |---|-------|------------|-------------|
-| W1 | Schema validation test harness | — | Integration test that boots a test kernel, generates GraphQL schema, asserts field/type presence. Reusable for any app. |
-| W2 | Validate filter/sort on `_data` blob fields | W1 | Confirm whether `QueryApplier` can filter/sort on fields stored in `_data` vs schema columns. Document the limitation if not. |
-| W3 | Separate create/update input types for PATCH semantics | W1 | `buildInputFields()` wraps `required` fields with `NonNull`, breaking partial updates. Either generate separate `{Type}CreateInput` (with NonNull) and `{Type}UpdateInput` (all nullable), or make all input fields nullable and validate required-ness in the resolver. |
-| W4 | Validate pagination arguments on list queries | W1 | Confirm `limit`/`offset` exist as `Int` on all `*List` queries, with correct defaults when omitted. |
-| W5 | Tag v0.1.0-alpha.10 | W2, W3, W4 | Release including GraphQL package + any fixes from validation. |
+| W1 | [#437](https://github.com/waaseyaa/framework/issues/437) Schema validation test harness | — | Integration test that boots a test kernel, generates GraphQL schema, asserts field/type presence. Reusable for any app. |
+| W2 | [#438](https://github.com/waaseyaa/framework/issues/438) Validate filter/sort on `_data` blob fields | W1 | Confirm whether `QueryApplier` can filter/sort on fields stored in `_data` vs schema columns. Document the limitation if not. |
+| W3 | [#439](https://github.com/waaseyaa/framework/issues/439) Separate create/update input types for PATCH semantics | W1 | `buildInputFields()` wraps `required` fields with `NonNull`, breaking partial updates. Either generate separate `{Type}CreateInput` (with NonNull) and `{Type}UpdateInput` (all nullable), or make all input fields nullable and validate required-ness in the resolver. |
+| W4 | [#440](https://github.com/waaseyaa/framework/issues/440) Validate pagination arguments on list queries | W1 | Confirm `limit`/`offset` exist as `Int` on all `*List` queries, with correct defaults when omitted. |
+| W5 | [#441](https://github.com/waaseyaa/framework/issues/441) Tag v0.1.0-alpha.10 | W2, W3, W4 | Release including GraphQL package + any fixes from validation. |
 
-### Claudriel repo — new milestone: GraphQL Adoption
+### Claudriel repo — milestone: v1.5 GraphQL Adoption, milestone #16
 
 | # | Issue | Depends on | Description |
 |---|-------|------------|-------------|
-| C1 | Bump Waaseyaa to alpha.10, add `waaseyaa/graphql` | W5 | Update composer.json, verify schema auto-generates for all Claudriel entity types. |
-| C2 | Schema contract test for Commitment + Person | C1 | PHPUnit test asserting expected queries, mutations, field types, filter/sort args exist in generated schema. |
-| C3 | Validate `tenant_id`, `last_interaction_at`, `confidence` field definitions | C2 | Confirm these are schema columns (not `_data` blob). Fix entity type definitions if needed. |
-| C4 | `graphqlFetch()` helper + `gql` tag | C1 | Add `app/utils/graphqlFetch.ts` and `app/utils/gql.ts`. Unit test the helper. |
-| C5 | `useCommitmentsQuery()` composable | C3, C4 | Replaces `useEntity('commitment').list()`. Typed response, filter params, `useAsyncData` integration. |
-| C6 | `usePeopleQuery()` composable | C3, C4 | Replaces `useEntity('person').list()`. Same pattern as C5. |
-| C7 | Migrate Commitment components to GraphQL | C5 | Replace adapter calls in commitment-related components with `useCommitmentsQuery()`. |
-| C8 | Migrate People components to GraphQL | C6 | Replace adapter calls in people-related components with `usePeopleQuery()`. |
-| C9 | Deprecate CommitmentApiController | C7 | Add deprecation logging, keep routes live. |
-| C10 | Deprecate PeopleApiController | C8 | Add deprecation logging, keep routes live. |
-| C11 | Remove deprecated controllers | C9, C10 | Delete controllers + routes after validation period. |
+| C1 | [#170](https://github.com/jonesrussell/claudriel/issues/170) Bump Waaseyaa to alpha.10, add `waaseyaa/graphql` | W5 | Update composer.json, verify schema auto-generates for all Claudriel entity types. |
+| C2 | [#171](https://github.com/jonesrussell/claudriel/issues/171) Schema contract test for Commitment + Person | C1 | PHPUnit test asserting expected queries, mutations, field types, filter/sort args exist in generated schema. |
+| C3 | [#172](https://github.com/jonesrussell/claudriel/issues/172) Validate `tenant_id`, `last_interaction_at`, `confidence` field definitions | C2 | Confirm these are schema columns (not `_data` blob). Fix entity type definitions if needed. |
+| C4 | [#173](https://github.com/jonesrussell/claudriel/issues/173) `graphqlFetch()` helper + `gql` tag | C1 | Add `app/utils/graphqlFetch.ts` and `app/utils/gql.ts`. Unit test the helper. |
+| C5 | [#174](https://github.com/jonesrussell/claudriel/issues/174) `useCommitmentsQuery()` composable | C3, C4 | Replaces `useEntity('commitment').list()`. Typed response, filter params, `useAsyncData` integration. |
+| C6 | [#175](https://github.com/jonesrussell/claudriel/issues/175) `usePeopleQuery()` composable | C3, C4 | Replaces `useEntity('person').list()`. Same pattern as C5. |
+| C7 | [#176](https://github.com/jonesrussell/claudriel/issues/176) Migrate Commitment components to GraphQL | C5 | Replace adapter calls in commitment-related components with `useCommitmentsQuery()`. |
+| C8 | [#177](https://github.com/jonesrussell/claudriel/issues/177) Migrate People components to GraphQL | C6 | Replace adapter calls in people-related components with `usePeopleQuery()`. |
+| C9 | [#178](https://github.com/jonesrussell/claudriel/issues/178) Deprecate CommitmentApiController | C7 | Add deprecation logging, keep routes live. |
+| C10 | [#179](https://github.com/jonesrussell/claudriel/issues/179) Deprecate PeopleApiController | C8 | Add deprecation logging, keep routes live. |
+| C11 | [#180](https://github.com/jonesrussell/claudriel/issues/180) Remove deprecated controllers | C9, C10 | Delete controllers + routes after validation period. |
 
 ### Dependency chain
 
 ```
-W1 → W2,W3,W4 → W5 → C1 → C2 → C3 → C5,C6 → C7,C8 → C9,C10 → C11
-                  W5 → C1 → C4 ↗
+#437 → #438,#439,#440 → #441 → #170 → #171 → #172 → #174,#175 → #176,#177 → #178,#179 → #180
+                          #441 → #170 → #173 ↗
 ```
 
 ## 8. Future Work (Out of Scope)
