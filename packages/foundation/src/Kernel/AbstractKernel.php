@@ -94,12 +94,16 @@ abstract class AbstractKernel
 
     protected function bootDatabase(): void
     {
+        $this->database = PdoDatabase::createSqlite($this->resolveDatabasePath());
+    }
+
+    private function resolveDatabasePath(): string
+    {
         $dbPath = $this->config['database'] ?? null;
         if ($dbPath === null) {
             $dbPath = getenv('WAASEYAA_DB') ?: $this->projectRoot . '/waaseyaa.sqlite';
         }
-
-        $this->database = PdoDatabase::createSqlite($dbPath);
+        return $dbPath;
     }
 
     protected function bootEntityTypeManager(): void
@@ -128,14 +132,9 @@ abstract class AbstractKernel
 
     protected function bootMigrations(): void
     {
-        $dbPath = $this->config['database'] ?? null;
-        if ($dbPath === null) {
-            $dbPath = getenv('WAASEYAA_DB') ?: $this->projectRoot . '/waaseyaa.sqlite';
-        }
-
         $connection = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
-            'path' => $dbPath,
+            'path' => $this->resolveDatabasePath(),
         ]);
 
         $repository = new MigrationRepository($connection);
