@@ -56,7 +56,7 @@ final class HttpKernel extends AbstractKernel
         try {
             $this->boot();
         } catch (\Throwable $e) {
-            error_log(sprintf('[Waaseyaa] Boot failed: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+            error_log(sprintf("[Waaseyaa] Boot failed: %s in %s:%d\n%s", $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
             ResponseSender::json(500, [
                 'jsonapi' => ['version' => '1.1'],
                 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'Application failed to boot.']],
@@ -140,7 +140,7 @@ final class HttpKernel extends AbstractKernel
         } catch (\Symfony\Component\Routing\Exception\MethodNotAllowedException) {
             ResponseSender::json(405, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '405', 'title' => 'Method Not Allowed', 'detail' => "Method {$method} is not allowed for this route."]]]);
         } catch (\Throwable $e) {
-            error_log(sprintf('[Waaseyaa] Routing error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+            error_log(sprintf("[Waaseyaa] Routing error: %s in %s:%d\n%s", $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
             ResponseSender::json(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'A routing error occurred.']]]);
         }
 
@@ -172,6 +172,13 @@ final class HttpKernel extends AbstractKernel
             new AuthorizationMiddleware($accessChecker, $errorPageRenderer),
         ];
 
+        // Collect middleware contributed by service providers.
+        foreach ($this->providers as $provider) {
+            foreach ($provider->middleware() as $mw) {
+                $middlewares[] = $mw;
+            }
+        }
+
         usort($middlewares, fn(object $a, object $b) => $this->getMiddlewarePriority($b) <=> $this->getMiddlewarePriority($a));
 
         $pipeline = new HttpPipeline();
@@ -190,7 +197,7 @@ final class HttpKernel extends AbstractKernel
                 },
             );
         } catch (\Throwable $e) {
-            error_log(sprintf('[Waaseyaa] Authorization pipeline error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+            error_log(sprintf("[Waaseyaa] Authorization pipeline error: %s in %s:%d\n%s", $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
             ResponseSender::json(500, ['jsonapi' => ['version' => '1.1'], 'errors' => [['status' => '500', 'title' => 'Internal Server Error', 'detail' => 'An authorization error occurred.']]]);
         }
 

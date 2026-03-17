@@ -650,7 +650,7 @@ final class ControllerDispatcher
                 })(),
             };
         } catch (\Throwable $e) {
-            error_log(sprintf('[Waaseyaa] Unhandled exception: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
+            error_log(sprintf("[Waaseyaa] Unhandled exception: %s in %s:%d\n%s", $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
             ResponseSender::json(500, [
                 'jsonapi' => ['version' => '1.1'],
                 'errors' => [[
