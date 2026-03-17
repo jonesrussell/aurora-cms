@@ -22,12 +22,27 @@ use Waaseyaa\GraphQL\Schema\SchemaFactory;
  */
 final class GraphQlEndpoint
 {
+    /** @var array<string, array{args?: array<string, mixed>, resolve?: callable}> */
+    private array $mutationOverrides = [];
+
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityAccessHandler $accessHandler,
         private readonly AccountInterface $account,
         private readonly int $maxDepth = 3,
     ) {}
+
+    /**
+     * Register mutation overrides (extra args, custom resolvers).
+     *
+     * @param array<string, array{args?: array<string, mixed>, resolve?: callable}> $overrides
+     */
+    public function withMutationOverrides(array $overrides): self
+    {
+        $clone = clone $this;
+        $clone->mutationOverrides = array_merge($clone->mutationOverrides, $overrides);
+        return $clone;
+    }
 
     /**
      * @param array<string, string> $queryParams $_GET params for GET requests
@@ -73,6 +88,10 @@ final class GraphQlEndpoint
             entityResolver: $entityResolver,
             referenceLoader: $referenceLoader,
         );
+
+        if ($this->mutationOverrides !== []) {
+            $schemaFactory = $schemaFactory->withMutationOverrides($this->mutationOverrides);
+        }
 
         $schema = $schemaFactory->build();
 

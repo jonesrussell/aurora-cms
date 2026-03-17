@@ -20,6 +20,9 @@ use Waaseyaa\GraphQL\Resolver\ReferenceLoader;
  * - Query: {type}(id: ID!), {type}List(filter, sort, offset, limit)
  * - Mutation: create{Type}(input), update{Type}(id, input), delete{Type}(id)
  *
+ * Applications can override specific mutations via withMutationOverrides()
+ * to add custom args or replace the default resolver.
+ *
  * Filter/sort/pagination reuses the same QueryApplier as JSON:API.
  */
 final class SchemaFactory
@@ -27,11 +30,30 @@ final class SchemaFactory
     private ?InputObjectType $filterInputType = null;
     private ?ObjectType $deleteResultType = null;
 
+    /** @var array<string, array{args?: array<string, mixed>, resolve?: callable}> */
+    private array $mutationOverrides = [];
+
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityResolver $entityResolver,
         private readonly ReferenceLoader $referenceLoader,
     ) {}
+
+    /**
+     * Register overrides for specific mutations.
+     *
+     * Each key is a mutation name (e.g. 'updateScheduleEntry').
+     * Each value is an array with optional 'args' (merged with defaults)
+     * and optional 'resolve' (replaces the default resolver).
+     *
+     * @param array<string, array{args?: array<string, mixed>, resolve?: callable}> $overrides
+     */
+    public function withMutationOverrides(array $overrides): self
+    {
+        $clone = clone $this;
+        $clone->mutationOverrides = array_merge($clone->mutationOverrides, $overrides);
+        return $clone;
+    }
 
     public function build(): Schema
     {
@@ -87,26 +109,29 @@ final class SchemaFactory
             ];
 
             // Mutation: create
-            $mutationFields['create' . $pascalCase] = [
+            $createName = 'create' . $pascalCase;
+            $mutationFields[$createName] = $this->applyOverride($createName, [
                 'type' => $objectType,
                 'args' => [
                     'input' => Type::nonNull($createInputType),
                 ],
                 'resolve' => fn(mixed $root, array $args): array => $this->entityResolver->resolveCreate($typeId, $args['input']),
-            ];
+            ]);
 
             // Mutation: update
-            $mutationFields['update' . $pascalCase] = [
+            $updateName = 'update' . $pascalCase;
+            $mutationFields[$updateName] = $this->applyOverride($updateName, [
                 'type' => $objectType,
                 'args' => [
                     'id' => Type::nonNull(Type::id()),
                     'input' => Type::nonNull($updateInputType),
                 ],
                 'resolve' => fn(mixed $root, array $args): array => $this->entityResolver->resolveUpdate($typeId, $args['id'], $args['input']),
-            ];
+            ]);
 
             // Mutation: delete
-            $mutationFields['delete' . $pascalCase] = [
+            $deleteName = 'delete' . $pascalCase;
+            $mutationFields[$deleteName] = $this->applyOverride($deleteName, [
                 'type' => $this->getDeleteResultType(),
                 'args' => [
                     'id' => Type::nonNull(Type::id()),
@@ -114,7 +139,7 @@ final class SchemaFactory
                 'resolve' => fn(mixed $root, array $args): array => [
                     'deleted' => $this->entityResolver->resolveDelete($typeId, $args['id']),
                 ],
-            ];
+            ]);
         }
 
         $config = SchemaConfig::create()
@@ -131,6 +156,31 @@ final class SchemaFactory
         }
 
         return new Schema($config);
+    }
+
+    /**
+     * Apply any registered override for a mutation field definition.
+     *
+     * @param array<string, mixed> $default
+     * @return array<string, mixed>
+     */
+    private function applyOverride(string $mutationName, array $default): array
+    {
+        if (!isset($this->mutationOverrides[$mutationName])) {
+            return $default;
+        }
+
+        $override = $this->mutationOverrides[$mutationName];
+
+        if (isset($override['args']) && is_array($override['args'])) {
+            $default['args'] = array_merge($default['args'], $override['args']);
+        }
+
+        if (isset($override['resolve']) && is_callable($override['resolve'])) {
+            $default['resolve'] = $override['resolve'];
+        }
+
+        return $default;
     }
 
     private function getFilterInputType(): InputObjectType
