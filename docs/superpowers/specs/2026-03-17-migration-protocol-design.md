@@ -55,7 +55,7 @@ final class MigrationLoader
 
 **Discovery rules:**
 
-1. Iterates `$manifest->migrations` (the `[packageName => path]` map) — loads each package's migration files
+1. Iterates `$manifest->migrations` (the `[packageName => directoryPath]` map) — each value is a directory path relative to the package root. The loader scans the directory for `.php` files.
 2. Checks `$basePath . '/migrations'` — if the directory exists, loads those files under the synthetic package key `'app'`
 3. Each `.php` file must `return new class extends Migration { ... }`. The loader validates the return value — if a file returns something other than a `Migration` instance, it throws a `\RuntimeException` with the filename.
 4. Files are sorted alphabetically within each package (timestamp prefix gives natural ordering)
@@ -122,6 +122,8 @@ discoverAndRegisterProviders() → ... (existing)
 
 **Ordering note:** `bootMigrations()` runs after `bootEntityTypeManager()`, which means entity tables are created via `ensureTable()` before migrations run. This is correct — `ensureTable()` is idempotent and handles initial table creation, while migrations handle subsequent schema evolution (adding columns, modifying tables, creating non-entity tables). A migration that adds a column to an entity table will find the table already exists.
 
+**Connection note:** The DBAL `Connection` is independent from the kernel's `PdoDatabase` — two separate connections to the same SQLite file. Since migrations run as a single-threaded CLI command, concurrent access is not a concern.
+
 ### 5. CLI commands
 
 Three new commands in `packages/cli/src/Command/`:
@@ -140,15 +142,17 @@ Three new commands in `packages/cli/src/Command/`:
 
 **`MigrateStatusCommand`** (`migrate:status`)
 - Loads migrations via `MigrationLoader::loadAll()`
-- Runs `Migrator::status()` — currently returns `{pending: list<string>, completed: list<string>}`
-- Extend `Migrator::status()` to return richer data: query the repository for batch number and package per completed migration
+- Runs `Migrator::status()` — extend return type from `array{pending: list<string>, completed: list<string>}` to `array{pending: list<string>, completed: list<array{migration: string, package: string, batch: int}>}`. Query the repository for batch number and package per completed migration.
 - Outputs a table: migration name, package, status (Pending/Ran), batch number
 
 All three receive `Migrator` and `MigrationLoader` from the kernel.
 
 ### 6. make:migration update
 
-Update `MakeMigrationCommand` to write the generated stub file directly to `migrations/` (creating the directory if needed) instead of printing to stdout. File is named with current timestamp: `YYYYMMDD_HHMMSS_{name}.php`.
+Update `MakeMigrationCommand` to write the generated stub file instead of printing to stdout. File is named with current timestamp: `YYYYMMDD_HHMMSS_{name}.php`.
+
+- When `--package` is omitted: write to `$projectRoot/migrations/` (creating the directory if needed)
+- When `--package` is provided: write to the package's declared migration directory from `$manifest->migrations`
 
 ## Migration file conventions
 
