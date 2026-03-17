@@ -28,8 +28,10 @@ final class Migrator
             }
 
             $schema = new SchemaBuilder($this->connection);
-            $migration->up($schema);
-            $this->repository->record($name, $package, $batch);
+            $this->connection->transactional(function () use ($migration, $schema, $name, $package, $batch): void {
+                $migration->up($schema);
+                $this->repository->record($name, $package, $batch);
+            });
             $ran[] = $name;
         }
 
@@ -52,11 +54,13 @@ final class Migrator
 
         foreach ($records as $record) {
             $name = $record['migration'];
-            if (isset($flat[$name])) {
-                $schema = new SchemaBuilder($this->connection);
-                $flat[$name]->down($schema);
-            }
-            $this->repository->remove($name);
+            $this->connection->transactional(function () use ($flat, $name): void {
+                if (isset($flat[$name])) {
+                    $schema = new SchemaBuilder($this->connection);
+                    $flat[$name]->down($schema);
+                }
+                $this->repository->remove($name);
+            });
             $rolledBack[] = $name;
         }
 
@@ -65,15 +69,16 @@ final class Migrator
 
     /**
      * @param array<string, array<string, Migration>> $migrations
-     * @return array{pending: list<string>, completed: list<string>}
+     * @return array{pending: list<string>, completed: list<array{migration: string, package: string, batch: int}>}
      */
     public function status(array $migrations): array
     {
-        $completed = $this->repository->getCompleted();
+        $completedDetails = $this->repository->getCompletedWithDetails();
+        $completedNames = array_column($completedDetails, 'migration');
         $all = array_keys($this->flattenMigrations($migrations));
-        $pending = array_values(array_diff($all, $completed));
+        $pending = array_values(array_diff($all, $completedNames));
 
-        return ['pending' => $pending, 'completed' => $completed];
+        return ['pending' => $pending, 'completed' => $completedDetails];
     }
 
     /**

@@ -72,6 +72,15 @@ final class MigrationRepository
         return $result->fetchAllAssociative();
     }
 
+    /** @return list<array{migration: string, package: string, batch: int}> */
+    public function getCompletedWithDetails(): array
+    {
+        $result = $this->connection->executeQuery(
+            'SELECT migration, package, batch FROM ' . self::TABLE . ' ORDER BY id',
+        );
+        return $result->fetchAllAssociative();
+    }
+
     /** @return list<string> */
     public function getCompleted(): array
     {

@@ -161,4 +161,84 @@ final class MigratorTest extends TestCase
         $this->assertCount(0, $status['pending']);
         $this->assertCount(2, $status['completed']);
     }
+
+    #[Test]
+    public function runRollsBackSchemaChangeWhenMigrationFails(): void
+    {
+        $migrator = new Migrator($this->connection, $this->repository);
+
+        $failingMigration = new class extends Migration {
+            public function up(SchemaBuilder $schema): void
+            {
+                $schema->create('should_not_exist', function ($table) {
+                    $table->id();
+                });
+                throw new \RuntimeException('Intentional failure');
+            }
+        };
+
+        try {
+            $migrator->run(['app' => ['app:20260317_fail' => $failingMigration]]);
+        } catch (\RuntimeException) {
+            // expected
+        }
+
+        $this->assertFalse($this->schema->hasTable('should_not_exist'));
+        $this->assertFalse($this->repository->hasRun('app:20260317_fail'));
+    }
+
+    #[Test]
+    public function rollbackRollsBackOnFailure(): void
+    {
+        $migrator = new Migrator($this->connection, $this->repository);
+
+        $migration = new class extends Migration {
+            public function up(SchemaBuilder $schema): void
+            {
+                $schema->create('rollback_test', function ($table) {
+                    $table->id();
+                });
+            }
+
+            public function down(SchemaBuilder $schema): void
+            {
+                $schema->drop('rollback_test');
+                throw new \RuntimeException('Intentional rollback failure');
+            }
+        };
+
+        $migrator->run(['app' => ['app:20260317_rollback_test' => $migration]]);
+
+        try {
+            $migrator->rollback(['app' => ['app:20260317_rollback_test' => $migration]]);
+        } catch (\RuntimeException) {
+            // expected
+        }
+
+        // Table should still exist because rollback failed and was rolled back
+        $this->assertTrue($this->schema->hasTable('rollback_test'));
+        // Migration record should still exist
+        $this->assertTrue($this->repository->hasRun('app:20260317_rollback_test'));
+    }
+
+    #[Test]
+    public function statusReturnsCompletedWithMetadata(): void
+    {
+        $migrator = new Migrator($this->connection, $this->repository);
+
+        $migration = new class extends Migration {
+            public function up(SchemaBuilder $schema): void {}
+        };
+
+        $migrations = ['app' => ['app:20260317_test' => $migration]];
+        $migrator->run($migrations);
+
+        $status = $migrator->status($migrations);
+
+        $this->assertSame([], $status['pending']);
+        $this->assertCount(1, $status['completed']);
+        $this->assertSame('app:20260317_test', $status['completed'][0]['migration']);
+        $this->assertSame('app', $status['completed'][0]['package']);
+        $this->assertSame(1, $status['completed'][0]['batch']);
+    }
 }
