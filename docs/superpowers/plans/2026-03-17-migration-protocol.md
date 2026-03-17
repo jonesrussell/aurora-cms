@@ -1294,10 +1294,10 @@ new MakeMigrationCommand($this->projectRoot),
 Run: `./vendor/bin/phpunit --filter MakeMigrationCommand`
 Expected: All PASS
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add packages/cli/src/Command/Make/MakeMigrationCommand.php packages/cli/tests/Unit/Command/Make/MakeMigrationCommandTest.php
+git add packages/cli/src/Command/Make/MakeMigrationCommand.php packages/cli/tests/Unit/Command/Make/MakeMigrationCommandTest.php packages/foundation/src/Kernel/ConsoleKernel.php
 git commit -m "feat: make:migration writes file to migrations/ directory"
 ```
 
