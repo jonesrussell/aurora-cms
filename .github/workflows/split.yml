@@ -50,6 +50,8 @@ jobs:
           - { local: 'packages/ai-agent', remote: 'ai-agent' }
           - { local: 'packages/ai-pipeline', remote: 'ai-pipeline' }
           - { local: 'packages/ai-vector', remote: 'ai-vector' }
+          # Layer 5.5: GraphQL
+          - { local: 'packages/graphql', remote: 'graphql' }
           # Layer 6: Interfaces
           - { local: 'packages/cli', remote: 'cli' }
           - { local: 'packages/mcp', remote: 'mcp' }
