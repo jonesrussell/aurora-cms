@@ -2,6 +2,8 @@
 
 A Waaseyaa CMS application.
 
+[**Discord**](https://discord.gg/ZzQNhrBb7U) | [GitHub](https://github.com/waaseyaa/framework) | [Website](https://waaseyaa.org)
+
 ## Directory Structure
 
 ```
