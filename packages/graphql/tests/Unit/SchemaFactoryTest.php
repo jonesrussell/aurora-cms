@@ -29,6 +29,8 @@ final class SchemaFactoryTest extends TestCase
 
     protected function setUp(): void
     {
+        SchemaFactory::resetCache();
+
         $this->entityTypeManager = new EntityTypeManager(new EventDispatcher());
 
         $articleType = new EntityType(
@@ -155,6 +157,80 @@ final class SchemaFactoryTest extends TestCase
         self::assertSame('ArticleListResult', $listType->name);
         self::assertTrue($listType->hasField('items'));
         self::assertTrue($listType->hasField('total'));
+    }
+
+    #[Test]
+    public function buildReturnsCachedSchemaOnSecondCall(): void
+    {
+        $guard = new GraphQlAccessGuard($this->accessHandler, $this->account);
+        $referenceLoader = new ReferenceLoader($this->entityTypeManager, $guard);
+        $entityResolver = new EntityResolver($this->entityTypeManager, $guard);
+
+        $factory = new SchemaFactory(
+            entityTypeManager: $this->entityTypeManager,
+            entityResolver: $entityResolver,
+            referenceLoader: $referenceLoader,
+        );
+
+        $schema1 = $factory->build();
+        $schema2 = $factory->build();
+
+        self::assertSame($schema1, $schema2, 'Second build() call should return the same cached instance');
+    }
+
+    #[Test]
+    public function resetCacheInvalidatesStaticCache(): void
+    {
+        $guard = new GraphQlAccessGuard($this->accessHandler, $this->account);
+        $referenceLoader = new ReferenceLoader($this->entityTypeManager, $guard);
+        $entityResolver = new EntityResolver($this->entityTypeManager, $guard);
+
+        $factory = new SchemaFactory(
+            entityTypeManager: $this->entityTypeManager,
+            entityResolver: $entityResolver,
+            referenceLoader: $referenceLoader,
+        );
+
+        $schema1 = $factory->build();
+
+        SchemaFactory::resetCache();
+
+        $schema2 = $factory->build();
+
+        self::assertNotSame($schema1, $schema2, 'After resetCache(), build() should return a new instance');
+    }
+
+    #[Test]
+    public function cacheKeyIncludesEntityTypeIds(): void
+    {
+        $guard = new GraphQlAccessGuard($this->accessHandler, $this->account);
+        $referenceLoader = new ReferenceLoader($this->entityTypeManager, $guard);
+        $entityResolver = new EntityResolver($this->entityTypeManager, $guard);
+
+        $factory = new SchemaFactory(
+            entityTypeManager: $this->entityTypeManager,
+            entityResolver: $entityResolver,
+            referenceLoader: $referenceLoader,
+        );
+
+        $schema1 = $factory->build();
+
+        // Register a new entity type — changes the definitions
+        $pageType = new EntityType(
+            id: 'page',
+            label: 'Page',
+            class: EntityBase::class,
+            keys: ['id' => 'id'],
+            fieldDefinitions: [
+                'id' => ['type' => 'integer'],
+                'title' => ['type' => 'string'],
+            ],
+        );
+        $this->entityTypeManager->registerCoreEntityType($pageType);
+
+        $schema2 = $factory->build();
+
+        self::assertNotSame($schema1, $schema2, 'Different entity type definitions should produce a new schema');
     }
 
     #[Test]
