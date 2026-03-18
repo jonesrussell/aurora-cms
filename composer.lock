@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0943ff3ab1eb161f1db0e5ed6aab146",
+    "content-hash": "a3e6487c84f1f117de6937f75b8eaef8",
     "packages": [
         {
             "name": "doctrine/dbal",
@@ -3473,7 +3473,7 @@
         },
         {
             "name": "waaseyaa/github",
-            "version": "dev-main",
+            "version": "dev-feat/batch-b-cleanup-475-476-477",
             "dist": {
                 "type": "path",
                 "url": "packages/github",
@@ -3582,6 +3582,44 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Internationalization foundation: Language, LanguageManager, LanguageContext, FallbackChain",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "waaseyaa/ingestion",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/ingestion",
+                "reference": "938e80c2229b632b813d3aabf4b5e640ab7b286b"
+            },
+            "require": {
+                "php": ">=8.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Waaseyaa\\Ingestion\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Waaseyaa\\Ingestion\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Payload validation and ingestion utilities for Waaseyaa applications",
             "transport-options": {
                 "relative": true
             }
@@ -7930,6 +7968,7 @@
         "waaseyaa/github": 20,
         "waaseyaa/graphql": 20,
         "waaseyaa/i18n": 20,
+        "waaseyaa/ingestion": 20,
         "waaseyaa/mail": 20,
         "waaseyaa/mcp": 20,
         "waaseyaa/media": 20,
