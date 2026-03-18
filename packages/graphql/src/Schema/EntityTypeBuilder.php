@@ -152,10 +152,13 @@ final class EntityTypeBuilder
         $getType = static function () use ($registry, $targetTypeName): Type {
             $type = $registry->get($targetTypeName);
             if ($type === null) {
-                error_log("GraphQL: target type '{$targetTypeName}' not found in registry, falling back to String");
+                throw new \RuntimeException(
+                    "GraphQL schema error: entity reference field targets type '{$targetTypeName}' "
+                    . "which is not registered."
+                );
             }
 
-            return $type ?? Type::string();
+            return $type;
         };
 
         return [
