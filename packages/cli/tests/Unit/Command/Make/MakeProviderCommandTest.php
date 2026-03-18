@@ -39,6 +39,41 @@ final class MakeProviderCommandTest extends TestCase
         $this->assertStringContainsString('class SitemapServiceProvider extends ServiceProvider', $output);
     }
 
+    #[Test]
+    public function it_appends_service_provider_suffix(): void
+    {
+        $tester = $this->createTester();
+        $tester->execute(['name' => 'Blog']);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('class BlogServiceProvider extends ServiceProvider', $output);
+    }
+
+    #[Test]
+    public function it_generates_domain_provider_with_entity_boilerplate(): void
+    {
+        $tester = $this->createTester();
+        $tester->execute(['name' => 'Blog', '--domain' => true]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('class BlogServiceProvider extends ServiceProvider', $output);
+        $this->assertStringContainsString("id: 'blog'", $output);
+        $this->assertStringContainsString("label: 'Blog'", $output);
+        $this->assertStringContainsString('fieldDefinitions:', $output);
+        $this->assertStringContainsString('Blog::class', $output);
+    }
+
+    #[Test]
+    public function domain_flag_converts_multi_word_to_snake_case(): void
+    {
+        $tester = $this->createTester();
+        $tester->execute(['name' => 'UserProfile', '--domain' => true]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('class UserProfileServiceProvider extends ServiceProvider', $output);
+        $this->assertStringContainsString("id: 'user_profile'", $output);
+    }
+
     private function createTester(): CommandTester
     {
         $app = new Application();

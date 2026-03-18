@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Provider;
+
+use Waaseyaa\Entity\EntityType;
+use Waaseyaa\Foundation\ServiceProvider\ServiceProvider;
+use {{ entity_namespace }}\{{ entity_class }};
+
+/**
+ * Service provider for the {{ domain }} domain.
+ *
+ * Registers entity types, repositories, and services for this domain.
+ * Each domain should have its own provider to maintain clear boundaries.
+ */
+final class {{ class }} extends ServiceProvider
+{
+    public function register(): void
+    {
+        // Register entity types for this domain.
+        $this->entityType(new EntityType(
+            id: '{{ entity_type_id }}',
+            label: '{{ entity_label }}',
+            class: {{ entity_class }}::class,
+            keys: ['id' => 'id', 'uuid' => 'uuid', 'label' => 'label'],
+            fieldDefinitions: [
+                'id' => ['type' => 'integer'],
+                'uuid' => ['type' => 'string'],
+                'label' => ['type' => 'string', 'required' => true],
+                // Add field definitions here.
+            ],
+        ));
+    }
+
+    public function boot(): void
+    {
+        //
+    }
+}
