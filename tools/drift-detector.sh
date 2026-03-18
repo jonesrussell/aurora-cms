@@ -100,7 +100,7 @@ packages/validation/*|packages/typed-data/*|packages/testing/*|packages/mail/*)
 
   # Admin SPA
   case "$file" in
-    packages/admin/*|packages/admin-bridge/*)
+    packages/admin/*)
       specs="$specs docs/specs/admin-spa.md" ;;
   esac
 
