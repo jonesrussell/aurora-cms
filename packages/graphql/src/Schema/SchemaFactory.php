@@ -33,6 +33,9 @@ final class SchemaFactory
     /** @var array<string, array{args?: array<string, mixed>, resolve?: callable}> */
     private array $mutationOverrides = [];
 
+    /** @var array<string, Schema> Static per-process cache keyed by entity type ID hash. */
+    private static array $schemaCache = [];
+
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityResolver $entityResolver,
@@ -55,8 +58,29 @@ final class SchemaFactory
         return $clone;
     }
 
+    /**
+     * Reset the static schema cache.
+     *
+     * Useful in testing or when entity type definitions change at runtime.
+     */
+    public static function resetCache(): void
+    {
+        self::$schemaCache = [];
+    }
+
     public function build(): Schema
     {
+        $definitions = $this->entityTypeManager->getDefinitions();
+        $typeIds = array_map(fn($def) => $def->id(), $definitions);
+        sort($typeIds);
+        $overrideKeys = array_keys($this->mutationOverrides);
+        sort($overrideKeys);
+        $cacheKey = hash('xxh128', implode(',', $typeIds) . '|' . implode(',', $overrideKeys));
+
+        if (isset(self::$schemaCache[$cacheKey])) {
+            return self::$schemaCache[$cacheKey];
+        }
+
         $registry = new TypeRegistry();
         $fieldTypeMapper = new FieldTypeMapper();
         $entityTypeBuilder = new EntityTypeBuilder(
@@ -64,8 +88,6 @@ final class SchemaFactory
             fieldTypeMapper: $fieldTypeMapper,
             referenceLoader: $this->referenceLoader,
         );
-
-        $definitions = $this->entityTypeManager->getDefinitions();
 
         // Pre-register all ObjectTypes so entity_reference field type callables
         // can resolve targets even for types not yet processed in the loop below.
@@ -155,7 +177,10 @@ final class SchemaFactory
             ]));
         }
 
-        return new Schema($config);
+        $schema = new Schema($config);
+        self::$schemaCache[$cacheKey] = $schema;
+
+        return $schema;
     }
 
     /**
