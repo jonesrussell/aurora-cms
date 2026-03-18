@@ -94,6 +94,18 @@ final class ControllerDispatcher
 
         parse_str($queryString, $query);
 
+        // Handle callable controllers (closures registered by service providers).
+        if (is_callable($controller)) {
+            $result = $controller($httpRequest, ...array_filter($params, fn($k) => !str_starts_with($k, '_'), ARRAY_FILTER_USE_KEY));
+            if ($result instanceof \Waaseyaa\SSR\SsrResponse) {
+                ResponseSender::html($result->statusCode, $result->content, $result->headers);
+            }
+            if (is_array($result)) {
+                ResponseSender::json($result['statusCode'] ?? 200, $result['body'] ?? $result);
+            }
+            ResponseSender::json(200, $result);
+        }
+
         try {
             match (true) {
                 $controller === 'openapi' => (function (): never {
