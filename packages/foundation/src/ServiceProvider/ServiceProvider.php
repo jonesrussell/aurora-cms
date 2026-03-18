@@ -30,7 +30,7 @@ abstract class ServiceProvider implements ServiceProviderInterface
 
     public function boot(): void {}
 
-    public function routes(\Waaseyaa\Routing\WaaseyaaRouter $router): void {}
+    public function routes(\Waaseyaa\Routing\WaaseyaaRouter $router, ?\Waaseyaa\Entity\EntityTypeManager $entityTypeManager = null): void {}
 
     /**
      * Return plugin CLI commands to register with the console application.
