@@ -177,7 +177,7 @@ final class BuiltinRouteRegistrar
 
         // App routes — registered before SSR catchall so they take priority.
         foreach ($this->providers as $provider) {
-            $provider->routes($router);
+            $provider->routes($router, $this->entityTypeManager);
         }
 
         $router->addRoute(
