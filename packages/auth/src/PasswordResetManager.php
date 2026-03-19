@@ -9,8 +9,7 @@ final class PasswordResetManager
     public function __construct(
         private readonly string $secret,
         private readonly int $tokenLifetimeSeconds = 3600,
-    ) {
-    }
+    ) {}
 
     /**
      * Create a password reset token for the given user.

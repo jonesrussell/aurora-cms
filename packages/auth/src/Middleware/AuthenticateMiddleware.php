@@ -13,8 +13,7 @@ final class AuthenticateMiddleware implements HttpMiddlewareInterface
 {
     public function __construct(
         private readonly string $loginUrl = '/login',
-    ) {
-    }
+    ) {}
 
     public function process(Request $request, HttpHandlerInterface $next): Response
     {

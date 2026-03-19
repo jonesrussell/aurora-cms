@@ -81,9 +81,7 @@ final class AuthenticateMiddlewareTest extends TestCase
     private function createMockHandler(Response $response): HttpHandlerInterface
     {
         return new class ($response) implements HttpHandlerInterface {
-            public function __construct(private readonly Response $response)
-            {
-            }
+            public function __construct(private readonly Response $response) {}
 
             public function handle(Request $request): Response
             {

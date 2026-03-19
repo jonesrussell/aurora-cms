@@ -9,8 +9,7 @@ final class EmailVerifier
     public function __construct(
         private readonly string $secret,
         private readonly int $urlLifetimeSeconds = 3600,
-    ) {
-    }
+    ) {}
 
     /**
      * Generate a signed verification URL.
