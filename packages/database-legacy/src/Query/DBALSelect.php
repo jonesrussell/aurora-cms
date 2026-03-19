@@ -6,6 +6,7 @@ namespace Waaseyaa\Database\Query;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Waaseyaa\Database\SelectInterface;
 
@@ -81,18 +82,28 @@ final class DBALSelect implements SelectInterface
             if (!is_array($value) || count($value) !== 2) {
                 throw new \InvalidArgumentException('BETWEEN operator requires an array of exactly 2 values.');
             }
-            $p1 = $this->qb->createNamedParameter($value[0]);
-            $p2 = $this->qb->createNamedParameter($value[1]);
+            $p1 = $this->qb->createNamedParameter($value[0], self::inferType($value[0]));
+            $p2 = $this->qb->createNamedParameter($value[1], self::inferType($value[1]));
             $this->qb->andWhere($field . ' BETWEEN ' . $p1 . ' AND ' . $p2);
         } elseif ($operator === 'LIKE' || $operator === 'NOT LIKE') {
             $placeholder = $this->qb->createNamedParameter($value);
             $this->qb->andWhere($field . ' ' . $operator . ' ' . $placeholder . " ESCAPE '\\'");
         } else {
-            $placeholder = $this->qb->createNamedParameter($value);
+            $placeholder = $this->qb->createNamedParameter($value, self::inferType($value));
             $this->qb->andWhere($field . ' ' . $operator . ' ' . $placeholder);
         }
 
         return $this;
+    }
+
+    private static function inferType(mixed $value): ParameterType
+    {
+        return match (true) {
+            is_int($value) => ParameterType::INTEGER,
+            is_bool($value) => ParameterType::INTEGER,
+            $value === null => ParameterType::NULL,
+            default => ParameterType::STRING,
+        };
     }
 
     public function isNull(string $field): static
