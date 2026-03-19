@@ -54,6 +54,7 @@ jobs:
           - { local: 'packages/graphql', remote: 'graphql' }
           # Layer 6: Interfaces
           - { local: 'packages/cli', remote: 'cli' }
+          - { local: 'packages/inertia', remote: 'inertia' }
           - { local: 'packages/mcp', remote: 'mcp' }
           - { local: 'packages/ssr', remote: 'ssr' }
           - { local: 'packages/telescope', remote: 'telescope' }
