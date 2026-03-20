@@ -92,6 +92,29 @@ final class SsrPageHandlerResolverTest extends TestCase
     }
 
     #[Test]
+    public function resolves_pre_registered_controller_singleton_via_service_resolver(): void
+    {
+        $preBuilt = new StubController(new StubDependency());
+        $resolver = function (string $className) use ($preBuilt): ?object {
+            return $className === StubController::class ? $preBuilt : null;
+        };
+
+        $handler = $this->createHandler($resolver);
+        $twig = $this->createStub(\Twig\Environment::class);
+        $account = $this->createStub(AccountInterface::class);
+        $request = HttpRequest::create('/test');
+
+        $controller = $handler->resolveControllerInstance(
+            StubController::class,
+            $twig,
+            $account,
+            $request,
+        );
+
+        $this->assertSame($preBuilt, $controller);
+    }
+
+    #[Test]
     public function falls_back_to_default_when_resolver_returns_null(): void
     {
         $resolver = fn (string $className): ?object => null;

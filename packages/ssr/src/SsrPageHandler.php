@@ -294,6 +294,14 @@ final class SsrPageHandler
         AccountInterface $account,
         HttpRequest $httpRequest,
     ): object {
+        // Check if the controller class itself is registered as a singleton
+        if ($this->serviceResolver !== null) {
+            $resolved = ($this->serviceResolver)($class);
+            if ($resolved !== null) {
+                return $resolved;
+            }
+        }
+
         $ref = new \ReflectionClass($class);
         $constructor = $ref->getConstructor();
 
