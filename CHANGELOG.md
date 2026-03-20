@@ -7,6 +7,18 @@ Waaseyaa follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [v0.1.0-alpha.35] — 2026-03-20
+
+### Fixed
+
+- `SsrPageHandler::resolveControllerInstance()` now checks if the controller
+  class itself is registered via the service resolver before falling back to
+  reflection-based parameter resolution. Fixes controllers with ambiguous
+  constructor types (e.g., `EntityRepositoryInterface`) that are pre-wired as
+  singletons in service providers.
+
+---
+
 ## [1.0.0] — 2026-03-13
 
 This release consolidates all v1.0 milestone work including eight pre-release
