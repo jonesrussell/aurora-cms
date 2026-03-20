@@ -4,7 +4,7 @@ import { entityTypes } from '../../tests/fixtures/entityTypes'
 import { userSchema, noteSchema } from '../../tests/fixtures/schemas'
 import type { EntitySchema } from '~/composables/useSchema'
 
-export async function mockUserMeRoute(page: Page) {
+export async function mockAdminBootstrapRoutes(page: Page) {
   const session = {
     account: { id: '1', name: 'dev-admin', email: '', roles: ['admin'] },
     tenant: { id: 'default', name: 'Waaseyaa' },
@@ -50,7 +50,7 @@ export async function mockUserMeRoute(page: Page) {
     route.fulfill({
       json: {
         jsonapi: { version: '1.1' },
-        data: { id: 1, name: 'dev-admin', email: '', roles: ['admin'] },
+        data: { id: '1', name: 'dev-admin', email: '', roles: ['admin'] },
       },
     }),
   )
