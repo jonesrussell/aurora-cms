@@ -26,6 +26,9 @@ abstract class ServiceProvider implements ServiceProviderInterface
     /** @var list<\Waaseyaa\Entity\EntityTypeInterface> */
     private array $entityTypes = [];
 
+    /** @var (\Closure(string): ?object)|null */
+    private ?\Closure $kernelResolver = null;
+
     abstract public function register(): void;
 
     public function boot(): void {}
@@ -96,6 +99,16 @@ abstract class ServiceProvider implements ServiceProviderInterface
         $this->manifestFormatters = $manifestFormatters;
     }
 
+    /**
+     * Set a fallback resolver for kernel-level services (e.g. EntityTypeManager).
+     *
+     * @param \Closure(string): ?object $resolver
+     */
+    public function setKernelResolver(\Closure $resolver): void
+    {
+        $this->kernelResolver = $resolver;
+    }
+
     protected function singleton(string $abstract, string|callable $concrete): void
     {
         $this->bindings[$abstract] = ['concrete' => $concrete, 'shared' => true];
@@ -122,6 +135,12 @@ abstract class ServiceProvider implements ServiceProviderInterface
         }
 
         if (!isset($this->bindings[$abstract])) {
+            if ($this->kernelResolver !== null) {
+                $resolved = ($this->kernelResolver)($abstract);
+                if ($resolved !== null) {
+                    return $resolved;
+                }
+            }
             throw new \RuntimeException("No binding registered for {$abstract}.");
         }
 

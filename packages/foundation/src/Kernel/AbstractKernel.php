@@ -159,6 +159,24 @@ abstract class AbstractKernel
             }
 
             $provider->setKernelContext($this->projectRoot, $this->config, $this->manifest->formatters);
+            $provider->setKernelResolver(function (string $className): ?object {
+                if ($className === \Waaseyaa\Entity\EntityTypeManager::class) {
+                    return $this->entityTypeManager;
+                }
+                if ($className === \Waaseyaa\Database\DatabaseInterface::class) {
+                    return $this->database;
+                }
+                if ($className === \Symfony\Contracts\EventDispatcher\EventDispatcherInterface::class) {
+                    return $this->dispatcher;
+                }
+                // Check other providers' bindings
+                foreach ($this->providers as $other) {
+                    if (isset($other->getBindings()[$className])) {
+                        return $other->resolve($className);
+                    }
+                }
+                return null;
+            });
 
             $this->providers[] = $provider;
         }
