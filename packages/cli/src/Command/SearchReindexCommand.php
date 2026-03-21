@@ -44,6 +44,7 @@ final class SearchReindexCommand extends Command
 
         foreach ($this->entityTypeManager->getDefinitions() as $entityType) {
             $storage = $this->entityTypeManager->getStorage($entityType->id());
+            // TODO: paginated loading — loadMultiple() loads all entities into memory at once
             $entities = $storage->loadMultiple();
             $batchCount = 0;
             $typeIndexed = 0;

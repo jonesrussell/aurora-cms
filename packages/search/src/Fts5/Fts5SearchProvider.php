@@ -120,8 +120,9 @@ final class Fts5SearchProvider implements SearchProviderInterface
 
     private function escapeQuery(string $query): string
     {
-        // Remove FTS5 operators to prevent query injection
+        // Remove FTS5 operators and special characters to prevent query injection
         $query = preg_replace('/\b(AND|OR|NOT|NEAR)\b/i', '', $query);
+        $query = preg_replace('/[*^{}:"]/', '', $query);
         $query = trim(preg_replace('/\s+/', ' ', $query));
 
         if ($query === '') {
@@ -129,7 +130,7 @@ final class Fts5SearchProvider implements SearchProviderInterface
         }
 
         // Quote individual terms for safety
-        $terms = explode(' ', $query);
+        $terms = array_filter(explode(' ', $query), fn(string $t): bool => $t !== '');
         $quoted = array_map(fn(string $term): string => '"' . str_replace('"', '""', $term) . '"', $terms);
 
         return implode(' ', $quoted);

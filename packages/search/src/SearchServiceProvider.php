@@ -14,6 +14,8 @@ use Waaseyaa\Search\Fts5\Fts5SearchProvider;
 
 final class SearchServiceProvider extends ServiceProvider
 {
+    private ?DatabaseInterface $searchDatabase = null;
+
     public function register(): void
     {
         $this->singleton(SearchIndexerInterface::class, function (): SearchIndexerInterface {
@@ -44,12 +46,16 @@ final class SearchServiceProvider extends ServiceProvider
 
     private function getSearchDatabase(): DatabaseInterface
     {
-        $searchDb = $this->config['search']['database'] ?? null;
-
-        if ($searchDb !== null) {
-            return DBALDatabase::createSqlite($searchDb);
+        if ($this->searchDatabase !== null) {
+            return $this->searchDatabase;
         }
 
-        return $this->resolve(DatabaseInterface::class);
+        $searchDb = $this->config['search']['database'] ?? null;
+
+        $this->searchDatabase = $searchDb !== null
+            ? DBALDatabase::createSqlite($searchDb)
+            : $this->resolve(DatabaseInterface::class);
+
+        return $this->searchDatabase;
     }
 }
