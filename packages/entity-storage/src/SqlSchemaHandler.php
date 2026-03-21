@@ -458,14 +458,10 @@ final class SqlSchemaHandler
             'default' => '{}',
         ];
 
-        $revisionTableName = $this->getRevisionTableName();
-
         return [
             'fields' => $fields,
             'primary key' => ['entity_id', 'revision_id'],
-            'indexes' => [
-                $revisionTableName . '_entity_rev' => ['entity_id', 'revision_id'],
-            ],
+            'indexes' => [],
         ];
     }
 }
