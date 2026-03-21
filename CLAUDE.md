@@ -187,6 +187,9 @@ Design docs in `docs/plans/` are session artifacts (implementation history). Spe
 - **GraphQL reference fields keep storage field names**: A field defined as `author_id` with type `entity_reference` produces a GraphQL field named `author_id` (not `author`). It resolves to the nested entity object but the field name includes the `_id` suffix.
 - **Browser `fetch` loses binding when stored**: Passing `fetch` as a default parameter (`private fetchFn = fetch`) detaches it from `window`, causing "illegal invocation" at call time. Wrap in an arrow function: `(...args) => fetch(...args)`.
 - **Nuxt `[entityType]` catch-all matches single-segment paths**: In E2E tests, navigating to `/some-path` hits the dynamic `[entityType]/index.vue` route instead of showing a 404. Use multi-segment paths (`/no/such/deep/route`) to test error pages.
+- **FTS5 `SELECT m.*` misses FTS5 columns**: When joining `search_index` (FTS5) with `search_metadata`, `m.*` only selects metadata columns. To get FTS5 content columns (title, body), explicitly select them: `si.title`, `si.body`. The `snippet()` function also requires column index references into the FTS5 table.
+- **FTS5 query escaping must strip special chars**: FTS5 treats `*`, `^`, `{}`, `:`, `"` as operators in addition to `AND/OR/NOT/NEAR`. Quoting terms with `"..."` is not sufficient — strip special characters before quoting to prevent query injection.
+- **`ServiceProvider` has no `$dispatcher` property**: Event subscriber registration must resolve the dispatcher via `$this->resolve(\Symfony\Contracts\EventDispatcher\EventDispatcherInterface::class)` and check `instanceof Symfony\Component\EventDispatcher\EventDispatcherInterface` before calling `addSubscriber()`.
 
 ## Testing
 - Integration tests in `tests/Integration/PhaseN/` — one directory per implementation phase
