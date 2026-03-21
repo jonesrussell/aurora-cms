@@ -219,11 +219,11 @@ New files in `packages/search/src/`:
 |------|---------|
 | `SearchIndexableInterface.php` | Opt-in interface for indexable entities |
 | `SearchIndexerInterface.php` | Write-side indexing contract |
-| `Fts5SearchProvider.php` | `SearchProviderInterface` implementation — query execution |
-| `Fts5SearchIndexer.php` | `SearchIndexerInterface` implementation — FTS5 + metadata writes |
-| `SearchIndexSubscriber.php` | Entity event subscriber — sync/async indexing bridge |
 | `SearchIndexJob.php` | Queue message for async indexing |
 | `SearchServiceProvider.php` | Service provider wiring |
+| `Fts5/Fts5SearchProvider.php` | `SearchProviderInterface` implementation — query execution |
+| `Fts5/Fts5SearchIndexer.php` | `SearchIndexerInterface` implementation — FTS5 + metadata writes |
+| `EventSubscriber/SearchIndexSubscriber.php` | Entity event subscriber — sync/async indexing bridge |
 
 New files in `packages/cli/src/Command/`:
 
